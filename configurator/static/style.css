@@ -1,0 +1,306 @@
+
+#configurator-preview{--gp-bg:light-dark(#f5f7f8,#141a20);--gp-panel:light-dark(#fff,#1b232c);--gp-ink:light-dark(#1a2932,#e8eef4);--gp-muted:light-dark(#62717c,#a3b1be);--gp-line:light-dark(#e3e9ed,#34404b);--gp-tint:light-dark(#e9f4f0,#243e37);--gp-accent:light-dark(#14664e,#90d5bb);--gp-btn:light-dark(#173c33,#b6e5d5);--gp-btntext:light-dark(#fff,#18362d);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--gp-ink);background:var(--gp-bg);border:1px solid var(--gp-line);border-radius:18px;overflow:hidden;min-width:0}
+#configurator-preview *{box-sizing:border-box}#configurator-preview button,#configurator-preview input,#configurator-preview select{font:inherit}#configurator-preview button{cursor:pointer}#configurator-preview .gp-top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:19px 24px;border-bottom:1px solid var(--gp-line);background:var(--gp-panel)}#configurator-preview .gp-brand{display:flex;align-items:center;gap:12px;font-size:18px;font-weight:600;letter-spacing:-.4px}#configurator-preview .gp-logo{display:grid;place-items:center;background:var(--gp-btn);color:var(--gp-btntext);border-radius:10px;width:36px;height:36px}#configurator-preview .gp-demo{font-size:12px;color:var(--gp-muted);text-align:right}#configurator-preview .gp-shell{display:grid;grid-template-columns:174px minmax(0,1fr)}#configurator-preview .gp-nav{padding:24px 12px;background:var(--gp-panel);border-right:1px solid var(--gp-line)}#configurator-preview .gp-nav button{display:flex;align-items:center;gap:9px;width:100%;border:0;border-radius:9px;background:transparent;color:var(--gp-muted);padding:11px 12px;margin-bottom:5px;text-align:left}#configurator-preview .gp-nav button[aria-pressed=true]{background:var(--gp-tint);color:var(--gp-accent);font-weight:600}#configurator-preview .gp-nav-note{padding:18px 12px;font-size:12px;color:var(--gp-muted)}#configurator-preview .gp-main{padding:28px;min-width:0}#configurator-preview h2{font-size:25px;letter-spacing:-.7px;margin:0 0 5px;font-weight:600}#configurator-preview h3{font-size:16px;margin:0 0 4px;font-weight:600}#configurator-preview p{margin:0;color:var(--gp-muted)}#configurator-preview .gp-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:25px}#configurator-preview .gp-button{border:1px solid var(--gp-line);border-radius:8px;background:var(--gp-panel);color:var(--gp-ink);padding:9px 13px;white-space:normal}#configurator-preview .gp-button.primary{background:var(--gp-btn);color:var(--gp-btntext);border-color:var(--gp-btn)}#configurator-preview .gp-button:disabled{opacity:.45;cursor:default}#configurator-preview .gp-layout{display:grid;grid-template-columns:minmax(190px,.85fr) minmax(250px,1.3fr);gap:18px;align-items:start}#configurator-preview .gp-panel{background:var(--gp-panel);border:1px solid var(--gp-line);border-radius:12px;overflow:hidden}#configurator-preview .gp-panel-title{padding:15px 18px;border-bottom:1px solid var(--gp-line);font-size:12px;color:var(--gp-muted);display:flex;justify-content:space-between;gap:8px}#configurator-preview .gp-person{display:flex;width:100%;align-items:center;gap:10px;padding:17px 14px;border:0;border-bottom:1px solid var(--gp-line);text-align:left;color:var(--gp-ink);background:var(--gp-panel)}#configurator-preview .gp-person:last-child{border-bottom:0}#configurator-preview .gp-person[aria-pressed=true]{background:var(--gp-tint)}#configurator-preview .gp-avatar{background:var(--gp-bg);border:1px solid var(--gp-line);width:35px;height:35px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;font-size:12px;font-weight:600}#configurator-preview .gp-person-meta{display:flex;flex-direction:column;flex:1;min-width:0;overflow-wrap:anywhere}#configurator-preview .gp-person-name{font-weight:600}#configurator-preview .gp-sub{font-size:12px;color:var(--gp-muted);margin-top:2px}#configurator-preview .gp-pill{display:inline-block;border-radius:5px;background:var(--gp-tint);color:var(--gp-accent);padding:3px 7px;font-size:11px}#configurator-preview .gp-body{padding:20px}#configurator-preview .gp-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:19px}#configurator-preview .gp-field{display:block;margin-bottom:16px;color:var(--gp-ink);font-size:12px;font-weight:500}#configurator-preview input:not([type=checkbox]),#configurator-preview select{display:block;width:100%;min-width:0;margin-top:6px;padding:10px 11px;border:1px solid var(--gp-line);border-radius:7px;background:var(--gp-panel);color:var(--gp-ink);font-size:14px;font-weight:400}#configurator-preview input[type=checkbox]{accent-color:var(--gp-accent);width:16px;height:16px;vertical-align:middle}#configurator-preview .gp-check{display:flex;align-items:center;gap:7px;font-size:13px}#configurator-preview .gp-check input{flex-shrink:0}#configurator-preview .gp-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}#configurator-preview .gp-rule{border:0;border-top:1px solid var(--gp-line);margin:20px 0}#configurator-preview .gp-days{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0 15px}#configurator-preview .gp-day{width:33px;height:33px;border-radius:7px;border:1px solid var(--gp-line);background:var(--gp-panel);color:var(--gp-muted)}#configurator-preview .gp-day[aria-pressed=true]{background:var(--gp-btn);border-color:var(--gp-btn);color:var(--gp-btntext)}#configurator-preview .gp-note{padding:12px;border-radius:8px;background:var(--gp-bg);color:var(--gp-muted);font-size:12px;margin:14px 0}#configurator-preview .gp-footer{display:flex;justify-content:space-between;gap:12px;padding:15px 20px;border-top:1px solid var(--gp-line);align-items:center}#configurator-preview .gp-delete{background:none;border:none;color:light-dark(#ad3d40,#edaaaa);padding:8px 0;font-size:12px}#configurator-preview .gp-status{padding:11px 24px;background:var(--gp-panel);border-top:1px solid var(--gp-line);font-size:12px;display:flex;gap:8px;flex-wrap:wrap;color:var(--gp-muted)}#configurator-preview .gp-settings-row{padding:17px 20px;border-bottom:1px solid var(--gp-line);display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:20px;align-items:center}#configurator-preview .gp-settings-row:last-child{border-bottom:0}#configurator-preview .gp-settings-row input{margin:0;text-align:right}#configurator-preview .gp-setting-title{font-weight:500}#configurator-preview .gp-group{margin:22px 0 11px;font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:var(--gp-muted)}#configurator-preview .gp-review{margin-top:18px;padding:20px;border:1px solid var(--gp-line);border-radius:12px;background:var(--gp-panel)}#configurator-preview .gp-review ul{padding-left:18px}#configurator-preview [hidden]{display:none!important}#configurator-preview .gp-new{border:1px dashed var(--gp-line);border-radius:9px;color:var(--gp-muted);padding:12px;background:transparent;width:100%;margin-top:12px}#configurator-preview .gp-pending{font-size:12px;color:var(--gp-muted);margin-top:12px}
+@media(max-width:760px), (max-width:950px) and (pointer:coarse){#configurator-preview .gp-shell{grid-template-columns:1fr}#configurator-preview .gp-nav{display:flex;padding:10px 15px;border-right:0;border-bottom:1px solid var(--gp-line);gap:8px}#configurator-preview .gp-nav button{width:auto;margin:0}#configurator-preview .gp-nav-note{display:none}#configurator-preview .gp-main{padding:20px}#configurator-preview .gp-layout{grid-template-columns:minmax(175px,.8fr) minmax(230px,1.2fr)}}
+@media(max-width:540px){#configurator-preview .gp-layout{grid-template-columns:1fr}#configurator-preview .gp-head{align-items:flex-start}#configurator-preview .gp-top{padding:16px}#configurator-preview .gp-main{padding:16px}#configurator-preview .gp-two{grid-template-columns:1fr}#configurator-preview .gp-settings-row{grid-template-columns:minmax(0,1fr) 82px;gap:10px}#configurator-preview .gp-person{padding:12px}#configurator-preview .gp-footer{flex-wrap:wrap}}
+
+:root{color-scheme:light dark}body{margin:0;padding:24px;background:light-dark(#edf1f3,#10161c)}#configurator-preview{max-width:1200px;margin:auto;min-height:85vh}#login{max-width:420px;margin:10vh auto;padding:32px}.gp-error{color:light-dark(#a32835,#ffacb4)}.gp-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.gp-history-row{padding:16px 20px;border-bottom:1px solid var(--gp-line)}.gp-history-row time{float:right;font-size:12px;color:var(--gp-muted)}.gp-wide{width:100%}.gp-form-note{margin-bottom:16px!important}.gp-warning{border-left:3px solid #c88736}#configurator-preview input:focus-visible,#configurator-preview button:focus-visible{outline:3px solid var(--gp-accent);outline-offset:2px}#message{padding:12px 24px;min-height:45px}#configurator-preview [hidden]{display:none!important}@media(max-width:600px){body{padding:0}#configurator-preview{border:0;border-radius:0}.gp-history-row time{float:none;display:block}}
+
+#configurator-preview .gp-window{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:center;border-bottom:1px solid var(--gp-line);margin-bottom:12px}#configurator-preview .gp-window .gp-field{margin-bottom:12px}#configurator-preview .gp-window .gp-delete{font-size:11px}#configurator-preview select:focus-visible{outline:3px solid var(--gp-accent);outline-offset:2px}@media(max-width:540px){#configurator-preview .gp-window{grid-template-columns:1fr 1fr}#configurator-preview .gp-window .gp-delete{text-align:left}}
+
+#configurator-preview .gp-context{padding:12px 16px;margin-bottom:22px;border:1px solid var(--gp-line);border-left:4px solid var(--gp-accent);border-radius:8px;background:var(--gp-panel);overflow-wrap:anywhere}
+#configurator-preview .gp-context strong{display:block}#configurator-preview .gp-device-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:14px;margin:16px 0 24px}
+#configurator-preview .gp-device-grid article{overflow-wrap:anywhere}#configurator-preview .gp-device-grid ul{padding-left:20px}#configurator-preview .gp-device-grid button{margin-top:14px}
+#configurator-preview fieldset:disabled{border:0;padding:0;margin:0;min-width:0;opacity:.65}#configurator-preview fieldset:disabled legend{font-weight:600;margin:12px 0}
+#configurator-preview #credential-steps{padding:14px;background:var(--gp-tint);border-radius:8px;margin-bottom:16px}#configurator-preview #credential-steps ol{padding-left:20px}#configurator-preview #credential-steps li{margin:8px 0}
+
+
+/* Alarm and assigned-keypad grouping */
+#configurator-preview .gp-alarm-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+#configurator-preview .gp-keypad-title{font-size:12px;font-weight:600;color:var(--gp-muted);margin:18px 0 8px}
+#configurator-preview .gp-keypad-list{list-style:none;padding:0;margin:0}
+#configurator-preview .gp-keypad-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:12px 0;border-top:1px solid var(--gp-line);overflow-wrap:anywhere}
+#configurator-preview .gp-keypad-row>div{min-width:0;flex:1}
+#configurator-preview .gp-keypad-row strong,#configurator-preview .gp-keypad-row>div>span{display:block}
+#configurator-preview .gp-keypad-row>span{text-align:right;max-width:45%}
+#configurator-preview .gp-alarm-card>button{margin:16px 0 8px}
+
+#configurator-preview .gp-context-controls{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:16px}#configurator-preview .gp-context-controls .gp-field{flex:1;min-width:160px;margin:0}#configurator-preview .gp-gateway{border:1px solid var(--gp-line);border-radius:12px;padding:16px;margin-bottom:16px}#configurator-preview .gp-gateway>summary{cursor:pointer;padding:8px 0}#configurator-preview .gp-grant-row{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;border-top:1px solid var(--gp-line);padding:16px 0;flex-wrap:wrap}#configurator-preview .gp-grant-row>div{flex:1;min-width:180px;overflow-wrap:anywhere}#configurator-preview .gp-grant-row p{margin:6px 0}#configurator-preview .gp-grant-user{margin-bottom:24px}
+
+/* Keep demo entry secondary, at the foot of the desktop sidebar. */
+#configurator-preview .gp-shell{min-height:calc(85vh - 76px)}
+#configurator-preview .gp-nav{display:flex;flex-direction:column}
+#configurator-preview .gp-nav-demo{margin-top:auto;padding:24px 8px 0;color:var(--gp-muted)}
+#configurator-preview .gp-nav-demo .gp-check{font-size:12px}
+#configurator-preview .gp-nav-demo button{font-size:12px;margin:8px 0 0;padding:8px 4px}
+@media(max-width:760px), (max-width:950px) and (pointer:coarse){#configurator-preview .gp-nav{flex-direction:row;flex-wrap:wrap}#configurator-preview .gp-nav-demo{width:100%;margin-top:0;padding:8px 4px 0}#configurator-preview .gp-nav-demo button{width:auto}}
+
+#configurator-preview #debug-output{width:100%;max-width:100%;font:12px monospace;padding:12px;background:var(--gp-panel);color:var(--gp-ink);border:1px solid var(--gp-line);border-radius:8px}
+
+#configurator-preview .gp-muted-choices{opacity:.5}
+
+#configurator-preview .gp-access-limit{border:1px solid var(--gp-line);border-radius:10px;padding:16px;margin:14px 0}
+#configurator-preview .gp-access-limit h3{margin-bottom:12px}
+#configurator-preview .gp-access-limit>.gp-check{font-size:14px;margin:10px 0}
+#configurator-preview #uses-limit{font-size:15px;font-weight:600;margin:16px 0 0}
+#configurator-preview #uses-limit input{max-width:160px;font-size:18px;margin-bottom:8px}
+#configurator-preview #uses-limit .gp-sub{display:block;font-weight:400}
+
+#configurator-preview #hb-choice{margin-top:8px;margin-bottom:20px}
+#configurator-preview #hb-alarm-choices{margin-bottom:20px}
+#configurator-preview #hb-alarm-choices>.gp-sub{margin-bottom:12px}
+
+
+/* Separate gateway identity from the selected alarm's grant. */
+#configurator-preview .gp-user-access-summary{border-bottom:1px solid var(--gp-line);background:var(--gp-bg);overflow-wrap:anywhere}
+#configurator-preview .gp-user-access-summary .gp-note{background:var(--gp-panel);margin-bottom:0}
+#configurator-preview .gp-alarm-access{min-width:0;border:2px solid var(--gp-line);border-radius:12px;padding:18px;margin:26px 0 0}
+#configurator-preview .gp-alarm-access>legend{padding:0 8px;font-size:16px;font-weight:600;color:var(--gp-accent)}
+#configurator-preview .gp-alarm-access-heading{background:var(--gp-tint);border-radius:8px;padding:14px;margin-bottom:20px}
+#configurator-preview .gp-alarm-access-heading .gp-field{margin-bottom:10px}
+#configurator-preview .gp-alarm-access>.gp-check{margin:10px 0}
+@media(max-width:540px){#configurator-preview .gp-alarm-access{padding:12px}#configurator-preview #editor>.gp-body>.gp-row{flex-wrap:wrap}}
+
+#configurator-preview .gp-identity-row{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+#configurator-preview .gp-identity-row>.gp-field{flex:1;min-width:0;margin:0}
+#configurator-preview .gp-identity-row>.gp-check{flex:0 0 auto;max-width:45%}
+#configurator-preview .gp-identity-row>.gp-check input{margin-left:0}
+
+/* Gateway identity status; alarm grants remain visible on Access grants. */
+#configurator-preview .gp-grant-user{padding:16px;border-radius:10px;border:1px solid var(--gp-line)}
+/* Shared colors describe saved enabled state, not schedule eligibility or alarm mode. */
+#configurator-preview .gp-state-enabled{--gp-state-bg:light-dark(#edf8f0,#20372a);--gp-state-border:light-dark(#cbe6d1,#365b42)}
+#configurator-preview .gp-state-disabled{--gp-state-bg:light-dark(#fff0f0,#3b2529);--gp-state-border:light-dark(#edced1,#694047)}
+#configurator-preview .gp-grant-user.gp-state-enabled,#configurator-preview .gp-grant-user.gp-state-disabled,
+#configurator-preview .gp-grant-row.gp-state-enabled,#configurator-preview .gp-grant-row.gp-state-disabled,
+#configurator-preview .gp-person.gp-state-enabled,#configurator-preview .gp-person.gp-state-disabled,
+#configurator-preview .gp-user-access-summary .gp-note.gp-state-enabled,#configurator-preview .gp-user-access-summary .gp-note.gp-state-disabled{background:var(--gp-state-bg);border-color:var(--gp-state-border)}
+#configurator-preview .gp-person[aria-pressed=true]{box-shadow:inset 4px 0 var(--gp-accent);font-weight:600}
+#configurator-preview .gp-grant-row{border:1px solid var(--gp-state-border,var(--gp-line));border-radius:8px;padding:12px;margin-top:12px}
+
+
+/* Continue the selected user's marker through its expanded alarm summary. */
+#configurator-preview .gp-person[aria-pressed=true]+.gp-user-access-summary{box-shadow:inset 4px 0 var(--gp-accent)}
+
+/* Activity outcomes retain their text labels in both color schemes. */
+#configurator-preview .gp-history-admin{--gp-state-bg:light-dark(#fff7e6,#39311f);--gp-state-border:light-dark(#ead6a8,#695735)}
+#configurator-preview .gp-history-lockout{--gp-state-bg:light-dark(#f7dada,#542b32);--gp-state-border:light-dark(#dda4ac,#935361)}
+#configurator-preview .gp-history-row{background:var(--gp-state-bg,var(--gp-panel));border-bottom-color:var(--gp-state-border,var(--gp-line))}
+
+#configurator-preview .gp-history-controls{display:flex;align-items:end;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+#configurator-preview .gp-history-controls .gp-field{margin:0;min-width:150px}
+#configurator-preview #history-pause[aria-pressed=true]{background:var(--gp-tint);border-color:var(--gp-accent)}
+
+/* A drawn keypad: no device photograph or external assets. */
+#configurator-preview .kp-layout{display:grid;grid-template-columns:minmax(235px,310px) minmax(0,1fr);gap:36px;align-items:start;padding:12px 0 24px}
+#configurator-preview .kp-device{color-scheme:light;color:#687473;background:linear-gradient(115deg,#fff 2%,#f4f4ee 48%,#e2e4dd);border:1px solid #b9bfbb;border-top:8px solid #adb3b1;border-bottom:9px solid #a3aaa6;border-radius:45px 45px 49px 49px;padding:27px 25px 24px;box-shadow:inset 2px 2px 5px #fff,inset -3px -4px 7px #bec3ba,0 17px 25px #142a2420;outline-offset:6px}
+#configurator-preview .kp-mode-buttons,#configurator-preview .kp-digits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+#configurator-preview .kp-mode-buttons{margin-bottom:28px;gap:14px}
+#configurator-preview .kp-device button{border:1.5px solid #9fa9a4;background:linear-gradient(130deg,#fffffb,#e9ebe4);color:#66726b;box-shadow:inset 0 0 0 3px #fdfdf8,0 2px 3px #63766a26;border-radius:50%;aspect-ratio:1;padding:0;display:flex;align-items:center;justify-content:center;touch-action:manipulation;user-select:none;transition:background .1s,transform .1s}
+#configurator-preview .kp-digits button{font-size:30px;font-weight:300;min-width:44px;min-height:44px}
+#configurator-preview .kp-mode-buttons button{flex-direction:column;gap:1px;font-size:10px;font-weight:600}
+#configurator-preview .kp-mode-buttons svg{width:24px;height:24px;stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#configurator-preview .kp-device button:active{transform:translateY(2px);background:#d4ded3;box-shadow:inset 1px 2px 3px #7f8d82}
+#configurator-preview .kp-device button[aria-pressed=true]{background:#d4e7db;color:#28553e;border-color:#518267}
+#configurator-preview .kp-device button:disabled{opacity:.45;cursor:not-allowed}
+#configurator-preview .kp-led{height:8px;width:46px;margin:31px auto 0;border-radius:3px;background:#7a8375;border:1px solid #929b8f;box-shadow:inset 0 1px 3px #24312899}
+#configurator-preview .kp-led.on{background:#7aee60;box-shadow:0 0 11px #6fee52,inset 0 1px 2px #d8ffb4;border-color:#91d575}
+#configurator-preview .kp-companion{display:grid;gap:20px;min-width:0}
+#configurator-preview .kp-eyebrow{font-size:11px;letter-spacing:1.4px;color:var(--gp-muted)}
+#configurator-preview .kp-entry{font-size:24px;margin:10px 0;min-height:32px;letter-spacing:3px}
+#configurator-preview .kp-help{font-size:12px;line-height:1.6;padding-top:12px}
+#configurator-preview .kp-badge{font-size:12px;font-weight:600;border-radius:20px;padding:8px 13px;background:var(--gp-tint)}
+#configurator-preview .kp-results ol{list-style:none;padding:0;margin:0;max-height:330px;overflow:auto}
+#configurator-preview .kp-results li{padding:12px 16px;border-bottom:1px solid var(--gp-line);font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+#configurator-preview .kp-results time{display:block;font-size:11px;color:var(--gp-muted)}
+#configurator-preview .kp-results>p{padding:12px 16px}
+@media(max-width:850px){#configurator-preview .kp-layout{grid-template-columns:1fr;gap:28px}#configurator-preview .kp-device{width:280px;max-width:100%;justify-self:center}}
+
+#configurator-preview .gp-history-filters{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:8px 14px;margin:0;padding:4px 0 10px}
+#configurator-preview .gp-history-filters .gp-check{display:flex;align-items:center;gap:6px;margin:0;font-size:12px;white-space:nowrap}
+
+/* Page guidance lives beside the title, outside document flow when open. */
+#configurator-preview .gp-title-row{display:flex;align-items:center;gap:9px}
+#configurator-preview .gp-title-row h2{margin:0}
+#configurator-preview .gp-help-button{display:inline-flex;align-items:center;justify-content:center;width:25px;height:25px;flex:0 0 25px;border:1px solid var(--gp-line);border-radius:50%;background:var(--gp-panel);color:var(--gp-muted);font-size:14px;font-weight:600;padding:0}
+#configurator-preview .gp-help-button:hover,#configurator-preview .gp-help-button[aria-expanded=true]{background:var(--gp-tint);color:var(--gp-accent);border-color:var(--gp-accent)}
+#configurator-preview .gp-page-help{position:fixed;inset:auto;margin:0;width:min(370px,calc(100vw - 24px));max-height:min(65vh,480px);overflow:auto;padding:16px 18px;border:1px solid var(--gp-line);border-radius:12px;background:var(--gp-panel);color:var(--gp-ink);box-shadow:0 8px 30px #0003;font-size:13px;line-height:1.55;z-index:1000;overflow-wrap:anywhere}
+#configurator-preview .gp-page-help::backdrop{background:transparent;pointer-events:none}
+#configurator-preview .gp-page-help p{margin:9px 0 0;color:var(--gp-ink)}
+#configurator-preview .gp-main .gp-context{padding:0;margin:6px 0 0;border:0;border-radius:0;background:transparent;font-size:12px;color:var(--gp-muted)}
+#configurator-preview .gp-head{margin-bottom:18px}
+#configurator-preview #keypad-description{margin:0 0 12px;padding:8px 12px;font-size:13px}
+
+/* Keep source filters on the activity controls row; gateway status is global. */
+#configurator-preview .gp-history-controls .gp-history-filters{margin-left:auto;padding:0;align-self:center}
+#configurator-preview .gp-top .gp-demo{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+#configurator-preview .gp-gateway-connections{display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap}
+#configurator-preview .gp-gateway-connection{padding:6px 9px;border:1px solid var(--gp-state-border,var(--gp-line));border-radius:8px;background:var(--gp-state-bg,var(--gp-panel));color:var(--gp-ink);font-size:12px;line-height:1.4;overflow-wrap:anywhere}
+@media(max-width:760px), (max-width:950px) and (pointer:coarse){#configurator-preview .gp-top{align-items:flex-start;gap:12px}#configurator-preview .gp-top .gp-demo{min-width:0}#configurator-preview .gp-gateway-connections{max-width:100%}}
+
+#configurator-preview .gp-uses-heading{display:flex;align-items:center;gap:12px}
+#configurator-preview .gp-uses-heading .gp-button{font-size:12px;padding:5px 10px;font-weight:400}
+
+/* Keep each weekly window on one compact row. */
+#configurator-preview .gp-title-row h3{margin:0}
+#configurator-preview #schedule-fields .gp-expiry-field{margin-top:18px}
+#configurator-preview #windows{overflow-x:auto}
+#configurator-preview .gp-window{grid-template-columns:56px 66px minmax(96px,1fr) minmax(96px,1fr) 44px;gap:6px;min-width:382px;align-items:end}
+#configurator-preview .gp-window>.gp-delete{grid-column:5;grid-row:1;align-self:center}
+#configurator-preview .gp-window .window-time-start{grid-column:3;grid-row:1}
+#configurator-preview .gp-window .window-time-end{grid-column:4;grid-row:1}
+#configurator-preview .gp-window>.gp-check{grid-column:2;grid-row:1;align-self:center;margin:0 0 12px;font-size:12px;gap:4px;white-space:nowrap}
+#configurator-preview .gp-window select,#configurator-preview .gp-window input[type=time]{padding:8px 4px;font-size:12px}
+
+#configurator-preview .gp-expiry-row{display:flex;align-items:flex-end;gap:10px;margin-top:18px;margin-bottom:16px}
+#configurator-preview #schedule-fields .gp-expiry-row .gp-expiry-field{flex:0 1 260px;min-width:0;margin:0}
+#configurator-preview .gp-expiry-row .gp-button{flex:none}
+
+/* Consistent selector widths and centered all-day control. */
+#configurator-preview .gp-context-controls>.gp-field{max-width:calc((100% - 16px)/2)}
+#configurator-preview .gp-window select,#configurator-preview .gp-window input[type=time]{height:38px}
+#configurator-preview .gp-window>.gp-check{height:38px;margin:0 0 12px;align-self:end}
+#configurator-preview .gp-window>.gp-check input{margin:0}
+#configurator-preview #editor{position:relative;min-height:160px}
+#configurator-preview #editor[data-loading]>.gp-body,#configurator-preview #editor[data-loading]>.gp-footer{opacity:.45}
+#configurator-preview .gp-user-loading{position:absolute;inset:0;z-index:2;display:flex;align-items:flex-start;justify-content:center;padding:20px;background:light-dark(#ffffff88,#1b232c88);font-weight:600;pointer-events:auto}
+@media(max-width:540px){#configurator-preview .gp-context-controls>.gp-field{max-width:none}}
+
+.gp-nav a.gp-button{display:block;text-decoration:none;text-align:left;margin:6px 0} #access-mode:empty{display:none}
+
+/* Installation settings retain the application theme and underlying editor drafts. */
+#configurator-preview .gp-settings-gear{display:inline-grid;place-items:center;vertical-align:middle;width:40px;height:40px;margin-left:6px;padding:8px}
+#configurator-preview .gp-settings{color:var(--gp-ink);background:var(--gp-bg);border:1px solid var(--gp-line);border-radius:18px;padding:0;width:min(980px,calc(100vw - 40px));max-height:calc(100dvh - 48px);box-shadow:0 24px 90px #0005}
+#configurator-preview .gp-settings::backdrop{background:#10251d80;backdrop-filter:blur(5px)}
+#configurator-preview .gp-settings-header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px 28px;background:var(--gp-panel);border-bottom:1px solid var(--gp-line)}
+#configurator-preview .gp-eyebrow{font-size:10px;letter-spacing:.15em;font-weight:700;margin-bottom:4px}
+#configurator-preview .gp-settings-layout{display:grid;grid-template-columns:165px minmax(0,1fr)}
+#configurator-preview .gp-settings-tabs{padding:20px 12px;border-right:1px solid var(--gp-line);background:var(--gp-panel)}
+#configurator-preview .gp-settings-tabs button{display:block;width:100%;text-align:left;margin-bottom:8px;border-color:transparent}
+#configurator-preview .gp-settings-tabs button[aria-selected=true]{background:var(--gp-tint);color:var(--gp-accent);font-weight:650}
+#configurator-preview .gp-settings-content{padding:24px;min-width:0}
+#configurator-preview .gp-settings-content h3{font-size:18px;margin-bottom:6px}
+#configurator-preview .gp-settings-content .gp-panel{margin-top:18px}
+#configurator-preview .gp-settings-content form>.gp-button{margin-top:18px}
+#configurator-preview .gp-settings-content .gp-two{margin-top:16px}
+#configurator-preview .gp-settings-content details{margin-top:15px;border-top:1px solid var(--gp-line);padding-top:14px}
+#configurator-preview .gp-settings-content summary{cursor:pointer;color:var(--gp-accent);font-weight:600;margin-bottom:12px}
+#configurator-preview .gp-settings-facts{margin:18px 0;display:grid;gap:12px}
+#configurator-preview .gp-settings-facts div{display:grid;grid-template-columns:145px minmax(0,1fr);gap:14px}
+#configurator-preview .gp-settings-facts dt{color:var(--gp-muted);font-size:12px}
+#configurator-preview .gp-settings-facts dd{margin:0;overflow-wrap:anywhere;font-size:13px}
+#configurator-preview .gp-settings-content li{margin:12px 0;overflow-wrap:anywhere}
+#configurator-preview .gp-settings-content li span{display:block;font-size:12px;color:var(--gp-muted)}
+#configurator-preview .gp-settings-footer{padding:16px 28px;border-top:1px solid var(--gp-line);display:flex;align-items:center;justify-content:space-between;gap:18px;background:var(--gp-panel)}
+#configurator-preview .gp-settings a{color:var(--gp-accent);font-size:12px}
+#configurator-preview .gp-settings .gp-error{color:light-dark(#a12929,#ffaaaa)}
+@media(max-width:620px){#configurator-preview .gp-settings{width:calc(100vw - 16px);max-height:calc(100dvh - 16px);border-radius:12px}#configurator-preview .gp-settings-header{padding:18px}#configurator-preview .gp-settings-layout{display:block}#configurator-preview .gp-settings-tabs{display:flex;gap:6px;padding:10px 14px;border-right:0;border-bottom:1px solid var(--gp-line)}#configurator-preview .gp-settings-tabs button{margin:0;text-align:center;padding:10px 6px}#configurator-preview .gp-settings-content{padding:18px}#configurator-preview .gp-settings-facts div{grid-template-columns:1fr;gap:2px}#configurator-preview .gp-settings .gp-two{grid-template-columns:1fr;gap:0}#configurator-preview .gp-settings-footer{padding:14px 18px;align-items:start}#configurator-preview .gp-settings-footer a{flex-shrink:0}}
+
+#configurator-preview .gp-account-actions{display:inline-flex;align-items:center;gap:6px;flex-shrink:0}#configurator-preview .gp-account-actions .gp-settings-gear{margin-left:0}
+
+/* Adaptive shell: desktop retains the existing sidebar and editor grid. */
+.gp-mobile-only{display:none!important}#user-details{min-width:0}#extension-navigation:empty{display:none}#extension-navigation{margin:12px 0}#configurator-preview #extension-navigation button{white-space:nowrap}.gp-extension-frame{display:block;width:100%;border:0;min-height:400px;background:transparent}.gp-extension-frame[hidden]{display:none}#mobile-navigation{padding:16px;border:1px solid var(--gp-line);border-radius:16px;background:var(--gp-panel);color:var(--gp-ink);max-height:calc(100dvh - 32px);width:min(340px,calc(100vw - 32px));overflow:auto}#mobile-navigation::backdrop{background:#0008}#mobile-navigation .gp-nav{display:block;padding:12px 0;border:0}#mobile-navigation .gp-nav button{width:100%;text-align:left;min-height:44px;margin:3px 0}#mobile-navigation .gp-button{font:inherit;padding:10px 14px;border:1px solid var(--gp-line);border-radius:9px;background:var(--gp-panel);color:var(--gp-ink)}#mobile-navigation .gp-nav button[aria-pressed=true]{background:var(--gp-tint);font-weight:700}
+/* Shared extension chrome is suppressed only inside the authenticated host frame. */
+body.gp-extension-embedded{margin:0;padding:0;background:transparent}.gp-extension-embedded>.gp-top,.gp-extension-embedded .gp-top,.gp-extension-embedded .gp-nav{display:none!important}.gp-extension-embedded>div{min-height:0!important;max-width:none!important;margin:0!important;border:0!important;border-radius:0!important}.gp-extension-embedded .gp-shell{display:block!important;min-height:0!important}.gp-extension-embedded .gp-main{padding:8px!important;min-width:0}
+@media(max-width:760px), (max-width:950px) and (pointer:coarse){
+ .gp-mobile-only{display:inline-flex!important}#configurator-preview .gp-shell{display:block}#application>.gp-nav{display:none!important}#configurator-preview>.gp-top{position:sticky;top:0;z-index:20;padding:10px max(12px,env(safe-area-inset-right)) 10px max(12px,env(safe-area-inset-left));gap:8px;background:var(--gp-panel)}#configurator-preview .gp-brand{font-size:16px;gap:6px}#configurator-preview .gp-logo{display:none}#configurator-preview .gp-demo{margin-left:auto;gap:6px}#configurator-preview .gp-demo>span:first-child{display:none}#configurator-preview .gp-main{padding:16px max(14px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));min-width:0}#configurator-preview .gp-head{gap:12px;flex-wrap:wrap}#configurator-preview .gp-context-controls{flex-wrap:wrap;gap:12px}#configurator-preview .gp-context-controls .gp-field{width:100%;min-width:0;flex:1 1 140px;max-width:none}
+ #configurator-preview input:not([type=checkbox]),#configurator-preview select,#configurator-preview textarea,.gp-extension-embedded input:not([type=checkbox]),.gp-extension-embedded select{font-size:16px!important;min-height:44px;max-width:100%;box-sizing:border-box}#configurator-preview button:not(.gp-day),#configurator-preview .gp-button,.gp-extension-embedded button{min-height:44px}#configurator-preview .gp-check{min-height:44px;align-items:center}#configurator-preview input[type=checkbox]{width:20px;height:20px;flex:0 0 20px}#configurator-preview .gp-two{grid-template-columns:1fr}#configurator-preview .gp-footer{flex-wrap:wrap;gap:12px}#configurator-preview .gp-footer .gp-actions{width:100%;flex-wrap:wrap}
+ #users .gp-layout{display:block}#users #user-details,#users #homebridge-panel{display:none}#mobile-users-back{display:none!important}.gp-phone-detail #users .gp-layout>div:first-child{display:none}.gp-phone-detail #users #user-details,.gp-phone-detail #users #homebridge-panel{display:block}.gp-phone-detail #mobile-users-back{display:inline-flex!important;margin-bottom:14px}.gp-phone-detail #users #add{display:none}#mobile-user-summary{display:block!important}#mobile-user-summary:empty{display:none!important}#mobile-user-summary .gp-user-access-summary{margin:0 0 16px;padding:12px;border:1px solid var(--gp-line);border-radius:12px}#configurator-preview .gp-person{min-height:72px}#configurator-preview .gp-person-meta{min-width:0}#configurator-preview .gp-person-name{overflow-wrap:anywhere}
+ #configurator-preview .gp-window{grid-template-columns:1fr 1fr;gap:10px;padding:12px 0}#configurator-preview .gp-window .gp-field{min-width:0}#configurator-preview .gp-window input,#configurator-preview .gp-window select{width:100%}#configurator-preview .gp-days{flex-wrap:wrap}#configurator-preview .gp-day{min-width:36px;min-height:44px}#configurator-preview .gp-settings-row{grid-template-columns:minmax(0,1fr) 96px;gap:12px}#configurator-preview .gp-panel-title{flex-wrap:wrap;gap:8px}#configurator-preview .gp-history-controls{display:flex;flex-wrap:wrap;gap:12px}#configurator-preview .gp-history-controls>*{min-width:0;max-width:100%}#configurator-preview .gp-history-row time{float:none;display:block;margin-bottom:6px}#configurator-preview .gp-history-row{overflow-wrap:anywhere}#configurator-preview .gp-keypad{max-width:100%;box-sizing:border-box}#configurator-preview [data-keypad-digit]{min-height:56px}#configurator-preview .gp-settings{max-height:calc(100dvh - 24px);max-width:calc(100vw - 16px)}#configurator-preview .gp-settings-tabs{flex-wrap:wrap}#configurator-preview .gp-settings-facts div{min-width:0}#configurator-preview .gp-settings-facts dd{overflow-wrap:anywhere}.gp-extension-embedded .gp-settings-row{grid-template-columns:minmax(0,1fr) 96px;gap:12px}.gp-extension-embedded .gp-field{min-width:0}.gp-extension-embedded .gp-check{min-height:44px}.gp-extension-embedded .gp-footer{flex-wrap:wrap}
+}
+@media(prefers-reduced-motion:reduce){#configurator-preview *,#mobile-navigation *{scroll-behavior:auto!important;transition:none!important}}
+
+@media(max-width:760px), (max-width:950px) and (pointer:coarse){
+ #configurator-preview{overflow:clip;border-radius:0;border-left:0;border-right:0}
+ #configurator-preview #windows{overflow:visible}
+ #configurator-preview .gp-window{min-width:0;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+ #configurator-preview .gp-window>.gp-delete{grid-column:2;grid-row:3;justify-self:end}
+ #configurator-preview .gp-window .window-time-start{grid-column:1;grid-row:2}
+ #configurator-preview .gp-window .window-time-end{grid-column:2;grid-row:2}
+ #configurator-preview .gp-window>.gp-check{grid-column:2;grid-row:1;height:auto;margin:0 0 16px;white-space:normal}
+ #configurator-preview .gp-window select,#configurator-preview .gp-window input[type=time]{height:44px}
+ #configurator-preview .gp-settings-header{position:sticky;top:0;z-index:1}
+ #configurator-preview .gp-settings-footer{flex-wrap:wrap}
+ #configurator-preview .gp-gateway-connections{font-size:11px}
+ #configurator-preview .gp-settings-row>div{min-width:0;overflow-wrap:anywhere}
+ #configurator-preview .gp-page-help{max-width:calc(100vw - 28px);max-height:70dvh;overflow:auto}
+ #configurator-preview .gp-expiry-row{flex-wrap:wrap}
+ #configurator-preview .gp-grant-row>div{min-width:0;flex-basis:100%}
+ #configurator-preview .gp-head>div{min-width:0;max-width:100%;overflow-wrap:anywhere}
+ #configurator-preview .gp-settings-gear{width:44px;height:44px}
+}
+@media(max-width:760px), (max-width:950px) and (pointer:coarse){
+ #configurator-preview fieldset{min-width:0}
+ #configurator-preview .gp-row{flex-wrap:wrap}
+ #configurator-preview .gp-body{padding:16px}
+ #configurator-preview #editor .gp-footer>div{display:flex;gap:8px;flex-wrap:wrap}
+ #configurator-preview .gp-footer>div>.primary{flex:1}
+ .gp-extension-embedded .gp-settings-row{grid-template-columns:minmax(0,1fr) 96px!important}
+}
+
+@media(max-width:950px) and (pointer:coarse){body{padding:0}#configurator-preview .gp-settings-layout{display:block}#configurator-preview .gp-settings-tabs{display:flex;border-right:0;gap:8px}#configurator-preview .gp-settings-tabs button{width:auto;margin:0}}
+@media(max-width:390px){
+ #configurator-preview .gp-window .window-time-start{grid-column:1 / -1;grid-row:2}
+ #configurator-preview .gp-window .window-time-end{grid-column:1 / -1;grid-row:3}
+ #configurator-preview .gp-window>.gp-delete{grid-row:4}
+}
+@media(max-width:760px), (max-width:950px) and (pointer:coarse){
+ #configurator-preview>.gp-top{padding-top:max(10px,env(safe-area-inset-top))}
+ #configurator-preview button,.gp-extension-embedded button{min-width:44px}
+ .gp-extension-embedded label:has(input[type=checkbox]){min-height:44px;display:flex;align-items:center;gap:8px}
+}
+
+/* Gateway selection belongs to the phone user list, not an individual editor. */
+@media(max-width:760px), (max-width:950px) and (pointer:coarse){
+ .gp-phone-detail #users>.gp-head,
+ .gp-phone-detail #users>#configuration-filters{display:none}
+}
+
+/* Keep compact header actions on one row beside the menu and brand. */
+@media(max-width:760px), (max-width:950px) and (pointer:coarse){
+ #configurator-preview>.gp-top{align-items:center;justify-content:flex-start;flex-wrap:nowrap}
+ #configurator-preview #gateway-connections{display:none}
+ #configurator-preview .gp-brand{flex:0 0 auto;min-height:44px;align-items:center}
+ #configurator-preview .gp-top .gp-demo{display:flex;align-items:center;margin-left:auto;flex:0 0 auto}
+}
+
+/* Hidden fields leave no reserved column; the remaining selector starts left. */
+#configurator-preview .gp-context-controls{justify-content:flex-start}
+
+/* Keep the compact user list focused on names; detail retains its access summary. */
+@media (max-width:760px), (max-width:950px) and (pointer:coarse){
+ #user-list #user-alarm-access{display:none}
+}
+
+.gp-regular .gp-admin-only,.gp-regular #homebridge-panel{display:none!important}
+
+/* Web-account rows: center names, status labels and actions together. */
+/* The host supplies the title; retain it on the standalone extension page. */
+.gp-extension-embedded #extension-preview .gp-main > .gp-head{display:none}
+
+#configurator-preview #settings-account-list .gp-actions{align-items:center;margin-top:0}
+#configurator-preview #settings-account-list strong{min-width:0;overflow-wrap:anywhere}
+#configurator-preview #settings-account-list .gp-pill{display:inline-flex;align-items:center;justify-content:center;min-height:32px;line-height:1.4}
+
+
+#configurator-preview .gp-keypad-status-list{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:10px}
+#configurator-preview .gp-keypad-status{padding:12px;background:var(--gp-panel);border:1px solid var(--gp-line);border-radius:8px;overflow-wrap:anywhere}
+#configurator-preview .gp-keypad-status-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;color:var(--gp-ink)}
+#configurator-preview .gp-keypad-status[data-state=locked]{border-left:3px solid #c88736}
+#configurator-preview .gp-keypad-status[data-state=locked] .gp-pill{background:light-dark(#fff0d8,#503b22);color:light-dark(#82500c,#ffdb9d)}
+#configurator-preview .gp-keypad-status[data-state=unknown] .gp-pill,#configurator-preview .gp-keypad-status[data-state=off] .gp-pill{background:var(--gp-bg);color:var(--gp-muted)}
+
+/* Guided Homebridge update stays on Users, above the current draft. */
+#configurator-preview .gp-homebridge-flow{width:min(600px,calc(100vw - 32px));max-height:calc(100dvh - 40px);padding:0;border:1px solid var(--gp-line);border-radius:16px;background:var(--gp-panel);color:var(--gp-ink);overflow:auto;overscroll-behavior:contain}
+#configurator-preview .gp-homebridge-flow::backdrop{background:#0006}
+#configurator-preview .gp-homebridge-flow header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:22px;border-bottom:1px solid var(--gp-line)}
+#configurator-preview .gp-homebridge-flow header h2{font-size:23px;margin:4px 0 0}
+#configurator-preview #hb-flow-content{padding:20px 22px}
+#configurator-preview #hb-flow-content p{margin:0 0 16px}
+#configurator-preview #hb-flow-content h3{margin:18px 0 8px}
+#configurator-preview #hb-flow-content .gp-check{display:flex;align-items:flex-start;gap:10px;margin:16px 0}
+#configurator-preview #hb-flow-content .gp-check input{flex:0 0 auto;margin-top:4px}
+#configurator-preview #hb-flow-content .gp-field{display:flex;flex-direction:column;gap:8px}
+#configurator-preview #hb-flow-message{padding:0 22px 16px;overflow-wrap:anywhere}
+#configurator-preview #hb-flow-actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:10px;padding:16px 22px;background:var(--gp-panel);border-top:1px solid var(--gp-line)}
+@media(max-width:600px){#configurator-preview .gp-homebridge-flow{width:100%;height:100dvh;max-width:none;max-height:100dvh;margin:0;border:0;border-radius:0}#configurator-preview #hb-flow-actions{position:sticky;bottom:0}#configurator-preview #hb-flow-actions .gp-button{flex:1}}

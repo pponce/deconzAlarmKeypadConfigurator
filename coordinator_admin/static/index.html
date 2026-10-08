@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Garage Door and Bolt Controller</title><link rel="stylesheet" href="/style.css"><link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="editor.css"><script src="app.js" type="module"></script></head>
+<body><main class="coordinator-page">
+<section class="gp-panel"><div class="gp-head"><div><h2>Garage door and bolt</h2><p class="gp-sub">Coordinated control through Homebridge</p></div>
+<button type="button" class="gp-button" id="refresh">Refresh</button></div>
+<div class="gp-body"><p id="connection" role="status" aria-live="polite">Checking the coordinator connection…</p>
+<p id="readiness">Loading controller capabilities…</p></div></section>
+<section id="controllers" aria-label="Configured garage doors"></section>
+<section class="gp-panel" id="settings-panel" hidden><div class="gp-body"><h2>Controller settings</h2><p class="subtle">Connection keys and device discovery are managed in the Homebridge plugin settings. Changes here use the same coordinator profiles.</p><div id="editor"></div><div class="actions"><button id="review-settings" class="primary" type="button">Review changes</button><span id="settings-hint" role="status"></span></div><div id="settings-review" hidden></div></div></section>
+<section class="gp-panel" id="activity-panel" hidden><div class="gp-body"><h2>Recent controller activity</h2><ol id="activity"></ol></div></section>
+<p id="operation-message" role="status" aria-live="polite"></p>
+</main></body></html>

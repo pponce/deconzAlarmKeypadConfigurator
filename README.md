@@ -1,21 +1,23 @@
-# deCONZ Alarm / Keypad Configurator
+# deCONZ Keypad/Alarm Administration for the Homebridge Coordinator
 
-This repository is the home for the planned standalone Node.js web administrator for deCONZ alarms and keypads.
+The standalone web administrator for the [garage-door/bolt coordinator](https://github.com/pponce/homebridge-gDoorAndBolt-coordinator), preserving the existing interface, its own URL and Admin/Regular accounts. **It is not a Homebridge plugin in phase 1.**
 
-## Active development: main
+**Status: ready for initial supervised owner testing.** The full existing interface is retained. Its Controller page now manages the coordinator's settings, commands, recovery and activity; virtual keypad and maintenance use the operational API. The coordinator provides the modern guided profile editor shared here. Start with the [installation and test guide](docs/owner-test.md); [validated revisions and limits](docs/status.md) are recorded separately.
 
-The Node.js application has not been implemented here yet. Its intended scope is web accounts and permissions, deCONZ users and PINs, access grants and schedules, alarm and keypad protection, lockout rules, activity and administration.
+The owner will stop the existing administrator and switch to this version when both projects are ready. Supporting simultaneous administrators or adapting the old installation is not required.
 
-Homebridge is optional. An optional integration will manage the alarm PIN used by homebridge-deconz. This standalone Node.js product will not include a garage/bolt controller or a controller connection.
+## Development checks
 
-The combined Homebridge controller and web administrator is developed separately in [homebridge-gdoor-admin-controller](https://github.com/pponce/homebridge-gdoor-admin-controller). The intended implementation shares reusable Node.js administration code between the two products.
+Python 3.10+ and Node 22/24; no Python dependencies are needed for these checks:
 
-## Preserved Python implementation: legacy-python
+```sh
+python3 -m unittest discover -s tests -p 'test_*.py' -v
+python3 -m unittest discover -s configurator/tests -p 'test_*.py' -v
+python3 tests/cross_repo.py ../homebridge-gDoorAndBolt-coordinator
+```
 
-The [legacy-python branch](https://github.com/pponce/deconzAlarmKeypadConfigurator/tree/legacy-python) preserves the latest separated Python administrator from pponce/homebridge-deconzKeypadAlarm-admin at commit `45e26c1d586bdcfa22b3b3b486485ba78ee4db6e`.
+Browser checks use Playwright 1.58.2 with Chromium and WebKit and launch only synthetic loopback fixtures. GitHub Actions runs the retained desktop/mobile UI scenarios and tests/coordinator_browser.cjs. They never access a real gateway, Homebridge installation, opener or bolt.
 
-That historical implementation includes optional local Homebridge/deCONZ alarm-PIN maintenance and an optional connection to the separate Homebridge garage/bolt coordinator. The controller connection belongs only to the preserved Python implementation, not the planned standalone Node.js product.
+`python3 -m configurator.package /new/empty/development-bundle` creates an isolated source bundle, not a host installation. The original install/update scripts were deliberately not imported. The new `python3 -m coordinator_admin.install` prepares an isolated installation and state transfer; it never starts services. See docs/owner-test.md.
 
-See [PYTHON-ARCHIVE.md](https://github.com/pponce/deconzAlarmKeypadConfigurator/blob/legacy-python/PYTHON-ARCHIVE.md) on that branch for provenance, integrity verification, integration boundaries and validation limits.
-
-The Python branch is a source reference, not an ongoing feature-development branch. Its original runtime, documentation and tests are retained. This preservation does not install an application, migrate host data or grant a new software license.
+See the [implementation plan](docs/implementation-plan.md), [migration plan](docs/migration.md), [development connection contract](docs/coordinator-integration.md), [API contract](docs/api-v1.md), [UX parity checklist](docs/ux-parity.md), and [status](docs/status.md).

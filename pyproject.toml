@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "deconz-keypad-alarm-coordinator-admin"
+version = "0.5.0.dev1"
+description = "Standalone deCONZ administration integration for a Homebridge garage and bolt coordinator"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.setuptools.packages.find]
+include = ["coordinator_admin*", "configurator*"]
+exclude = ["configurator.tests*"]
+
+[tool.setuptools.package-data]
+configurator = ["static/*", "observe.cjs"]
+coordinator_admin = ["static/*"]

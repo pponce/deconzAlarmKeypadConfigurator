@@ -1,0 +1,59 @@
+name: Administration checks
+on:
+  push:
+    branches: [main]
+    paths: ['coordinator_admin/**', 'configurator/**', 'tests/**', 'pyproject.toml', '.github/workflows/ci.yml']
+  pull_request:
+    paths: ['coordinator_admin/**', 'configurator/**', 'tests/**', 'pyproject.toml', '.github/workflows/ci.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: admin-checks-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  client:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ['3.10', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m unittest discover -s tests -p 'test_*.py' -v
+  application:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Existing application and package checks
+        run: python -m unittest discover -s configurator/tests -p 'test_*.py' -v
+      - name: Install pinned browser test tool
+        run: |
+          npm install --prefix "$RUNNER_TEMP/admin-browser" --no-save --package-lock=false --ignore-scripts playwright@1.58.2
+          node "$RUNNER_TEMP/admin-browser/node_modules/playwright/cli.js" install --with-deps chromium webkit
+      - name: Existing UI and coordinator integration
+        id: browser
+        env:
+          PLAYWRIGHT_MODULE: ${{ runner.temp }}/admin-browser/node_modules/playwright
+          PREVIEW_OUTPUT: ${{ runner.temp }}/admin-browser/screenshots
+        run: |
+          node configurator/tests/parity_browser.cjs
+          node configurator/tests/accounts_browser.cjs
+          node configurator/tests/settings_browser.cjs
+          node configurator/tests/protection_browser.cjs
+          node tests/coordinator_browser.cjs
+      - name: "Browser result: ${{ steps.browser.outputs.result || steps.browser.outcome }}"
+        if: always()
+        run: echo "Browser diagnostics are recorded in this step name."

@@ -1,0 +1,3 @@
+.welcome{max-width:900px;margin:auto;padding:24px}.welcome .gp-panel{margin:20px 0}.welcome h1{line-height:1.2}.welcome-steps{display:flex;flex-wrap:wrap;gap:12px 28px;padding-left:24px;color:var(--gp-muted)}.welcome-steps [aria-current]{font-weight:700;color:var(--gp-ink)}.welcome p,.welcome a{overflow-wrap:anywhere}.welcome button{margin:6px 0}.welcome input{max-width:100%}@media(max-width:600px){.welcome{padding:16px}.welcome-steps{display:block}.welcome-steps li{margin:8px 0}}
+
+.welcome-steps{list-style:none;padding:0;counter-reset:step}.welcome-steps li{counter-increment:step;padding:10px 14px;border:1px solid var(--gp-muted);border-radius:12px}.welcome-steps li::before{content:counter(step) " · "}.welcome [data-welcome-step] h2:focus{outline:none}

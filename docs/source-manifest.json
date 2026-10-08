@@ -1,0 +1,372 @@
+{
+  "schema": 1,
+  "repository": "pponce/garageDoorController",
+  "commit": "7d4e0f04e4ef3631e721e571adb292cf11988e87",
+  "files": [
+    {
+      "path": "configurator/__init__.py",
+      "upstream_blob": "387da82a22fa5c53296ad2c1cd45fa0cf941af40",
+      "upstream_sha256": "c7447cdba00862340de15ec6dc4d8d69f6a6eab338e1d36c486f928d64afe74a"
+    },
+    {
+      "path": "configurator/activity.py",
+      "upstream_blob": "af40e188be1ec2893bc8e1d932926b3e655ede40",
+      "upstream_sha256": "9b97ef1c9a2b73c47c94ee111fc8c9ceb954f46ed46b42f4f387d76f97372a3c"
+    },
+    {
+      "path": "configurator/authorization.py",
+      "upstream_blob": "9723aec4c63c8cce8ab4babcdb5281084a52db1a",
+      "upstream_sha256": "3e7fa0935701a56f9ef83bfc425ff070b8d07569cd0f4025d32d6fca17b8f624"
+    },
+    {
+      "path": "configurator/backup.py",
+      "upstream_blob": "3401433c5accf93f5016ba3bd12f5ed5755a6b72",
+      "upstream_sha256": "32bca50d6d710441968304d964f894b61854204c86f6c174bed618c6500c2a99"
+    },
+    {
+      "path": "configurator/broker.py",
+      "upstream_blob": "370d14ee3259f7025fa431efef8ab125af1f3a81",
+      "upstream_sha256": "1adcfc4804ff30580dd5660250e66e5ba3f7d4e2d9326c56d8b40d5829f2b0fa"
+    },
+    {
+      "path": "configurator/collector.py",
+      "upstream_blob": "17aa3c8a4743243262cf4d600f06348f7d20b128",
+      "upstream_sha256": "f5cd23136aeb7913d73357e75940cc9c6414078a576a6ff24704742fc95fb8c5"
+    },
+    {
+      "path": "configurator/common.py",
+      "upstream_blob": "2ac82ef5ce0b3df542de4f774f47715510b74735",
+      "upstream_sha256": "786e7302e01c59bbc9b4319cdc9dbd99d3fe2b852a0bc7dc762d15e101a95cc0"
+    },
+    {
+      "path": "configurator/configuration.py",
+      "upstream_blob": "d7b48f121f9f4fb6de7df1dd795eb99d4b8d2951",
+      "upstream_sha256": "f3328af0bc21d1ba5acb2acb44bc7f43ea6b3cbdb5d3145ab180f62f20303637"
+    },
+    {
+      "path": "configurator/core.py",
+      "upstream_blob": "47be501b44cffd64b23f5736ca79570404312a31",
+      "upstream_sha256": "9be361341c207de593b5d3067ebab179386a4c61257ecfaee265f669b08984d6"
+    },
+    {
+      "path": "configurator/credential_evidence.py",
+      "upstream_blob": "3eb8f018928575d75f4c6360ff1d26d9b4ae4894",
+      "upstream_sha256": "10e8a45636d96b3702416855f471962d181853fcdf7dc1e09df5d57d23e9b2f5"
+    },
+    {
+      "path": "configurator/debug.py",
+      "upstream_blob": "269209eba2ffa3a7baf5298403f3248080101261",
+      "upstream_sha256": "ffb2ea9a79f72f99856c839c73e4c438375f66fd8682d954f646f330c25e6bc6"
+    },
+    {
+      "path": "configurator/deployment.py",
+      "upstream_blob": "4cc21379b8bf7b14fe98cbb308dedcb4117eb2a5",
+      "upstream_sha256": "2526525a6ff213c92d3260bd2fe5b719fe4f859a04e93930d2cabe52828a30fb"
+    },
+    {
+      "path": "configurator/domain.py",
+      "upstream_blob": "f28f45c2e59375a9086d9e3e07ec4eada57f3aab",
+      "upstream_sha256": "76daa5ed4d550e4176eea38f1982318ced614de104aecdc067bd5c4db84b2904"
+    },
+    {
+      "path": "configurator/domain_methods.py",
+      "upstream_blob": "7dd2bc011ae2e0dc80bf99e9e0d7e64115a4fbb9",
+      "upstream_sha256": "be880c44e1fa612fd503d9949d6c841829975761b08f2f3ac892ca0ed3f377e2"
+    },
+    {
+      "path": "configurator/editing.py",
+      "upstream_blob": "a230668ae8c5278c921fb2d978c66b2edb30ebfe",
+      "upstream_sha256": "01c280e700636dbf6a7dc58d8df0290351f1641dc17fa72962965a3b791b0065"
+    },
+    {
+      "path": "configurator/extensions.py",
+      "upstream_blob": "1b8457e6710a82c04d869dc141ffd625ec90aa3a",
+      "upstream_sha256": "a26eb267d3af6c9601b48e30a4dad1e88a033de0d923dedc4cb5a3144f5de644"
+    },
+    {
+      "path": "configurator/gateway.py",
+      "upstream_blob": "306b40df4c1599fdcab84101dbaa3f36836c96f9",
+      "upstream_sha256": "4d7e93fffc9177dd9d91edbbfc3746d5a0360970609e3e74cea5153b5aec1ad4"
+    },
+    {
+      "path": "configurator/history.py",
+      "upstream_blob": "b76ca2a3ad3fd9ce2045e0cf2b8788a628a37b4d",
+      "upstream_sha256": "c3d6d647ce39a8818fe7756822a94c7a1c0a10bb7b70a9679e0ad850ffc09523"
+    },
+    {
+      "path": "configurator/homebridge.py",
+      "upstream_blob": "1c3b3df535e357b48620d901a9b2c1b880cef239",
+      "upstream_sha256": "46f877ac861c6f3317b0bd01c4dbfe20bb82d6b386717d452f679ac674f2968f"
+    },
+    {
+      "path": "configurator/homebridge_local.py",
+      "upstream_blob": "5280b7da9915e8f09d8202864357d0e5a66c0ee7",
+      "upstream_sha256": "a2f39e5f86bd23ee8964b5eaa6fd93a17c4797be0516623c3e350e56c551dec7"
+    },
+    {
+      "path": "configurator/homebridge_probe.py",
+      "upstream_blob": "ae2f53ef287cecbbf219bbe87e99dfddcfe521c4",
+      "upstream_sha256": "6fad82be7839a98b51abf6e8bff5df0ceb33a539c04850c6b4cee49bbd584d28"
+    },
+    {
+      "path": "configurator/homebridge_sources.py",
+      "upstream_blob": "9dcfb26558f51c934cb97a2d3cc3e18f9f4e06a5",
+      "upstream_sha256": "de0622ad70055683f8baf9f4cdf06d84f63471fd2b412744e1c899f0559c636b"
+    },
+    {
+      "path": "configurator/host_client.py",
+      "upstream_blob": "7ba37d0cb66f1eae95d322e838dd164dd7fb49fb",
+      "upstream_sha256": "b430ee93530cdc849d82526b64d688f887b58fec2c6d614e1bba197156554706"
+    },
+    {
+      "path": "configurator/host_service.py",
+      "upstream_blob": "6c159d7aafb46d7b01f5f6a101e0586835d2982c",
+      "upstream_sha256": "6edf09b0d58f0066a05fe702d48c4c2087d0baed3af70bc66cdb29760a85c63e"
+    },
+    {
+      "path": "configurator/keypad_core.py",
+      "upstream_blob": "83f52f15ad973159c517154a9ed1741ef1c315e5",
+      "upstream_sha256": "cf14a432d44923a932947793ce2a2dd413a13cbb0909aee3a20e990381f663bb"
+    },
+    {
+      "path": "configurator/observe.cjs",
+      "upstream_blob": "de72b8d0c507547f856d76c1f6ab8be571621ae2",
+      "upstream_sha256": "b16e68b97a04143369c28f05996b2e06ac7b3a549268231671423966ef4d0c7a"
+    },
+    {
+      "path": "configurator/presentation.py",
+      "upstream_blob": "e38796f9ad2d7377fd10a9612be29940a50a5014",
+      "upstream_sha256": "b325f2bdb46fd145457a7f395f2719733154843150b36286c8e83ace1f937344"
+    },
+    {
+      "path": "configurator/schedule.py",
+      "upstream_blob": "e6ccf208e83095826972f90a8460405591cd0628",
+      "upstream_sha256": "d885b1663399f0ba322bb4e4da10b716abe3c7d2329863640da0333e5872d8cc"
+    },
+    {
+      "path": "configurator/server.py",
+      "upstream_blob": "fd231f6f1ca59030470dee918bc9858a38ccebb5",
+      "upstream_sha256": "75d701609234cc7fff931178f0b259ab22fd305722ca97c7f972ce6dd797377b"
+    },
+    {
+      "path": "configurator/setup.py",
+      "upstream_blob": "cd72a1ab603c7f0387b39d317396804edea6d03a",
+      "upstream_sha256": "e8a9efaa8ee79296eb1211ef14d2e7a2c2762c18226b3cd03a97c6029017ff77"
+    },
+    {
+      "path": "configurator/static/app-icon-192.png",
+      "upstream_blob": "8c8fbc60ad8d7021b9d09dca6a101617a5d80b72",
+      "upstream_sha256": "79defe819b912713963e745a237b9f665e03c15d131cb1f3ac58f873d1f9f979"
+    },
+    {
+      "path": "configurator/static/app-icon-512.png",
+      "upstream_blob": "6655c2f51e8d674585cfa43999afcb614169cc4e",
+      "upstream_sha256": "2ecfc376b32e2f6454812aaaa0f18f1b11000b869ab3adcbd680099fcce6d2cb"
+    },
+    {
+      "path": "configurator/static/app-icon.svg",
+      "upstream_blob": "ea94410b1bfd8fd91eeced1bb4fabd469fdc1261",
+      "upstream_sha256": "448c91d642189edde75d525c5299690b0fd4a61f1bf98b6d168671f32832c0ff"
+    },
+    {
+      "path": "configurator/static/app.js",
+      "upstream_blob": "f1d2326ec9ebaab65f0a100e0c99de26899b45bc",
+      "upstream_sha256": "8844ba9e1f4e2d9697db929cf92b1b473212863d1dbda6b8f938056ced06d331"
+    },
+    {
+      "path": "configurator/static/apple-touch-icon.png",
+      "upstream_blob": "a90dd64d583698470e786a8271756d6b4fa934a3",
+      "upstream_sha256": "ac27f0b0fbf1e969278351478f3921fc29d33b421dd3bef4b73792b2a986d184"
+    },
+    {
+      "path": "configurator/static/demo.js",
+      "upstream_blob": "1d1161dff90a3008598d03fac33a8fa924f55b58",
+      "upstream_sha256": "862e53412776d6d96a82b7442c60d4ace8dd0ede4c5cc616222aca6f3612b508"
+    },
+    {
+      "path": "configurator/static/homebridge-flow.js",
+      "upstream_blob": "9fcae68c8689ddd96a1a9edf1465c9d6cab567ff",
+      "upstream_sha256": "b20ad60e19e7a7828991393d987ad1b1b5f77acdb53f844cb188f19c63e2d6fb"
+    },
+    {
+      "path": "configurator/static/index.html",
+      "upstream_blob": "1bf56e0be7d325300b2d01b4a942b0526719a3a6",
+      "upstream_sha256": "6f3b8ba779fcb13904f390c9177ac8d458f41e283bf434ee5348a9f0e2586093"
+    },
+    {
+      "path": "configurator/static/install.html",
+      "upstream_blob": "113a9129393d5a8de11b2346a853ef44ae93f9c1",
+      "upstream_sha256": "0c4f329bc1274dd421f7c4e0beefbc0e82ffbddca4b314005b7fb2a5a389e618"
+    },
+    {
+      "path": "configurator/static/install.js",
+      "upstream_blob": "2c77a33edbf9e6fcc571d8620c5cc87b4ef6f545",
+      "upstream_sha256": "f79696cd34dbf5bbb3fbfcb2566b1d12f36c91a061fea7d89388e16227452564"
+    },
+    {
+      "path": "configurator/static/installation-help.html",
+      "upstream_blob": "fd557cb0a820a211e7d436bfedbe79876ec9989b",
+      "upstream_sha256": "1d2096cc6152dc5388580e5924c8d957c563f409463c6741c6ed8db8f51df5ec"
+    },
+    {
+      "path": "configurator/static/keypad.js",
+      "upstream_blob": "dd20f024dc4b6da8c302a6e1e5bdff58d040721f",
+      "upstream_sha256": "6fde983a1de46ccf39002779e67515091586a4d8d2ba50f040b0b997acc9165e"
+    },
+    {
+      "path": "configurator/static/manifest.webmanifest",
+      "upstream_blob": "5b0d1c76aa59477b53cf68f1bf5568e92c74adc7",
+      "upstream_sha256": "ed26eecb1be3e647e627ea183a39ece2b3da642f9226e0dadc34ba3eb14879dc"
+    },
+    {
+      "path": "configurator/static/settings.js",
+      "upstream_blob": "b1fd7706a6a059f144fbccd0437316b0b08a3bd7",
+      "upstream_sha256": "ba13a68a4217eb1265c5e8e20dc783ae6bda331a28f63a604997889e81237ed6"
+    },
+    {
+      "path": "configurator/static/setup-app.js",
+      "upstream_blob": "69f23997cdd5a4ff9cad31844c2640bc961c5e52",
+      "upstream_sha256": "70e331e42df66564a3b1b79a1bf21fa50ae46f4a17edb905cc29a6eb9f59b878"
+    },
+    {
+      "path": "configurator/static/setup-style.css",
+      "upstream_blob": "f1a6647d08b59728ca2dbda15d86d41c638c558a",
+      "upstream_sha256": "8956bdfd86626db96b96a417c82c067c3083f95672889ef268603a860e816671"
+    },
+    {
+      "path": "configurator/static/setup.html",
+      "upstream_blob": "c7010634f8f33a915657b3754391d1285e8c3b43",
+      "upstream_sha256": "76f534a68b83ef5bcc34eb7d4b6a7b68a6a3ccdde4c4bf38b5f43fde8830e925"
+    },
+    {
+      "path": "configurator/static/style.css",
+      "upstream_blob": "a989313e78d1454a31c6a9b7327647066e510942",
+      "upstream_sha256": "38bee5eb6eaa4bc8a7344fee7fbb6c790498ca46db3553cc3dc8ea76b10d93e8"
+    },
+    {
+      "path": "configurator/static/welcome.css",
+      "upstream_blob": "d6326552dc2ef72fdfca7a204b317c9586a0562e",
+      "upstream_sha256": "53ce71fa47ad440360f7d7a8201ea13cbcb0875870baa77f3231592ed86232e9"
+    },
+    {
+      "path": "configurator/static/welcome.html",
+      "upstream_blob": "d4e1e28a13f8080de900491655129a10d2d5ffc5",
+      "upstream_sha256": "c6eadaa58db7b4f36ec6316f9d8fa674b7ce507951c1ed1e0ee291a797332608"
+    },
+    {
+      "path": "configurator/static/welcome.js",
+      "upstream_blob": "7c46009bfc50df00e22c530f7deb484b5431a022",
+      "upstream_sha256": "04307b523cd38f2d0fd95f83984b1f717e8aaef30c0a6ab45335fe5514ad6a60"
+    },
+    {
+      "path": "configurator/tests/accounts_browser.cjs",
+      "upstream_blob": "22dbddb68299797e097adc74a761ab3fee407c9d",
+      "upstream_sha256": "0a2bb4a70e71d0c9723a00e7db69e0cdd3004cf01b24d0017a6c865d330b14bd"
+    },
+    {
+      "path": "configurator/tests/parity_browser.cjs",
+      "upstream_blob": "2480af75db47e9783bd6f1c7a8bcb94f24b90e92",
+      "upstream_sha256": "4c43e0c3b47020ecb46961eb2d128d1b8c5308bffb5d5ae93078ed656343d743"
+    },
+    {
+      "path": "configurator/tests/parity_fixture.py",
+      "upstream_blob": "cac8a4d2e64da0132c1afefb584f01b38592212e",
+      "upstream_sha256": "27360aba3918ae2ace919dc5eeca95edb23bb96d15b69b12d92705daa63950ae"
+    },
+    {
+      "path": "configurator/tests/protection_browser.cjs",
+      "upstream_blob": "4558809fa3da1c803eb34b92d76a861ffedfb912",
+      "upstream_sha256": "a1b4e67761869048b04bd120ed6ccca94b04a6a5279c0c183c93fb610d7c03f8"
+    },
+    {
+      "path": "configurator/tests/settings_browser.cjs",
+      "upstream_blob": "dfdae5428782d6cd82a3039af37b9acd5973be46",
+      "upstream_sha256": "7de9749d5df1df1cb73b15bc8a95f07f2678476770cdd95f1e96a54893586c0f"
+    },
+    {
+      "path": "configurator/tests/support.py",
+      "upstream_blob": "0d860c111734141231567e255afef523a061ebc5",
+      "upstream_sha256": "2cfda8a6b43e7bd5f6492b7e999b2cd4d591ac4a6684d4ddbbc30564f3e8142f"
+    },
+    {
+      "path": "configurator/tests/test_backup_retention.py",
+      "upstream_blob": "64d795ddba5b3b79059a2890f6570fff5c360806",
+      "upstream_sha256": "ce57781c937420f0ddd2591e34f3279d1db3c81e897d47bd0280eb4b9a777580"
+    },
+    {
+      "path": "configurator/tests/test_core.py",
+      "upstream_blob": "c1c5fc577fef96710e28ea54fc0a9f8c1af6081e",
+      "upstream_sha256": "2f228ad6e51790c886c173a873141573bb742fa18de7bce956f4080193f10d35"
+    },
+    {
+      "path": "configurator/tests/test_editing.py",
+      "upstream_blob": "50b2b843fe59aa44b11b1d6a4246977e45db4b00",
+      "upstream_sha256": "d4ce380677308a986c957e79e085b6f72711ca66c891455b575dbd720da36a67"
+    },
+    {
+      "path": "configurator/tests/test_extensions.py",
+      "upstream_blob": "e726c4e63654f79682f821d1c627cba69a501097",
+      "upstream_sha256": "0d83b457e8fb11a1b81a6e2c1cdbd073f1cb0f7a17d2ed6319e19fcdb78264a9"
+    },
+    {
+      "path": "configurator/tests/test_home_screen.py",
+      "upstream_blob": "1bf4c16ff2edc34e20444b0cafc7a42297e393d9",
+      "upstream_sha256": "413a00c6c2af2bfecd7b1e9cd13e86c68abfb7d3478103d88cd05426eb042911"
+    },
+    {
+      "path": "configurator/tests/test_homebridge.py",
+      "upstream_blob": "8623a907b872ec2d8e7e790c8faaf6c1dda201fb",
+      "upstream_sha256": "db3c4e2ec9ccd095f799cc6cd1dca57f152094f14d124672a3805aa97f2701cf"
+    },
+    {
+      "path": "configurator/tests/test_homebridge_selection.py",
+      "upstream_blob": "18bf4c649981a79ad25eabf00e029da2d5add7c3",
+      "upstream_sha256": "8bfd0c9ec021440da728870aec596863b4b26f11c0a9ec942789868b9c5aefb9"
+    },
+    {
+      "path": "configurator/tests/test_lockout_status.py",
+      "upstream_blob": "0addd08c33080cc4d0b5be2efb5b5be1805a8c07",
+      "upstream_sha256": "b64d2d6e0553da8fd0d172938bb1f79d650e0d577d17bfbcdb25c872e06e7624"
+    },
+    {
+      "path": "configurator/tests/test_presentation.py",
+      "upstream_blob": "1e9f615224264f72ae63f02a36cfce95c9bb0606",
+      "upstream_sha256": "0095d1566b94e9aaae38b11c0adfd2c150241f65ac2304ff0d042c0034cd54c4"
+    },
+    {
+      "path": "configurator/tests/test_roles.py",
+      "upstream_blob": "7757e839dbfb27b64e2a63cf3421e7279b3ee69c",
+      "upstream_sha256": "4ea8d05a3c2d0cc6c34df705e203138904ae01634f10dbaf5be61ed35e7ad5c2"
+    },
+    {
+      "path": "configurator/tests/test_setup_backup.py",
+      "upstream_blob": "99f373ad0adb99b52964a8e67478cd2ef9dd0ecf",
+      "upstream_sha256": "57a25891faa3b41b9493865ed21713ccb7e2827dba33292e58183ab7ee62cb3c"
+    },
+    {
+      "path": "configurator/tests/test_setup_connect.py",
+      "upstream_blob": "cf644304cf22b64781d3b09ab4827048dde89e27",
+      "upstream_sha256": "35f2162371749260844b59c816e9a1de7b812816f0cfb2c4c24a17972370af93"
+    },
+    {
+      "path": "configurator/tests/test_web_account.py",
+      "upstream_blob": "9d9c4a4a48f0147f96fe8aa49634ce5afe6db78f",
+      "upstream_sha256": "88bbe2fd087656e4f9c1a410aa823fed3694a88b9da319771505306b9f112439"
+    },
+    {
+      "path": "configurator/transactions.py",
+      "upstream_blob": "7db23c422c83fa7c071d5239d63211be07eb3942",
+      "upstream_sha256": "4b58627037859d6505543d39416b0dbd0fbdc6f1ed5667424047e4a4320f4d5a"
+    },
+    {
+      "path": "configurator/virtual_keypad.py",
+      "upstream_blob": "abf0f1d91b7cb83e83bc7d199e6f0f2470df835e",
+      "upstream_sha256": "6a1aa7649b220c9e2ba2c276e3d9008034795131599ab8ba4d0f4c0e8ffd08bc"
+    },
+    {
+      "path": "configurator/web_account.py",
+      "upstream_blob": "1a53318f726f346a34329565bb4241f96bf4a94d",
+      "upstream_sha256": "4da90bb037b59b68e342ee41475671ccbc8d0d9e4bde0ee77ca2ce9aefdca497"
+    }
+  ]
+}
