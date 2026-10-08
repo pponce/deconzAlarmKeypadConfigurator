@@ -1,0 +1,729 @@
+{
+  "schema": 1,
+  "preserved_on": "2026-10-08",
+  "source_repository": "pponce/homebridge-deconzKeypadAlarm-admin",
+  "source_ref": "main",
+  "source_commit": "45e26c1d586bdcfa22b3b3b486485ba78ee4db6e",
+  "source_tree": "7aad26d763148a43bf6796f7444a5e5fb05ec596",
+  "destination_repository": "pponce/deconzAlarmKeypadConfigurator",
+  "destination_branch": "legacy-python",
+  "exact_snapshot_commit": "54a65744846c4cf83d14859b1214f290ab9effdd",
+  "file_count": 102,
+  "verification": "The destination exact-snapshot Git tree equals the source Git tree; paths, blob bytes and file modes match. Added preservation documentation is excluded from the source file list.",
+  "files": [
+    {
+      "path": ".github/workflows/ci.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dcd233fdb9a4672746dc18c91592ea8fbf0bdb29",
+      "size": 2247
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c247281839be0bb1c99c6320ec746c85bb059ffa",
+      "size": 82
+    },
+    {
+      "path": "AGENTS.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9bbd882192666b5a7b3e256a68a2b3c1f18deb48",
+      "size": 1993
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "bdaa56de49ac621a4f82e8eab111293105ceb9fa",
+      "size": 2179
+    },
+    {
+      "path": "configurator/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "387da82a22fa5c53296ad2c1cd45fa0cf941af40",
+      "size": 52
+    },
+    {
+      "path": "configurator/activity.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "af40e188be1ec2893bc8e1d932926b3e655ede40",
+      "size": 5962
+    },
+    {
+      "path": "configurator/authorization.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9723aec4c63c8cce8ab4babcdb5281084a52db1a",
+      "size": 4442
+    },
+    {
+      "path": "configurator/backup.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3401433c5accf93f5016ba3bd12f5ed5755a6b72",
+      "size": 12828
+    },
+    {
+      "path": "configurator/broker.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "370d14ee3259f7025fa431efef8ab125af1f3a81",
+      "size": 2593
+    },
+    {
+      "path": "configurator/collector.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "17aa3c8a4743243262cf4d600f06348f7d20b128",
+      "size": 9227
+    },
+    {
+      "path": "configurator/common.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2ac82ef5ce0b3df542de4f774f47715510b74735",
+      "size": 1713
+    },
+    {
+      "path": "configurator/configuration.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d2ad742d0700f319e9768c58ec141cb68164b1d",
+      "size": 4349
+    },
+    {
+      "path": "configurator/core.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "47be501b44cffd64b23f5736ca79570404312a31",
+      "size": 15112
+    },
+    {
+      "path": "configurator/credential_evidence.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3eb8f018928575d75f4c6360ff1d26d9b4ae4894",
+      "size": 5205
+    },
+    {
+      "path": "configurator/debug.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "269209eba2ffa3a7baf5298403f3248080101261",
+      "size": 3417
+    },
+    {
+      "path": "configurator/deployment.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4cc21379b8bf7b14fe98cbb308dedcb4117eb2a5",
+      "size": 3865
+    },
+    {
+      "path": "configurator/domain.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f28f45c2e59375a9086d9e3e07ec4eada57f3aab",
+      "size": 4540
+    },
+    {
+      "path": "configurator/domain_methods.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7dd2bc011ae2e0dc80bf99e9e0d7e64115a4fbb9",
+      "size": 4221
+    },
+    {
+      "path": "configurator/editing.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a230668ae8c5278c921fb2d978c66b2edb30ebfe",
+      "size": 16403
+    },
+    {
+      "path": "configurator/extensions.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "887f7e96ade7ec8c56030dbfd2a4cdb4ffc9d057",
+      "size": 11834
+    },
+    {
+      "path": "configurator/gateway.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "306b40df4c1599fdcab84101dbaa3f36836c96f9",
+      "size": 4330
+    },
+    {
+      "path": "configurator/history.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b76ca2a3ad3fd9ce2045e0cf2b8788a628a37b4d",
+      "size": 9404
+    },
+    {
+      "path": "configurator/homebridge.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1c3b3df535e357b48620d901a9b2c1b880cef239",
+      "size": 18756
+    },
+    {
+      "path": "configurator/homebridge_local.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5280b7da9915e8f09d8202864357d0e5a66c0ee7",
+      "size": 6355
+    },
+    {
+      "path": "configurator/homebridge_probe.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ae2f53ef287cecbbf219bbe87e99dfddcfe521c4",
+      "size": 1754
+    },
+    {
+      "path": "configurator/homebridge_sources.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9dcfb26558f51c934cb97a2d3cc3e18f9f4e06a5",
+      "size": 1195
+    },
+    {
+      "path": "configurator/host_client.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7ba37d0cb66f1eae95d322e838dd164dd7fb49fb",
+      "size": 3971
+    },
+    {
+      "path": "configurator/host_service.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6c159d7aafb46d7b01f5f6a101e0586835d2982c",
+      "size": 10034
+    },
+    {
+      "path": "configurator/keypad_core.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "83f52f15ad973159c517154a9ed1741ef1c315e5",
+      "size": 3349
+    },
+    {
+      "path": "configurator/observe.cjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "de72b8d0c507547f856d76c1f6ab8be571621ae2",
+      "size": 5416
+    },
+    {
+      "path": "configurator/package.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8e1d12f739f0da908b2c4e21c250c06abffe1736",
+      "size": 2499
+    },
+    {
+      "path": "configurator/presentation.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e38796f9ad2d7377fd10a9612be29940a50a5014",
+      "size": 1756
+    },
+    {
+      "path": "configurator/schedule.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e6ccf208e83095826972f90a8460405591cd0628",
+      "size": 2630
+    },
+    {
+      "path": "configurator/server.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fd231f6f1ca59030470dee918bc9858a38ccebb5",
+      "size": 25212
+    },
+    {
+      "path": "configurator/setup.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cd72a1ab603c7f0387b39d317396804edea6d03a",
+      "size": 15297
+    },
+    {
+      "path": "configurator/static/app-icon-192.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8c8fbc60ad8d7021b9d09dca6a101617a5d80b72",
+      "size": 12074
+    },
+    {
+      "path": "configurator/static/app-icon-512.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6655c2f51e8d674585cfa43999afcb614169cc4e",
+      "size": 32639
+    },
+    {
+      "path": "configurator/static/app-icon.svg",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ea94410b1bfd8fd91eeced1bb4fabd469fdc1261",
+      "size": 1845
+    },
+    {
+      "path": "configurator/static/app.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3de32986d0b5d0b68adf7baacb000441c21b794b",
+      "size": 98478
+    },
+    {
+      "path": "configurator/static/apple-touch-icon.png",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a90dd64d583698470e786a8271756d6b4fa934a3",
+      "size": 12789
+    },
+    {
+      "path": "configurator/static/demo.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d1161dff90a3008598d03fac33a8fa924f55b58",
+      "size": 12011
+    },
+    {
+      "path": "configurator/static/homebridge-flow.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9fcae68c8689ddd96a1a9edf1465c9d6cab567ff",
+      "size": 11657
+    },
+    {
+      "path": "configurator/static/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1bf56e0be7d325300b2d01b4a942b0526719a3a6",
+      "size": 24832
+    },
+    {
+      "path": "configurator/static/install.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "113a9129393d5a8de11b2346a853ef44ae93f9c1",
+      "size": 2210
+    },
+    {
+      "path": "configurator/static/install.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2c77a33edbf9e6fcc571d8620c5cc87b4ef6f545",
+      "size": 3931
+    },
+    {
+      "path": "configurator/static/installation-help.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fd557cb0a820a211e7d436bfedbe79876ec9989b",
+      "size": 7407
+    },
+    {
+      "path": "configurator/static/keypad.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dd20f024dc4b6da8c302a6e1e5bdff58d040721f",
+      "size": 3498
+    },
+    {
+      "path": "configurator/static/manifest.webmanifest",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5b0d1c76aa59477b53cf68f1bf5568e92c74adc7",
+      "size": 461
+    },
+    {
+      "path": "configurator/static/settings.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b1fd7706a6a059f144fbccd0437316b0b08a3bd7",
+      "size": 16597
+    },
+    {
+      "path": "configurator/static/setup-app.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "69f23997cdd5a4ff9cad31844c2640bc961c5e52",
+      "size": 28095
+    },
+    {
+      "path": "configurator/static/setup-style.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f1a6647d08b59728ca2dbda15d86d41c638c558a",
+      "size": 4633
+    },
+    {
+      "path": "configurator/static/setup.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c7010634f8f33a915657b3754391d1285e8c3b43",
+      "size": 10291
+    },
+    {
+      "path": "configurator/static/style.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a989313e78d1454a31c6a9b7327647066e510942",
+      "size": 42131
+    },
+    {
+      "path": "configurator/static/welcome.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d6326552dc2ef72fdfca7a204b317c9586a0562e",
+      "size": 765
+    },
+    {
+      "path": "configurator/static/welcome.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d4e1e28a13f8080de900491655129a10d2d5ffc5",
+      "size": 4615
+    },
+    {
+      "path": "configurator/static/welcome.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7c46009bfc50df00e22c530f7deb484b5431a022",
+      "size": 4242
+    },
+    {
+      "path": "configurator/tests/accounts_browser.cjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "22dbddb68299797e097adc74a761ab3fee407c9d",
+      "size": 7070
+    },
+    {
+      "path": "configurator/tests/parity_browser.cjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2480af75db47e9783bd6f1c7a8bcb94f24b90e92",
+      "size": 7942
+    },
+    {
+      "path": "configurator/tests/parity_fixture.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ee24a546b3568f59d00cbc817e16f69b61314b8d",
+      "size": 5515
+    },
+    {
+      "path": "configurator/tests/protection_browser.cjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4558809fa3da1c803eb34b92d76a861ffedfb912",
+      "size": 4815
+    },
+    {
+      "path": "configurator/tests/settings_browser.cjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dfdae5428782d6cd82a3039af37b9acd5973be46",
+      "size": 5635
+    },
+    {
+      "path": "configurator/tests/support.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0d860c111734141231567e255afef523a061ebc5",
+      "size": 5221
+    },
+    {
+      "path": "configurator/tests/test_backup_retention.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "64d795ddba5b3b79059a2890f6570fff5c360806",
+      "size": 7403
+    },
+    {
+      "path": "configurator/tests/test_core.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c1c5fc577fef96710e28ea54fc0a9f8c1af6081e",
+      "size": 14551
+    },
+    {
+      "path": "configurator/tests/test_editing.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "50b2b843fe59aa44b11b1d6a4246977e45db4b00",
+      "size": 23563
+    },
+    {
+      "path": "configurator/tests/test_extensions.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e726c4e63654f79682f821d1c627cba69a501097",
+      "size": 11973
+    },
+    {
+      "path": "configurator/tests/test_home_screen.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1bf4c16ff2edc34e20444b0cafc7a42297e393d9",
+      "size": 3990
+    },
+    {
+      "path": "configurator/tests/test_homebridge.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "8623a907b872ec2d8e7e790c8faaf6c1dda201fb",
+      "size": 15179
+    },
+    {
+      "path": "configurator/tests/test_homebridge_selection.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "18bf4c649981a79ad25eabf00e029da2d5add7c3",
+      "size": 5471
+    },
+    {
+      "path": "configurator/tests/test_lockout_status.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0addd08c33080cc4d0b5be2efb5b5be1805a8c07",
+      "size": 5266
+    },
+    {
+      "path": "configurator/tests/test_presentation.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1e9f615224264f72ae63f02a36cfce95c9bb0606",
+      "size": 8466
+    },
+    {
+      "path": "configurator/tests/test_roles.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7757e839dbfb27b64e2a63cf3421e7279b3ee69c",
+      "size": 19858
+    },
+    {
+      "path": "configurator/tests/test_setup_backup.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "99f373ad0adb99b52964a8e67478cd2ef9dd0ecf",
+      "size": 12325
+    },
+    {
+      "path": "configurator/tests/test_setup_connect.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "05f312bf23cf3d912740b2528f3845ffa8436a2e",
+      "size": 6629
+    },
+    {
+      "path": "configurator/tests/test_web_account.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d9c4a4a48f0147f96fe8aa49634ce5afe6db78f",
+      "size": 7165
+    },
+    {
+      "path": "configurator/transactions.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7db23c422c83fa7c071d5239d63211be07eb3942",
+      "size": 10807
+    },
+    {
+      "path": "configurator/virtual_keypad.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "abf0f1d91b7cb83e83bc7d199e6f0f2470df835e",
+      "size": 2631
+    },
+    {
+      "path": "configurator/web_account.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1a53318f726f346a34329565bb4241f96bf4a94d",
+      "size": 3952
+    },
+    {
+      "path": "coordinator_admin/__init__.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c4fdbe4090793d441ee478df62b719e63a9a034f",
+      "size": 176
+    },
+    {
+      "path": "coordinator_admin/client.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5cb7e1286423bc0865cb844e77baef04cc2a5197",
+      "size": 23197
+    },
+    {
+      "path": "coordinator_admin/install.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cbcc41c83e956920113d18a46528a1c69d9d4a12",
+      "size": 10512
+    },
+    {
+      "path": "coordinator_admin/integration.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1b5dd37a772e54fa22d804ac1f8bec0540c5d82f",
+      "size": 14791
+    },
+    {
+      "path": "coordinator_admin/static/app.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "aa3c753b4afc85f26592d81d92499062410d32c1",
+      "size": 15546
+    },
+    {
+      "path": "coordinator_admin/static/editor.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "13f2e8c3c269201b9ea4f449c1b5ce283fbd71a9",
+      "size": 5313
+    },
+    {
+      "path": "coordinator_admin/static/editor.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "97eef38769b61822ad858a2397636510441fc12e",
+      "size": 22616
+    },
+    {
+      "path": "coordinator_admin/static/index.html",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "cc64cd40c809b302990cce28a9f20d16e3cf9262",
+      "size": 1617
+    },
+    {
+      "path": "coordinator_admin/static/style.css",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6c6cf299c38a3bfe6c88d1740eacc553d75d65e5",
+      "size": 1015
+    },
+    {
+      "path": "docs/api-v1.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "049435227bb13dc16fcd3cd7681166e25442f338",
+      "size": 16860
+    },
+    {
+      "path": "docs/coordinator-integration.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1438761207a19bd058db8508b653e13c761115c8",
+      "size": 3996
+    },
+    {
+      "path": "docs/implementation-plan.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c03771d9415501a27719a37c93428edd36c00773",
+      "size": 6306
+    },
+    {
+      "path": "docs/migration.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce546a47f6c5dcc44446e1785731317ad03bc696",
+      "size": 2022
+    },
+    {
+      "path": "docs/owner-test.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c3b8692942fbbc8b9a87953a5cd5507c4997985b",
+      "size": 5917
+    },
+    {
+      "path": "docs/source-manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d61f9b47d765a062f66406487f2ef162be3d3df3",
+      "size": 16269
+    },
+    {
+      "path": "docs/source-provenance.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6904c4dd829a150ce325dc17915b119656e58919",
+      "size": 2798
+    },
+    {
+      "path": "docs/status.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e4b196a597f061f0cc81a265acbe551a7516a36c",
+      "size": 6951
+    },
+    {
+      "path": "docs/ux-parity.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c57bc53af13e0d4581a955d7c4ba00fc56f59306",
+      "size": 2342
+    },
+    {
+      "path": "pyproject.toml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a241d98ac09c8e3f2a68c18c7607f45ae329ae18",
+      "size": 542
+    },
+    {
+      "path": "tests/coordinator_browser.cjs",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1d7c19f0fa7a89584659b2cacb72f086d6fccbf3",
+      "size": 8019
+    },
+    {
+      "path": "tests/cross_repo.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a072ca031cd5abdffc12a9b8ba1563c05c200f33",
+      "size": 9968
+    },
+    {
+      "path": "tests/test_client.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "605e6260c89f4c85518b2606df0c109837c8ebe0",
+      "size": 17075
+    },
+    {
+      "path": "tests/test_install.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d2917bd2945ebcb8f15ae62d58eeecb0ae39af38",
+      "size": 3813
+    },
+    {
+      "path": "tests/test_integration.py",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "56006dd6f331ef2a1083987d57a1dc0074fb9506",
+      "size": 8427
+    }
+  ]
+}
