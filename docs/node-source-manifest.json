@@ -468,17 +468,19 @@
     },
     {
       "path": "src/ownership.js",
-      "source_blob": "3347c58f62a983490f9a9192ca9287727344d1a7",
-      "source_bytes": 2621,
+      "source_blob": "b78d73dbdd1dbf195edc66ae86fa8abf398f653e",
+      "source_bytes": 2620,
       "sha256": "3ee3d71b0e798d82deb273708acb7eca58fe888cff737a409ad647dea2929ac1",
-      "adapted": true
+      "adapted": true,
+      "adaptation": "Standalone process ownership and storage directory"
     },
     {
       "path": "src/fault.js",
-      "source_blob": "a13cbbb45cf4828a3bd81ba75e41bbe85f544ab6",
-      "source_bytes": 269,
+      "source_blob": "2ab63a99da95b2fc6724554e066eff48f5d0eab3",
+      "source_bytes": 268,
       "sha256": "c25ba9433509328c1357b8805d43e55df8980afe5e5d2f96da949025300b4b63",
-      "adapted": false
+      "adapted": true,
+      "adaptation": "Trailing newline only; behavior unchanged"
     }
   ],
   "destination_only_files": [
