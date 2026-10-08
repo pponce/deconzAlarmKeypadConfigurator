@@ -19,3 +19,9 @@ That historical implementation includes optional local Homebridge/deCONZ alarm-P
 See [PYTHON-ARCHIVE.md](https://github.com/pponce/deconzAlarmKeypadConfigurator/blob/legacy-python/PYTHON-ARCHIVE.md) on that branch for provenance, integrity verification, integration boundaries and validation limits.
 
 The Python branch is a source reference, not an ongoing feature-development branch. Its original runtime, documentation and tests are retained. This preservation does not install an application, migrate host data or grant a new software license.
+
+## Latest UI and implementation baseline
+
+The [source comparison](docs/admin-source-comparison.md) verifies that the preserved Python branch includes the latest generic Python admin UI from garageDoorController, including its recent fixes. The only additional generic Python UI change is the settings-button busy-state fix already in legacy-python.
+
+For the new Node.js application, start from the combined plugin's latest reviewed web-admin work: [0.4.25 at e037d9c2](https://github.com/pponce/homebridge-gdoor-admin-controller/commit/e037d9c252f72eb3828e4cb9d625acd1db45023c), on web-admin-lan-controller-timings, or a reviewed newer descendant. This includes the clearer Homebridge setup/user-selection UI and the separate signed-in-account password section. Recheck current heads before extraction; the inspected combined-plugin main is older. Exclude controller features and adapt the application setup/lifecycle for standalone operation.
