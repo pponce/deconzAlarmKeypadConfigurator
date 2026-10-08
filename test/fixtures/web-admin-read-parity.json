@@ -1,0 +1,2883 @@
+{
+  "capabilities": {
+    "1": {
+      "alarm_timing_version": 1,
+      "global_users_version": 2,
+      "keypad_lockout_version": 1,
+      "managed": true,
+      "schedule_version": 1,
+      "schedules": true
+    },
+    "2": {
+      "alarm_timing_version": 1,
+      "global_users_version": 2,
+      "keypad_lockout_version": 1,
+      "managed": true,
+      "schedule_version": 1,
+      "schedules": true
+    }
+  },
+  "expected": {
+    "administration": {
+      "alarms": [
+        {
+          "id": 1,
+          "keypads": [
+            {
+              "endpoint": 1,
+              "name": "Synthetic keypad",
+              "source": "11223344556677"
+            },
+            {
+              "endpoint": 2,
+              "name": "Previously allowed keypad (not discovered)",
+              "source": "abcdef"
+            }
+          ],
+          "managed": true,
+          "name": "Alarm 1",
+          "state": "disarmed",
+          "users": [
+            {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "keypads": [
+            {
+              "endpoint": 1,
+              "name": "Synthetic keypad",
+              "source": "11223344556677"
+            }
+          ],
+          "managed": true,
+          "name": "Alarm 2",
+          "state": "disarmed",
+          "users": [
+            {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          ]
+        }
+      ],
+      "homebridge_available": false,
+      "homebridge_binding": null,
+      "homebridge_sync": false,
+      "identities": [
+        {
+          "enabled": true,
+          "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "name": "Owner",
+          "revision": 1,
+          "user_revision": 1
+        }
+      ],
+      "keypads": [
+        {
+          "endpoint": 1,
+          "name": "Synthetic keypad",
+          "source": "11223344556677"
+        },
+        {
+          "endpoint": 2,
+          "name": "Previously allowed keypad (not discovered)",
+          "source": "abcdef"
+        }
+      ],
+      "managed": true,
+      "schedules": true,
+      "transaction": {
+        "stage": "none"
+      },
+      "users": [
+        {
+          "all_keypads": false,
+          "api_arm_disarm": true,
+          "arm": true,
+          "disarm": true,
+          "enabled": true,
+          "grant_enabled": true,
+          "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "keypads": [
+            {
+              "endpoint": 2,
+              "source": "abcdef"
+            }
+          ],
+          "name": "Owner",
+          "owner": true,
+          "remaining_uses": null,
+          "revision": 1,
+          "schedule": null,
+          "user_revision": 1
+        }
+      ]
+    },
+    "alarm": {
+      "rest_activity": false,
+      "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+      "seconds_remaining": 0,
+      "state": "disarmed",
+      "target": "disarmed",
+      "timing_supported": true,
+      "timings": {
+        "armed_away_entry_delay": 0,
+        "armed_away_exit_delay": 0,
+        "armed_away_trigger_duration": 0,
+        "armed_night_entry_delay": 0,
+        "armed_night_exit_delay": 0,
+        "armed_night_trigger_duration": 0,
+        "armed_stay_entry_delay": 0,
+        "armed_stay_exit_delay": 0,
+        "armed_stay_trigger_duration": 0
+      }
+    },
+    "inventory": {
+      "alarms": [
+        {
+          "id": 1,
+          "managed": true,
+          "name": "Alarm 1",
+          "state": "disarmed"
+        },
+        {
+          "id": 2,
+          "managed": true,
+          "name": "Alarm 2",
+          "state": "disarmed"
+        }
+      ],
+      "gateway": {
+        "id": "test",
+        "name": "Synthetic gateway"
+      },
+      "keypads": [
+        {
+          "address": {
+            "endpoint": 1,
+            "source": "11223344556677"
+          },
+          "alarm_ids": [
+            1,
+            2
+          ],
+          "id": "3",
+          "name": "Synthetic keypad",
+          "reachable": true
+        },
+        {
+          "address": null,
+          "alarm_ids": [
+            1,
+            2
+          ],
+          "id": "4",
+          "name": "Unrecognized radio",
+          "reachable": false
+        }
+      ]
+    },
+    "lockout": {
+      "keypads": [
+        {
+          "id": "3",
+          "known": true,
+          "level": 0,
+          "name": "Synthetic keypad",
+          "remaining_seconds": 0
+        },
+        {
+          "id": "4",
+          "known": false,
+          "level": null,
+          "name": "Unrecognized radio",
+          "remaining_seconds": null
+        }
+      ],
+      "managed": true,
+      "policy": {
+        "durations_seconds": [
+          60,
+          600,
+          1800
+        ],
+        "enabled": true,
+        "reset_seconds": 3600,
+        "revision": 1,
+        "threshold": 6,
+        "window_seconds": 60
+      },
+      "unmatched_keypads": [
+        {
+          "level": 1,
+          "remaining_seconds": 7
+        }
+      ]
+    },
+    "snapshot": {
+      "alarm": {
+        "rest_activity": false,
+        "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+        "seconds_remaining": 0,
+        "state": "disarmed",
+        "target": "disarmed",
+        "timing_supported": true,
+        "timings": {
+          "armed_away_entry_delay": 0,
+          "armed_away_exit_delay": 0,
+          "armed_away_trigger_duration": 0,
+          "armed_night_entry_delay": 0,
+          "armed_night_exit_delay": 0,
+          "armed_night_trigger_duration": 0,
+          "armed_stay_entry_delay": 0,
+          "armed_stay_exit_delay": 0,
+          "armed_stay_trigger_duration": 0
+        }
+      },
+      "capabilities": {
+        "1": {
+          "keypad_lockout_version": 1,
+          "managed": true,
+          "schedule_version": 1,
+          "schedules": true
+        },
+        "2": {
+          "keypad_lockout_version": 1,
+          "managed": true,
+          "schedule_version": 1,
+          "schedules": true
+        }
+      },
+      "grants": {
+        "1": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "all_keypads": false,
+            "api_arm_disarm": true,
+            "arm": true,
+            "disarm": true,
+            "enabled": true,
+            "grant_enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "keypads": [
+              {
+                "endpoint": 2,
+                "source": "abcdef"
+              }
+            ],
+            "name": "Owner",
+            "owner": true,
+            "remaining_uses": null,
+            "revision": 1,
+            "schedule": null,
+            "user_revision": 1
+          }
+        },
+        "2": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "all_keypads": false,
+            "api_arm_disarm": true,
+            "arm": true,
+            "disarm": true,
+            "enabled": true,
+            "grant_enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "keypads": [],
+            "name": "Owner",
+            "owner": true,
+            "remaining_uses": null,
+            "revision": 1,
+            "schedule": null,
+            "user_revision": 1
+          }
+        }
+      },
+      "identities": {
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+          "enabled": true,
+          "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "name": "Owner",
+          "revision": 1,
+          "user_revision": 1
+        }
+      }
+    },
+    "users": [
+      {
+        "all_keypads": false,
+        "api_arm_disarm": true,
+        "arm": true,
+        "disarm": true,
+        "enabled": true,
+        "grant_enabled": true,
+        "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "keypads": [
+          {
+            "endpoint": 2,
+            "source": "abcdef"
+          }
+        ],
+        "name": "Owner",
+        "owner": true,
+        "remaining_uses": null,
+        "revision": 1,
+        "schedule": null,
+        "user_revision": 1
+      }
+    ]
+  },
+  "history": {
+    "expected": {
+      "connected": false,
+      "limit": 200,
+      "retention_days": 90,
+      "rows": [
+        {
+          "action": "Lockout expired",
+          "alarm_id": 3,
+          "alarm_name": "Alarm 3",
+          "category": "deconz",
+          "gateway_id": "test",
+          "gateway_name": "Synthetic gateway",
+          "result": "Confirmed",
+          "seq": 1,
+          "source": "Keypad",
+          "time": "2099-01-01T12:00:02Z",
+          "user": "System"
+        },
+        {
+          "action": "Save user",
+          "alarm_id": 1,
+          "alarm_name": "Alarm 1",
+          "category": "administration",
+          "gateway_id": "test",
+          "gateway_name": "Synthetic gateway",
+          "result": "Verified",
+          "seq": 2,
+          "source": "Configuration",
+          "time": "2099-01-01T12:00:01Z",
+          "user": "Administrator"
+        },
+        {
+          "action": "Disarm",
+          "alarm_id": 1,
+          "alarm_name": "Alarm 1",
+          "category": "keypad",
+          "gateway_id": "test",
+          "gateway_name": "Synthetic gateway",
+          "result": "Accepted",
+          "seq": 1,
+          "source": "Keypad \u00b7 Synthetic",
+          "time": "2099-01-01T12:00:00Z",
+          "user": "Owner"
+        }
+      ]
+    },
+    "options": {
+      "gateways": [
+        {
+          "alarms": [
+            {
+              "id": 1,
+              "name": "Alarm 1",
+              "observed": true
+            },
+            {
+              "id": 2,
+              "name": "Alarm 2",
+              "observed": true
+            },
+            {
+              "id": 3,
+              "name": "Alarm 3",
+              "observed": false
+            }
+          ],
+          "connected": false,
+          "id": "test",
+          "name": "Synthetic gateway"
+        }
+      ]
+    },
+    "query": {
+      "alarm": null,
+      "categories": [
+        "keypad",
+        "deconz",
+        "administration"
+      ],
+      "gateway": null
+    },
+    "rows": {
+      "1": [
+        {
+          "action": "Save user",
+          "result": "Verified",
+          "seq": 2,
+          "source": "Configuration",
+          "time": "2099-01-01T12:00:01Z",
+          "user": "Administrator"
+        },
+        {
+          "action": "Disarm",
+          "result": "Accepted",
+          "seq": 1,
+          "source": "Keypad \u00b7 Synthetic",
+          "time": "2099-01-01T12:00:00Z",
+          "user": "Owner"
+        }
+      ],
+      "3": [
+        {
+          "action": "Lockout expired",
+          "result": "Confirmed",
+          "seq": 1,
+          "source": "Keypad",
+          "time": "2099-01-01T12:00:02Z",
+          "user": "System"
+        }
+      ]
+    },
+    "scopes": [
+      {
+        "alarm": 1,
+        "gateway": "test"
+      },
+      {
+        "alarm": 3,
+        "gateway": "test"
+      }
+    ]
+  },
+  "plans": [
+    {
+      "body": {
+        "alarm": 1,
+        "all_keypads": false,
+        "api_arm_disarm": true,
+        "arm": true,
+        "disarm": true,
+        "enabled": true,
+        "grant_enabled": true,
+        "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "keypads": [
+          {
+            "endpoint": 2,
+            "source": "abcdef"
+          }
+        ],
+        "name": "Owner renamed",
+        "owner": true,
+        "remaining_uses": null,
+        "revision": 1,
+        "schedule": null,
+        "user_revision": 1
+      },
+      "expected": {
+        "payload": {
+          "all_keypads": false,
+          "api_arm_disarm": true,
+          "arm": true,
+          "disarm": true,
+          "enabled": true,
+          "grant_enabled": true,
+          "keypads": [
+            {
+              "endpoint": 2,
+              "source": "abcdef"
+            }
+          ],
+          "name": "Owner renamed",
+          "owner": true,
+          "remaining_uses": null,
+          "revision": 1,
+          "schedule": null,
+          "user_revision": 1
+        },
+        "plan": {
+          "alarm": 1,
+          "deleting": false,
+          "expected": {
+            "all_keypads": false,
+            "api_arm_disarm": true,
+            "arm": true,
+            "disarm": true,
+            "enabled": true,
+            "grant_enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "keypads": [
+              {
+                "endpoint": 2,
+                "source": "abcdef"
+              }
+            ],
+            "name": "Owner renamed",
+            "owner": true,
+            "remaining_uses": null,
+            "revision": 2,
+            "schedule": null,
+            "user_revision": 2
+          },
+          "kind": "grant",
+          "method": "PUT",
+          "operation": "save_user",
+          "path": "/alarmsystems/1/users/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "sensitive": false,
+          "uid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "name": "rename identity across grants",
+      "operation": "save_user",
+      "snapshot": {
+        "alarm": {
+          "rest_activity": false,
+          "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+          "seconds_remaining": 0,
+          "state": "disarmed",
+          "target": "disarmed",
+          "timing_supported": true,
+          "timings": {
+            "armed_away_entry_delay": 0,
+            "armed_away_exit_delay": 0,
+            "armed_away_trigger_duration": 0,
+            "armed_night_entry_delay": 0,
+            "armed_night_exit_delay": 0,
+            "armed_night_trigger_duration": 0,
+            "armed_stay_entry_delay": 0,
+            "armed_stay_exit_delay": 0,
+            "armed_stay_trigger_duration": 0
+          }
+        },
+        "capabilities": {
+          "1": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          },
+          "2": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          }
+        },
+        "grants": {
+          "1": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          },
+          "2": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          }
+        },
+        "identities": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "name": "Owner",
+            "revision": 1,
+            "user_revision": 1
+          }
+        }
+      }
+    },
+    {
+      "body": {
+        "alarm": 1,
+        "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "revision": 1,
+        "user_revision": 1
+      },
+      "error": "last_unrestricted_owner_required",
+      "name": "protect last owner on delete",
+      "operation": "delete_user",
+      "snapshot": {
+        "alarm": {
+          "rest_activity": false,
+          "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+          "seconds_remaining": 0,
+          "state": "disarmed",
+          "target": "disarmed",
+          "timing_supported": true,
+          "timings": {
+            "armed_away_entry_delay": 0,
+            "armed_away_exit_delay": 0,
+            "armed_away_trigger_duration": 0,
+            "armed_night_entry_delay": 0,
+            "armed_night_exit_delay": 0,
+            "armed_night_trigger_duration": 0,
+            "armed_stay_entry_delay": 0,
+            "armed_stay_exit_delay": 0,
+            "armed_stay_trigger_duration": 0
+          }
+        },
+        "capabilities": {
+          "1": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          },
+          "2": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          }
+        },
+        "grants": {
+          "1": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          },
+          "2": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          }
+        },
+        "identities": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "name": "Owner",
+            "revision": 1,
+            "user_revision": 1
+          }
+        }
+      }
+    },
+    {
+      "body": {
+        "alarm": 1,
+        "all_keypads": false,
+        "api_arm_disarm": true,
+        "arm": true,
+        "disarm": true,
+        "enabled": false,
+        "grant_enabled": true,
+        "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "keypads": [
+          {
+            "endpoint": 2,
+            "source": "abcdef"
+          }
+        ],
+        "name": "Owner",
+        "owner": true,
+        "remaining_uses": null,
+        "revision": 1,
+        "schedule": null,
+        "user_revision": 1
+      },
+      "error": "last_unrestricted_owner_required",
+      "name": "protect last owner on disable",
+      "operation": "save_user",
+      "snapshot": {
+        "alarm": {
+          "rest_activity": false,
+          "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+          "seconds_remaining": 0,
+          "state": "disarmed",
+          "target": "disarmed",
+          "timing_supported": true,
+          "timings": {
+            "armed_away_entry_delay": 0,
+            "armed_away_exit_delay": 0,
+            "armed_away_trigger_duration": 0,
+            "armed_night_entry_delay": 0,
+            "armed_night_exit_delay": 0,
+            "armed_night_trigger_duration": 0,
+            "armed_stay_entry_delay": 0,
+            "armed_stay_exit_delay": 0,
+            "armed_stay_trigger_duration": 0
+          }
+        },
+        "capabilities": {
+          "1": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          },
+          "2": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          }
+        },
+        "grants": {
+          "1": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          },
+          "2": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          }
+        },
+        "identities": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "name": "Owner",
+            "revision": 1,
+            "user_revision": 1
+          }
+        }
+      }
+    },
+    {
+      "body": {
+        "alarm": 1,
+        "all_keypads": false,
+        "api_arm_disarm": true,
+        "arm": true,
+        "disarm": true,
+        "enabled": true,
+        "grant_enabled": true,
+        "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "keypads": [
+          {
+            "endpoint": 2,
+            "source": "abcdef"
+          }
+        ],
+        "name": "Owner",
+        "owner": true,
+        "remaining_uses": null,
+        "revision": 0,
+        "schedule": null,
+        "user_revision": 1
+      },
+      "error": "revision_conflict",
+      "name": "stale grant revision",
+      "operation": "save_user",
+      "snapshot": {
+        "alarm": {
+          "rest_activity": false,
+          "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+          "seconds_remaining": 0,
+          "state": "disarmed",
+          "target": "disarmed",
+          "timing_supported": true,
+          "timings": {
+            "armed_away_entry_delay": 0,
+            "armed_away_exit_delay": 0,
+            "armed_away_trigger_duration": 0,
+            "armed_night_entry_delay": 0,
+            "armed_night_exit_delay": 0,
+            "armed_night_trigger_duration": 0,
+            "armed_stay_entry_delay": 0,
+            "armed_stay_exit_delay": 0,
+            "armed_stay_trigger_duration": 0
+          }
+        },
+        "capabilities": {
+          "1": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          },
+          "2": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          }
+        },
+        "grants": {
+          "1": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          },
+          "2": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          }
+        },
+        "identities": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "name": "Owner",
+            "revision": 1,
+            "user_revision": 1
+          }
+        }
+      }
+    },
+    {
+      "body": {
+        "alarm": 1,
+        "all_keypads": false,
+        "api_arm_disarm": true,
+        "arm": true,
+        "disarm": true,
+        "enabled": true,
+        "grant_enabled": true,
+        "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "keypads": [
+          {
+            "endpoint": 2,
+            "source": "abcdef"
+          }
+        ],
+        "name": "Owner",
+        "owner": true,
+        "pin": "1234",
+        "remaining_uses": null,
+        "revision": 1,
+        "schedule": null,
+        "user_revision": 1
+      },
+      "error": "use_coordinated_pin_change",
+      "name": "existing PIN requires rotation",
+      "operation": "save_user",
+      "snapshot": {
+        "alarm": {
+          "rest_activity": false,
+          "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+          "seconds_remaining": 0,
+          "state": "disarmed",
+          "target": "disarmed",
+          "timing_supported": true,
+          "timings": {
+            "armed_away_entry_delay": 0,
+            "armed_away_exit_delay": 0,
+            "armed_away_trigger_duration": 0,
+            "armed_night_entry_delay": 0,
+            "armed_night_exit_delay": 0,
+            "armed_night_trigger_duration": 0,
+            "armed_stay_entry_delay": 0,
+            "armed_stay_exit_delay": 0,
+            "armed_stay_trigger_duration": 0
+          }
+        },
+        "capabilities": {
+          "1": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          },
+          "2": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          }
+        },
+        "grants": {
+          "1": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          },
+          "2": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          }
+        },
+        "identities": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "name": "Owner",
+            "revision": 1,
+            "user_revision": 1
+          }
+        }
+      }
+    },
+    {
+      "body": {
+        "alarm": 1,
+        "all_keypads": false,
+        "api_arm_disarm": true,
+        "arm": true,
+        "disarm": true,
+        "enabled": true,
+        "grant_enabled": true,
+        "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "keypads": [
+          {
+            "endpoint": 2,
+            "source": "abcdef"
+          },
+          {
+            "endpoint": 2,
+            "source": "abcdef"
+          }
+        ],
+        "name": "Owner",
+        "owner": true,
+        "remaining_uses": null,
+        "revision": 1,
+        "schedule": null,
+        "user_revision": 1
+      },
+      "error": "invalid_keypads",
+      "name": "duplicate keypad",
+      "operation": "save_user",
+      "snapshot": {
+        "alarm": {
+          "rest_activity": false,
+          "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+          "seconds_remaining": 0,
+          "state": "disarmed",
+          "target": "disarmed",
+          "timing_supported": true,
+          "timings": {
+            "armed_away_entry_delay": 0,
+            "armed_away_exit_delay": 0,
+            "armed_away_trigger_duration": 0,
+            "armed_night_entry_delay": 0,
+            "armed_night_exit_delay": 0,
+            "armed_night_trigger_duration": 0,
+            "armed_stay_entry_delay": 0,
+            "armed_stay_exit_delay": 0,
+            "armed_stay_trigger_duration": 0
+          }
+        },
+        "capabilities": {
+          "1": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          },
+          "2": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          }
+        },
+        "grants": {
+          "1": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          },
+          "2": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          }
+        },
+        "identities": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "name": "Owner",
+            "revision": 1,
+            "user_revision": 1
+          }
+        }
+      }
+    },
+    {
+      "body": {
+        "alarm": 1,
+        "all_keypads": false,
+        "api_arm_disarm": true,
+        "arm": true,
+        "disarm": true,
+        "enabled": true,
+        "grant_enabled": true,
+        "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "keypads": [
+          {
+            "endpoint": 1,
+            "source": "00ab"
+          }
+        ],
+        "name": "Owner",
+        "owner": true,
+        "remaining_uses": null,
+        "revision": 1,
+        "schedule": null,
+        "user_revision": 1
+      },
+      "error": "invalid_keypads",
+      "name": "noncanonical keypad address",
+      "operation": "save_user",
+      "snapshot": {
+        "alarm": {
+          "rest_activity": false,
+          "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+          "seconds_remaining": 0,
+          "state": "disarmed",
+          "target": "disarmed",
+          "timing_supported": true,
+          "timings": {
+            "armed_away_entry_delay": 0,
+            "armed_away_exit_delay": 0,
+            "armed_away_trigger_duration": 0,
+            "armed_night_entry_delay": 0,
+            "armed_night_exit_delay": 0,
+            "armed_night_trigger_duration": 0,
+            "armed_stay_entry_delay": 0,
+            "armed_stay_exit_delay": 0,
+            "armed_stay_trigger_duration": 0
+          }
+        },
+        "capabilities": {
+          "1": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          },
+          "2": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          }
+        },
+        "grants": {
+          "1": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          },
+          "2": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          }
+        },
+        "identities": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "name": "Owner",
+            "revision": 1,
+            "user_revision": 1
+          }
+        }
+      }
+    },
+    {
+      "body": {
+        "alarm": 1,
+        "all_keypads": false,
+        "api_arm_disarm": true,
+        "arm": true,
+        "disarm": true,
+        "enabled": true,
+        "grant_enabled": true,
+        "id": null,
+        "keypads": [
+          {
+            "endpoint": 2,
+            "source": "abcdef"
+          }
+        ],
+        "name": "Guest",
+        "owner": false,
+        "pin": "4321",
+        "remaining_uses": null,
+        "revision": 0,
+        "schedule": {
+          "expires_local": "2026-12-01T12:00",
+          "not_before": null,
+          "timezone": "America/Los_Angeles",
+          "weekly": "Mon 08:00-17:00\nSat 09:30-24:00"
+        },
+        "user_revision": 0
+      },
+      "expected": {
+        "payload": {
+          "all_keypads": false,
+          "api_arm_disarm": true,
+          "arm": true,
+          "disarm": true,
+          "enabled": true,
+          "grant_enabled": true,
+          "keypads": [
+            {
+              "endpoint": 2,
+              "source": "abcdef"
+            }
+          ],
+          "name": "Guest",
+          "owner": false,
+          "pin": "4321",
+          "remaining_uses": null,
+          "revision": 0,
+          "schedule": {
+            "expires_at": 1796155200000,
+            "not_before": null,
+            "timezone": "America/Los_Angeles",
+            "windows": [
+              {
+                "day": 1,
+                "end": 1020,
+                "start": 480
+              },
+              {
+                "day": 6,
+                "end": 1440,
+                "start": 570
+              }
+            ]
+          },
+          "user_revision": 0
+        },
+        "plan": {
+          "alarm": 1,
+          "deleting": false,
+          "expected": {
+            "all_keypads": false,
+            "api_arm_disarm": true,
+            "arm": true,
+            "disarm": true,
+            "enabled": true,
+            "grant_enabled": true,
+            "id": null,
+            "keypads": [
+              {
+                "endpoint": 2,
+                "source": "abcdef"
+              }
+            ],
+            "name": "Guest",
+            "owner": false,
+            "remaining_uses": null,
+            "revision": 1,
+            "schedule": {
+              "expires_at": 1796155200000,
+              "not_before": null,
+              "timezone": "America/Los_Angeles",
+              "windows": [
+                {
+                  "day": 1,
+                  "end": 1020,
+                  "start": 480
+                },
+                {
+                  "day": 6,
+                  "end": 1440,
+                  "start": 570
+                }
+              ]
+            },
+            "user_revision": 1
+          },
+          "kind": "grant",
+          "method": "POST",
+          "operation": "save_user",
+          "path": "/alarmsystems/1/users",
+          "sensitive": true,
+          "uid": null
+        }
+      },
+      "name": "new scheduled guest",
+      "operation": "save_user",
+      "snapshot": {
+        "alarm": {
+          "rest_activity": false,
+          "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+          "seconds_remaining": 0,
+          "state": "disarmed",
+          "target": "disarmed",
+          "timing_supported": true,
+          "timings": {
+            "armed_away_entry_delay": 0,
+            "armed_away_exit_delay": 0,
+            "armed_away_trigger_duration": 0,
+            "armed_night_entry_delay": 0,
+            "armed_night_exit_delay": 0,
+            "armed_night_trigger_duration": 0,
+            "armed_stay_entry_delay": 0,
+            "armed_stay_exit_delay": 0,
+            "armed_stay_trigger_duration": 0
+          }
+        },
+        "capabilities": {
+          "1": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          },
+          "2": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          }
+        },
+        "grants": {
+          "1": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          },
+          "2": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          }
+        },
+        "identities": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "name": "Owner",
+            "revision": 1,
+            "user_revision": 1
+          }
+        }
+      }
+    },
+    {
+      "body": {
+        "alarm": 1,
+        "all_keypads": false,
+        "api_arm_disarm": true,
+        "arm": true,
+        "disarm": true,
+        "enabled": true,
+        "grant_enabled": true,
+        "id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "keypads": [
+          {
+            "endpoint": 2,
+            "source": "abcdef"
+          }
+        ],
+        "name": "Guest",
+        "owner": false,
+        "preserve_schedule": true,
+        "remaining_uses": null,
+        "revision": 1,
+        "user_revision": 1
+      },
+      "expected": {
+        "payload": {
+          "all_keypads": false,
+          "api_arm_disarm": true,
+          "arm": true,
+          "disarm": true,
+          "enabled": true,
+          "grant_enabled": true,
+          "keypads": [
+            {
+              "endpoint": 2,
+              "source": "abcdef"
+            }
+          ],
+          "name": "Guest",
+          "owner": false,
+          "remaining_uses": null,
+          "revision": 1,
+          "schedule": {
+            "expires_at": null,
+            "not_before": null,
+            "timezone": "UTC",
+            "windows": []
+          },
+          "user_revision": 1
+        },
+        "plan": {
+          "alarm": 1,
+          "deleting": false,
+          "expected": {
+            "all_keypads": false,
+            "api_arm_disarm": true,
+            "arm": true,
+            "disarm": true,
+            "enabled": true,
+            "grant_enabled": true,
+            "id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "keypads": [
+              {
+                "endpoint": 2,
+                "source": "abcdef"
+              }
+            ],
+            "name": "Guest",
+            "owner": false,
+            "remaining_uses": null,
+            "revision": 2,
+            "schedule": {
+              "expires_at": null,
+              "not_before": null,
+              "timezone": "UTC",
+              "windows": []
+            },
+            "user_revision": 1
+          },
+          "kind": "grant",
+          "method": "PUT",
+          "operation": "save_user",
+          "path": "/alarmsystems/1/users/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "sensitive": false,
+          "uid": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      },
+      "name": "preserve existing schedule",
+      "operation": "save_user",
+      "snapshot": {
+        "alarm": {
+          "rest_activity": false,
+          "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+          "seconds_remaining": 0,
+          "state": "disarmed",
+          "target": "disarmed",
+          "timing_supported": true,
+          "timings": {
+            "armed_away_entry_delay": 0,
+            "armed_away_exit_delay": 0,
+            "armed_away_trigger_duration": 0,
+            "armed_night_entry_delay": 0,
+            "armed_night_exit_delay": 0,
+            "armed_night_trigger_duration": 0,
+            "armed_stay_entry_delay": 0,
+            "armed_stay_exit_delay": 0,
+            "armed_stay_trigger_duration": 0
+          }
+        },
+        "capabilities": {
+          "1": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          },
+          "2": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          }
+        },
+        "grants": {
+          "1": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            },
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Guest",
+              "owner": false,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": {
+                "expires_at": null,
+                "not_before": null,
+                "timezone": "UTC",
+                "windows": []
+              },
+              "user_revision": 1
+            }
+          },
+          "2": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          }
+        },
+        "identities": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "name": "Owner",
+            "revision": 1,
+            "user_revision": 1
+          },
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb": {
+            "enabled": true,
+            "id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "name": "Guest",
+            "revision": 1,
+            "user_revision": 1
+          }
+        }
+      }
+    },
+    {
+      "body": {
+        "alarm": 1,
+        "id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "revision": 1,
+        "user_revision": 1
+      },
+      "expected": {
+        "payload": {
+          "revision": 1,
+          "user_revision": 1
+        },
+        "plan": {
+          "alarm": 1,
+          "deleting": true,
+          "expected": null,
+          "kind": "grant",
+          "method": "DELETE",
+          "operation": "delete_user",
+          "path": "/alarmsystems/1/users/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "sensitive": false,
+          "uid": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      },
+      "name": "delete guest grant only",
+      "operation": "delete_user",
+      "snapshot": {
+        "alarm": {
+          "rest_activity": false,
+          "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+          "seconds_remaining": 0,
+          "state": "disarmed",
+          "target": "disarmed",
+          "timing_supported": true,
+          "timings": {
+            "armed_away_entry_delay": 0,
+            "armed_away_exit_delay": 0,
+            "armed_away_trigger_duration": 0,
+            "armed_night_entry_delay": 0,
+            "armed_night_exit_delay": 0,
+            "armed_night_trigger_duration": 0,
+            "armed_stay_entry_delay": 0,
+            "armed_stay_exit_delay": 0,
+            "armed_stay_trigger_duration": 0
+          }
+        },
+        "capabilities": {
+          "1": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          },
+          "2": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          }
+        },
+        "grants": {
+          "1": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            },
+            "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Guest",
+              "owner": false,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": {
+                "expires_at": null,
+                "not_before": null,
+                "timezone": "UTC",
+                "windows": []
+              },
+              "user_revision": 1
+            }
+          },
+          "2": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          }
+        },
+        "identities": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "name": "Owner",
+            "revision": 1,
+            "user_revision": 1
+          },
+          "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb": {
+            "enabled": true,
+            "id": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            "name": "Guest",
+            "revision": 1,
+            "user_revision": 1
+          }
+        }
+      }
+    },
+    {
+      "body": {
+        "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "new_pin": "4321",
+        "repeat_pin": "4321",
+        "revision": 1,
+        "user_revision": 1
+      },
+      "expected": {
+        "payload": {
+          "enabled": true,
+          "name": "Owner",
+          "pin": "4321",
+          "revision": 1,
+          "user_revision": 1
+        },
+        "plan": {
+          "alarm": 1,
+          "expected": {
+            "enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "name": "Owner",
+            "revision": 2,
+            "user_revision": 2
+          },
+          "kind": "identity",
+          "method": "PUT",
+          "operation": "rotate_pin",
+          "path": "/alarmsystems/users/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "sensitive": true,
+          "uid": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        }
+      },
+      "name": "coordinated PIN rotation",
+      "operation": "rotate_pin",
+      "snapshot": {
+        "alarm": {
+          "rest_activity": false,
+          "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+          "seconds_remaining": 0,
+          "state": "disarmed",
+          "target": "disarmed",
+          "timing_supported": true,
+          "timings": {
+            "armed_away_entry_delay": 0,
+            "armed_away_exit_delay": 0,
+            "armed_away_trigger_duration": 0,
+            "armed_night_entry_delay": 0,
+            "armed_night_exit_delay": 0,
+            "armed_night_trigger_duration": 0,
+            "armed_stay_entry_delay": 0,
+            "armed_stay_exit_delay": 0,
+            "armed_stay_trigger_duration": 0
+          }
+        },
+        "capabilities": {
+          "1": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          },
+          "2": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          }
+        },
+        "grants": {
+          "1": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          },
+          "2": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          }
+        },
+        "identities": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "name": "Owner",
+            "revision": 1,
+            "user_revision": 1
+          }
+        }
+      }
+    },
+    {
+      "body": {
+        "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "new_pin": "4321",
+        "repeat_pin": "4322",
+        "revision": 1,
+        "user_revision": 1
+      },
+      "error": "pins_do_not_match",
+      "name": "PIN mismatch",
+      "operation": "rotate_pin",
+      "snapshot": {
+        "alarm": {
+          "rest_activity": false,
+          "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+          "seconds_remaining": 0,
+          "state": "disarmed",
+          "target": "disarmed",
+          "timing_supported": true,
+          "timings": {
+            "armed_away_entry_delay": 0,
+            "armed_away_exit_delay": 0,
+            "armed_away_trigger_duration": 0,
+            "armed_night_entry_delay": 0,
+            "armed_night_exit_delay": 0,
+            "armed_night_trigger_duration": 0,
+            "armed_stay_entry_delay": 0,
+            "armed_stay_exit_delay": 0,
+            "armed_stay_trigger_duration": 0
+          }
+        },
+        "capabilities": {
+          "1": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          },
+          "2": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          }
+        },
+        "grants": {
+          "1": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          },
+          "2": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          }
+        },
+        "identities": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "name": "Owner",
+            "revision": 1,
+            "user_revision": 1
+          }
+        }
+      }
+    },
+    {
+      "body": {
+        "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+        "timings": {
+          "armed_away_entry_delay": 0,
+          "armed_away_exit_delay": 0,
+          "armed_away_trigger_duration": 0,
+          "armed_night_entry_delay": 0,
+          "armed_night_exit_delay": 0,
+          "armed_night_trigger_duration": 0,
+          "armed_stay_entry_delay": 1,
+          "armed_stay_exit_delay": 0,
+          "armed_stay_trigger_duration": 0
+        }
+      },
+      "expected": {
+        "payload": {
+          "armed_away_entry_delay": 0,
+          "armed_away_exit_delay": 0,
+          "armed_away_trigger_duration": 0,
+          "armed_night_entry_delay": 0,
+          "armed_night_exit_delay": 0,
+          "armed_night_trigger_duration": 0,
+          "armed_stay_entry_delay": 1,
+          "armed_stay_exit_delay": 0,
+          "armed_stay_trigger_duration": 0
+        },
+        "plan": {
+          "alarm": 1,
+          "expected": {
+            "armed_away_entry_delay": 0,
+            "armed_away_exit_delay": 0,
+            "armed_away_trigger_duration": 0,
+            "armed_night_entry_delay": 0,
+            "armed_night_exit_delay": 0,
+            "armed_night_trigger_duration": 0,
+            "armed_stay_entry_delay": 1,
+            "armed_stay_exit_delay": 0,
+            "armed_stay_trigger_duration": 0
+          },
+          "kind": "timings",
+          "method": "PUT",
+          "operation": "save_alarm",
+          "path": "/alarmsystems/1/config",
+          "sensitive": false
+        }
+      },
+      "name": "disarmed alarm timers",
+      "operation": "save_alarm",
+      "snapshot": {
+        "alarm": {
+          "rest_activity": false,
+          "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+          "seconds_remaining": 0,
+          "state": "disarmed",
+          "target": "disarmed",
+          "timing_supported": true,
+          "timings": {
+            "armed_away_entry_delay": 0,
+            "armed_away_exit_delay": 0,
+            "armed_away_trigger_duration": 0,
+            "armed_night_entry_delay": 0,
+            "armed_night_exit_delay": 0,
+            "armed_night_trigger_duration": 0,
+            "armed_stay_entry_delay": 0,
+            "armed_stay_exit_delay": 0,
+            "armed_stay_trigger_duration": 0
+          }
+        },
+        "capabilities": {
+          "1": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          },
+          "2": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          }
+        },
+        "grants": {
+          "1": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          },
+          "2": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          }
+        },
+        "identities": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "name": "Owner",
+            "revision": 1,
+            "user_revision": 1
+          }
+        }
+      }
+    },
+    {
+      "body": {
+        "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+        "timings": {
+          "armed_away_entry_delay": 0,
+          "armed_away_exit_delay": 0,
+          "armed_away_trigger_duration": 0,
+          "armed_night_entry_delay": 0,
+          "armed_night_exit_delay": 0,
+          "armed_night_trigger_duration": 0,
+          "armed_stay_entry_delay": 1,
+          "armed_stay_exit_delay": 0,
+          "armed_stay_trigger_duration": 0
+        }
+      },
+      "error": "disarm_before_timing_changes",
+      "name": "armed alarm timers rejected",
+      "operation": "save_alarm",
+      "snapshot": {
+        "alarm": {
+          "rest_activity": false,
+          "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+          "seconds_remaining": 0,
+          "state": "armed_away",
+          "target": "disarmed",
+          "timing_supported": true,
+          "timings": {
+            "armed_away_entry_delay": 0,
+            "armed_away_exit_delay": 0,
+            "armed_away_trigger_duration": 0,
+            "armed_night_entry_delay": 0,
+            "armed_night_exit_delay": 0,
+            "armed_night_trigger_duration": 0,
+            "armed_stay_entry_delay": 0,
+            "armed_stay_exit_delay": 0,
+            "armed_stay_trigger_duration": 0
+          }
+        },
+        "capabilities": {
+          "1": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          },
+          "2": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          }
+        },
+        "grants": {
+          "1": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          },
+          "2": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          }
+        },
+        "identities": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "name": "Owner",
+            "revision": 1,
+            "user_revision": 1
+          }
+        }
+      }
+    },
+    {
+      "body": {
+        "durations_seconds": [
+          60,
+          600,
+          1800
+        ],
+        "enabled": true,
+        "reset_seconds": 3600,
+        "revision": 1,
+        "threshold": 6,
+        "window_seconds": 60
+      },
+      "expected": {
+        "payload": {
+          "durations_seconds": [
+            60,
+            600,
+            1800
+          ],
+          "enabled": true,
+          "reset_seconds": 3600,
+          "revision": 1,
+          "threshold": 6,
+          "window_seconds": 60
+        },
+        "plan": {
+          "alarm": 1,
+          "expected": {
+            "durations_seconds": [
+              60,
+              600,
+              1800
+            ],
+            "enabled": true,
+            "reset_seconds": 3600,
+            "revision": 2,
+            "threshold": 6,
+            "window_seconds": 60
+          },
+          "kind": "lockout",
+          "method": "PUT",
+          "operation": "save_lockout",
+          "path": "/alarmsystems/1/users/lockout",
+          "sensitive": false
+        }
+      },
+      "name": "protection policy",
+      "operation": "save_lockout",
+      "snapshot": {
+        "alarm": {
+          "rest_activity": false,
+          "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+          "seconds_remaining": 0,
+          "state": "disarmed",
+          "target": "disarmed",
+          "timing_supported": true,
+          "timings": {
+            "armed_away_entry_delay": 0,
+            "armed_away_exit_delay": 0,
+            "armed_away_trigger_duration": 0,
+            "armed_night_entry_delay": 0,
+            "armed_night_exit_delay": 0,
+            "armed_night_trigger_duration": 0,
+            "armed_stay_entry_delay": 0,
+            "armed_stay_exit_delay": 0,
+            "armed_stay_trigger_duration": 0
+          }
+        },
+        "capabilities": {
+          "1": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          },
+          "2": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          }
+        },
+        "grants": {
+          "1": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          },
+          "2": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          }
+        },
+        "identities": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "name": "Owner",
+            "revision": 1,
+            "user_revision": 1
+          }
+        }
+      }
+    },
+    {
+      "body": {
+        "reset": true
+      },
+      "expected": {
+        "payload": {
+          "reset": true
+        },
+        "plan": {
+          "alarm": 1,
+          "expected": {
+            "durations_seconds": [
+              60,
+              600,
+              1800
+            ],
+            "enabled": true,
+            "reset_seconds": 3600,
+            "revision": 1,
+            "threshold": 6,
+            "window_seconds": 60
+          },
+          "kind": "reset",
+          "method": "DELETE",
+          "operation": "reset_lockout",
+          "path": "/alarmsystems/1/users/lockout",
+          "sensitive": false
+        }
+      },
+      "name": "explicit protection reset",
+      "operation": "reset_lockout",
+      "snapshot": {
+        "alarm": {
+          "rest_activity": false,
+          "revision": "b9b2dc53fd2280d9563428c7a9870fd247b07fefee7a49564f216e3ae71b9fa0",
+          "seconds_remaining": 0,
+          "state": "disarmed",
+          "target": "disarmed",
+          "timing_supported": true,
+          "timings": {
+            "armed_away_entry_delay": 0,
+            "armed_away_exit_delay": 0,
+            "armed_away_trigger_duration": 0,
+            "armed_night_entry_delay": 0,
+            "armed_night_exit_delay": 0,
+            "armed_night_trigger_duration": 0,
+            "armed_stay_entry_delay": 0,
+            "armed_stay_exit_delay": 0,
+            "armed_stay_trigger_duration": 0
+          }
+        },
+        "capabilities": {
+          "1": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          },
+          "2": {
+            "keypad_lockout_version": 1,
+            "managed": true,
+            "schedule_version": 1,
+            "schedules": true
+          }
+        },
+        "grants": {
+          "1": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [
+                {
+                  "endpoint": 2,
+                  "source": "abcdef"
+                }
+              ],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          },
+          "2": {
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+              "all_keypads": false,
+              "api_arm_disarm": true,
+              "arm": true,
+              "disarm": true,
+              "enabled": true,
+              "grant_enabled": true,
+              "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "keypads": [],
+              "name": "Owner",
+              "owner": true,
+              "remaining_uses": null,
+              "revision": 1,
+              "schedule": null,
+              "user_revision": 1
+            }
+          }
+        },
+        "identities": {
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+            "enabled": true,
+            "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "name": "Owner",
+            "revision": 1,
+            "user_revision": 1
+          }
+        }
+      }
+    }
+  ],
+  "responses": {
+    "/alarmsystems": {
+      "1": {
+        "devices": {
+          "00:11:22:33:44:55:66:77-01-0501": {},
+          "synthetic-unknown": {}
+        },
+        "name": "Alarm 1",
+        "state": {
+          "armstate": "disarmed"
+        }
+      },
+      "2": {
+        "devices": {
+          "00:11:22:33:44:55:66:77-01-0501": {},
+          "synthetic-unknown": {}
+        },
+        "name": "Alarm 2",
+        "state": {
+          "armstate": "disarmed"
+        }
+      }
+    },
+    "/alarmsystems/1": {
+      "config": {
+        "armed_away_entry_delay": 0,
+        "armed_away_exit_delay": 0,
+        "armed_away_trigger_duration": 0,
+        "armed_night_entry_delay": 0,
+        "armed_night_exit_delay": 0,
+        "armed_night_trigger_duration": 0,
+        "armed_stay_entry_delay": 0,
+        "armed_stay_exit_delay": 0,
+        "armed_stay_trigger_duration": 0,
+        "armmode": "disarmed"
+      },
+      "state": {
+        "armstate": "disarmed",
+        "seconds_remaining": 0
+      }
+    },
+    "/alarmsystems/1/users": {
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+        "all_keypads": false,
+        "api_arm_disarm": true,
+        "arm": true,
+        "disarm": true,
+        "enabled": true,
+        "grant_enabled": true,
+        "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "keypads": [
+          {
+            "endpoint": 2,
+            "source": "abcdef"
+          }
+        ],
+        "name": "Owner",
+        "owner": true,
+        "pin": "synthetic-never-project",
+        "remaining_uses": null,
+        "revision": 1,
+        "schedule": null,
+        "user_revision": 1
+      }
+    },
+    "/alarmsystems/1/users/capabilities": {
+      "alarm_timing_version": 1,
+      "global_users_version": 2,
+      "keypad_lockout_version": 1,
+      "managed": true,
+      "schedule_version": 1,
+      "schedules": true
+    },
+    "/alarmsystems/1/users/lockout": {
+      "keypads": [
+        {
+          "endpoint": 1,
+          "level": 0,
+          "locked_until": 0,
+          "remaining_seconds": 0,
+          "source": "11223344556677"
+        },
+        {
+          "endpoint": 3,
+          "level": 1,
+          "remaining_seconds": 7,
+          "source": "ffee"
+        }
+      ],
+      "policy": {
+        "durations_seconds": [
+          60,
+          600,
+          1800
+        ],
+        "enabled": true,
+        "reset_seconds": 3600,
+        "revision": 1,
+        "threshold": 6,
+        "window_seconds": 60
+      }
+    },
+    "/alarmsystems/2/users": {
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+        "all_keypads": false,
+        "api_arm_disarm": true,
+        "arm": true,
+        "disarm": true,
+        "enabled": true,
+        "grant_enabled": true,
+        "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "keypads": [],
+        "name": "Owner",
+        "owner": true,
+        "pin": "synthetic-never-project",
+        "remaining_uses": null,
+        "revision": 1,
+        "schedule": null,
+        "user_revision": 1
+      }
+    },
+    "/alarmsystems/users": {
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa": {
+        "enabled": true,
+        "id": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "name": "Owner",
+        "pin": "synthetic-never-project",
+        "revision": 1,
+        "user_revision": 1
+      }
+    },
+    "/sensors": {
+      "3": {
+        "config": {
+          "reachable": true
+        },
+        "name": "Synthetic keypad",
+        "type": "ZHAAncillaryControl",
+        "uniqueid": "00:11:22:33:44:55:66:77-01-0501"
+      },
+      "4": {
+        "config": {
+          "reachable": false
+        },
+        "name": "Unrecognized radio",
+        "type": "ZHAAncillaryControl",
+        "uniqueid": "synthetic-unknown"
+      }
+    }
+  },
+  "schedules": [
+    {
+      "body": {
+        "expires_local": "2026-03-08T02:30",
+        "not_before": null,
+        "timezone": "America/Los_Angeles",
+        "weekly": "Mon 00:00-24:00\nSun 12:00-13:00"
+      },
+      "error": "nonexistent_expiry"
+    },
+    {
+      "body": {
+        "expires_local": "2026-11-01T01:30",
+        "not_before": null,
+        "timezone": "America/Los_Angeles",
+        "weekly": "Mon 00:00-24:00\nSun 12:00-13:00"
+      },
+      "error": "ambiguous_expiry_choose_utc"
+    },
+    {
+      "body": {
+        "expires_local": "2026-10-04T02:15",
+        "not_before": null,
+        "timezone": "Australia/Lord_Howe",
+        "weekly": "Mon 00:00-24:00\nSun 12:00-13:00"
+      },
+      "error": "nonexistent_expiry"
+    },
+    {
+      "body": {
+        "expires_local": "2026-04-05T01:45",
+        "not_before": null,
+        "timezone": "Australia/Lord_Howe",
+        "weekly": "Mon 00:00-24:00\nSun 12:00-13:00"
+      },
+      "error": "ambiguous_expiry_choose_utc"
+    },
+    {
+      "body": {
+        "expires_local": "2026-10-08T19:30",
+        "not_before": null,
+        "timezone": "Asia/Kathmandu",
+        "weekly": "Mon 00:00-24:00\nSun 12:00-13:00"
+      },
+      "expected": {
+        "expires_at": 1791467100000,
+        "not_before": null,
+        "timezone": "Asia/Kathmandu",
+        "windows": [
+          {
+            "day": 1,
+            "end": 1440,
+            "start": 0
+          },
+          {
+            "day": 7,
+            "end": 780,
+            "start": 720
+          }
+        ]
+      }
+    },
+    {
+      "body": {
+        "expires_local": "2026-10-08T19:30",
+        "not_before": null,
+        "timezone": "US/Pacific",
+        "weekly": "Mon 00:00-24:00\nSun 12:00-13:00"
+      },
+      "expected": {
+        "expires_at": 1791513000000,
+        "not_before": null,
+        "timezone": "US/Pacific",
+        "windows": [
+          {
+            "day": 1,
+            "end": 1440,
+            "start": 0
+          },
+          {
+            "day": 7,
+            "end": 780,
+            "start": 720
+          }
+        ]
+      }
+    },
+    {
+      "body": {
+        "expires_local": "2026-02-30T12:00",
+        "not_before": null,
+        "timezone": "UTC",
+        "weekly": "Mon 00:00-24:00\nSun 12:00-13:00"
+      },
+      "error": "invalid_expiry"
+    },
+    {
+      "body": {
+        "expires_local": "2026-10-08T19:30",
+        "not_before": null,
+        "timezone": "UTC",
+        "weekly": "Mon 00:00-24:00\nSun 12:00-13:00"
+      },
+      "expected": {
+        "expires_at": 1791487800000,
+        "not_before": null,
+        "timezone": "UTC",
+        "windows": [
+          {
+            "day": 1,
+            "end": 1440,
+            "start": 0
+          },
+          {
+            "day": 7,
+            "end": 780,
+            "start": 720
+          }
+        ]
+      }
+    }
+  ],
+  "source": {
+    "commit": "45e26c1d586bdcfa22b3b3b486485ba78ee4db6e",
+    "repository": "pponce/homebridge-deconzKeypadAlarm-admin"
+  }
+}

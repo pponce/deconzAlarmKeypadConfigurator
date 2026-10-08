@@ -1,0 +1,505 @@
+{
+  "repository": "pponce/homebridge-gdoor-admin-controller",
+  "ref": "web-admin-lan-controller-timings",
+  "commit": "e037d9c252f72eb3828e4cb9d625acd1db45023c",
+  "version": "0.4.25",
+  "files": [
+    {
+      "path": "package.json",
+      "source_blob": "4cd7f59de6d084003d70b8afd06b2b4d0ea948d6",
+      "source_bytes": 1269,
+      "sha256": "92dfd00b74e1583af9a1a4ca4047f4bc1b70c054e29ae8e1dbdbffe24a9dce1c",
+      "adapted": true
+    },
+    {
+      "path": "scripts/web-admin-browser-fixture.mjs",
+      "source_blob": "241fa560ec5842d6228dfb95e48afca50a8a607d",
+      "source_bytes": 7376,
+      "sha256": "cea4fd054013f01f76f57d368e3c5e32fad7675dbd3e7d5804d71630ae8c8d93",
+      "adapted": true
+    },
+    {
+      "path": "scripts/web-admin-browser.mjs",
+      "source_blob": "5f1a42de4ecad7bcbf1c3f6f35824e0239b269ed",
+      "source_bytes": 9514,
+      "sha256": "5b7035e181454657b4273045a9e79cd16bc93dd34a8e588453e28e5fda6b4144",
+      "adapted": false
+    },
+    {
+      "path": "scripts/web-admin-write-browser.mjs",
+      "source_blob": "4ddca680e17d4dfe7264469aca4a8c8f45482d5b",
+      "source_bytes": 11097,
+      "sha256": "1a8168a636ce18f783378776b990bb45f34ce8636311ba24f592b610cbd3d554",
+      "adapted": true
+    },
+    {
+      "path": "src/web-admin-activity.js",
+      "source_blob": "a35a7f9004c6170685ff0e55fe795543ea149dcc",
+      "source_bytes": 5993,
+      "sha256": "5a0f18be02b2e385f7e44ee59cddb0187e1c31fe6f531b1b0efbe121c07bbb21",
+      "adapted": false
+    },
+    {
+      "path": "src/web-admin-application.js",
+      "source_blob": "bb03d0334820c14a9b6a228a5f26910d4bd9d575",
+      "source_bytes": 1820,
+      "sha256": "02d79e14b9aa23730bd7c18a1faf99e204891a1a881a1cc6a9f818cbeb304e27",
+      "adapted": false
+    },
+    {
+      "path": "src/web-admin-assets.js",
+      "source_blob": "2f8a8cde06dd5c1b3fa5fe40b671d40652ea3a3b",
+      "source_bytes": 1311,
+      "sha256": "2199bab56c42b364f343a4997858e8536b323d7ef1426bf077c46807f8292569",
+      "adapted": true
+    },
+    {
+      "path": "src/web-admin-auth.js",
+      "source_blob": "41876dfd04e7f193b131aa8ff08de25f8f3a965c",
+      "source_bytes": 9917,
+      "sha256": "17a254db3281f8e484cbeea7089cd084c2fa186af1e034fd6bb98e2b3a14e41e",
+      "adapted": false
+    },
+    {
+      "path": "src/web-admin-backend.js",
+      "source_blob": "36a967e0ec60c0b05b83dcf4e791413e1de1746c",
+      "source_bytes": 13338,
+      "sha256": "337ce3b88308a58d6c3f0a605f7710b39a57ff4ac53190f70454f49adac87d72",
+      "adapted": true
+    },
+    {
+      "path": "src/web-admin-backup.js",
+      "source_blob": "a6a47b4b2282022a271c1c3452fb203a18c4b5b1",
+      "source_bytes": 5440,
+      "sha256": "0e1602b44e88290cd2f29c921450e6e963427428d637deec7740a983f79725eb",
+      "adapted": false
+    },
+    {
+      "path": "src/web-admin-collector.js",
+      "source_blob": "41922add288a78974d2aa68acfa1155ecee398c6",
+      "source_bytes": 8880,
+      "sha256": "dc091b5ef3f5107954c838440450c311b626b047306156874c85645cc57d392e",
+      "adapted": false
+    },
+    {
+      "path": "src/web-admin-common.js",
+      "source_blob": "18f4cf92102993635c83fa2378b2370d98944455",
+      "source_bytes": 2401,
+      "sha256": "7dbfc0b5639c3c9266a714843649fe836962ee90c1bd077c10072bc0f9669cec",
+      "adapted": false
+    },
+    {
+      "path": "src/web-admin-domain.js",
+      "source_blob": "41e9752382b77e4c7a7a989f0281f70887c34043",
+      "source_bytes": 4223,
+      "sha256": "1e50368cd2e40e417f2a062d385ce95fc459ea3b166f05d9a7cbc053ae14218a",
+      "adapted": false
+    },
+    {
+      "path": "src/web-admin-editor.js",
+      "source_blob": "74a7b12d4d10d86b6749e6dd0d63f040c1032893",
+      "source_bytes": 15020,
+      "sha256": "ad98dc5fee75e00f9b548ddcc1e3d8ceb231f3173b256ce5071755ae9d808bcc",
+      "adapted": true
+    },
+    {
+      "path": "src/web-admin-events.js",
+      "source_blob": "d193e27517369fb16a452ae0f2d33ebe853b1337",
+      "source_bytes": 6424,
+      "sha256": "dae065273bac1a18784ea1cd83be9de8ee13789c684f07a9d0aadfcb600017f5",
+      "adapted": false
+    },
+    {
+      "path": "src/web-admin-files.js",
+      "source_blob": "b9180688f8dd5393af1c8cb78c671cdebe7636b6",
+      "source_bytes": 4708,
+      "sha256": "8afd4f9a6cc4cfc3edfab5312797d4d1f9a01a0f63e1a2386a55c05e9e35eb51",
+      "adapted": true
+    },
+    {
+      "path": "src/web-admin-gateway.js",
+      "source_blob": "ccc1b934e969b03ae4ab39562942ba6dcfaeb01d",
+      "source_bytes": 7150,
+      "sha256": "12b6da03e618f0e2653b0a1a76da9bc4fb278e59420e1c3a182c77528353cb72",
+      "adapted": false
+    },
+    {
+      "path": "src/web-admin-history.js",
+      "source_blob": "63c2ea13a3efceb2bc85bf00c3529419e6625aeb",
+      "source_bytes": 13779,
+      "sha256": "ad7ba3796446327e391ebba473edc8f7307f5c3f0a20a0fb38cfa52024955aac",
+      "adapted": false
+    },
+    {
+      "path": "src/web-admin-homebridge-client.js",
+      "source_blob": "709f63139e847b8c97d078883de96532c843d50a",
+      "source_bytes": 9510,
+      "sha256": "c80bc2ef150cf88d3185bd21deeecd352cfd824c8454de8615534057eb626a19",
+      "adapted": false
+    },
+    {
+      "path": "src/web-admin-homebridge-host.js",
+      "source_blob": "a24893520f26e51262c2b4700dd10e101144146c",
+      "source_bytes": 17291,
+      "sha256": "4ff6fe02128c22a3b988b752f07a73ae76801f4cb68d2158f7bfa06ede2c1fdc",
+      "adapted": true
+    },
+    {
+      "path": "src/web-admin-homebridge-maintenance.js",
+      "source_blob": "e7584760c5f743c067e6ad20e57b2aa6832f4ae6",
+      "source_bytes": 12231,
+      "sha256": "b6cae39c30984bfb73ff06fa32ffca0f152a00db13b3efb26779508f6b10ad29",
+      "adapted": false
+    },
+    {
+      "path": "src/web-admin-homebridge-sources.json",
+      "source_blob": "23e6981af7bddca65ea17e4c815209b97c6e2862",
+      "source_bytes": 1220,
+      "sha256": "52e5e72e12a2e3bd5df7f3abdc05a0041887f296b840197359340836db6138aa",
+      "adapted": false
+    },
+    {
+      "path": "src/web-admin-keypad.js",
+      "source_blob": "74d24cc6520b6dd67a9928c9c8fd9bff706d3de6",
+      "source_bytes": 4789,
+      "sha256": "3d98ee92c2ddd107de736f6f67e312b9e9f089565c447450ff9013393e1a25f2",
+      "adapted": true
+    },
+    {
+      "path": "src/web-admin-network.js",
+      "source_blob": "ddbfd490a5928a7a78044321513a547d5321c36d",
+      "source_bytes": 1153,
+      "sha256": "ec4199001edf0ec134a6b979bc1997dc3f9132647b4d86145fd4eaef170df5b0",
+      "adapted": false
+    },
+    {
+      "path": "src/web-admin-routes.js",
+      "source_blob": "f2bc3ec5617e9a9dc57a61f74d716aaff4d686e0",
+      "source_bytes": 3174,
+      "sha256": "600b781978fe5fcd590f150c60067691d87e36155df018ff8a15eddac0468821",
+      "adapted": true
+    },
+    {
+      "path": "src/web-admin-schedule.js",
+      "source_blob": "b195c150712880e97b2e27118ec88304a3552426",
+      "source_bytes": 3080,
+      "sha256": "4053fad3dd2a050f23ca446f01c9e13a3cee5619e0cedc4364a9a76b774e45b7",
+      "adapted": false
+    },
+    {
+      "path": "src/web-admin-server.js",
+      "source_blob": "0aa07ea1d0d599ce5c14809e1c86350fadbe9083",
+      "source_bytes": 7382,
+      "sha256": "2e41c3dfbf0a43ee234826f670e7598b058985b9529cf550177d78a458e62cad",
+      "adapted": false
+    },
+    {
+      "path": "src/web-admin-service.js",
+      "source_blob": "f5f56505e9eecda75fa4194e1567d4f306fe92a7",
+      "source_bytes": 3957,
+      "sha256": "04d502e7a9c80abb1d1944c3d3d1dca6cf644b35104bc086d180c62ea941fea8",
+      "adapted": true
+    },
+    {
+      "path": "src/web-admin-settings.js",
+      "source_blob": "820eed733be1ec7f915fde38505f61b438e6fbe8",
+      "source_bytes": 3152,
+      "sha256": "0f16bd5cb5dedae36557c9d435ccb3e2c415240c75b262066442fc3bf64c2cd0",
+      "adapted": true
+    },
+    {
+      "path": "src/web-admin-store.js",
+      "source_blob": "33ba29c6419e3f8f7311c601541fa97f86c84636",
+      "source_bytes": 1839,
+      "sha256": "23e01a16960727e4e82204e9e2781d0fa2c22487b014d16af3498b8a650bbe05",
+      "adapted": true
+    },
+    {
+      "path": "src/web-admin-tls.js",
+      "source_blob": "60ebacd10d7dbe9ff86c1b63a6b49db6a3b55e95",
+      "source_bytes": 3166,
+      "sha256": "057910249e151c6a7266208fcb6ec5cbe1725c104509b9f343c73f771dfbeec4",
+      "adapted": true
+    },
+    {
+      "path": "src/web-admin-transactions.js",
+      "source_blob": "9db65158a5033d9162628e59e5ac64cb2b752561",
+      "source_bytes": 11490,
+      "sha256": "b9e873aa5667708090efbb7c5cbdd8cbc4489715f68d18e0414d5ea5103db8f2",
+      "adapted": false
+    },
+    {
+      "path": "src/web-admin-view.js",
+      "source_blob": "916fa850e7e56d8c55c8e7802ab384982a559f54",
+      "source_bytes": 10087,
+      "sha256": "810d810b2a3b4fbf99f48d36ee8a816c590a5aca91a33ca0a578cc31d9d6052e",
+      "adapted": false
+    },
+    {
+      "path": "test/fixtures/web-admin-read-parity.json",
+      "source_blob": "66873a69da68c9a5ceb71229fefdf8bf9c0c9709",
+      "source_bytes": 80479,
+      "sha256": "21f2874506e4693f7cda79d4a63fcbd0c8062d12432cabce4b43aa93f0a345a1",
+      "adapted": false
+    },
+    {
+      "path": "test/fixtures/web-admin-reference.json",
+      "source_blob": "9f755358878d7a2c9e7de75deec2fd29688062a6",
+      "source_bytes": 5729,
+      "sha256": "0a3355c052ec216cc58500931d3982f80758f34e90c3eb5b39d5a03ccc9863d4",
+      "adapted": false
+    },
+    {
+      "path": "test/web-admin-activity.test.js",
+      "source_blob": "eda9e3334fbf4303e3eda5986cfa321aac047221",
+      "source_bytes": 3165,
+      "sha256": "3320801e584efde1817ba454cc430da1c9eec9e016eb1601ea4f1f73579b13a7",
+      "adapted": false
+    },
+    {
+      "path": "test/web-admin-assets.test.js",
+      "source_blob": "32a2c168ddedc5b1c2bbe50454268d18f48ed296",
+      "source_bytes": 1745,
+      "sha256": "02a7d45fd3531890d5846a7102087c01c29f46ed0a372fa6513db2dc022e5981",
+      "adapted": true
+    },
+    {
+      "path": "test/web-admin-backend.test.js",
+      "source_blob": "a1f72557bdb1f1e9f76f9633b38dbaea11f37988",
+      "source_bytes": 8836,
+      "sha256": "2f802ebf6b014335206d47e08ac7e3014863c878f4306150f4e0010764314b83",
+      "adapted": true
+    },
+    {
+      "path": "test/web-admin-backup.test.js",
+      "source_blob": "1f75629273e116cdf15da5d89d32af60d4b235b7",
+      "source_bytes": 3514,
+      "sha256": "670d692eb3cf9dc3aa1117f052a6d31ad7df608463c4f92a6716cb6cc9a86d97",
+      "adapted": true
+    },
+    {
+      "path": "test/web-admin-collector.test.js",
+      "source_blob": "3da40373a8f2f99897103bdcf7898c22c35f858b",
+      "source_bytes": 4517,
+      "sha256": "59978635da0e41b69f2a0a587f0fb1eecaee91c165cec1529b562afe40e0ca25",
+      "adapted": false
+    },
+    {
+      "path": "test/web-admin-editor.test.js",
+      "source_blob": "d0fca0b8827bcc76370fb05b6f03c9962905077a",
+      "source_bytes": 4431,
+      "sha256": "ae7fa9f118022eac1145c7da1b0851b9563d44fab9a77b2099b096a23b341214",
+      "adapted": false
+    },
+    {
+      "path": "test/web-admin-events.test.js",
+      "source_blob": "37fc9e6df55d596d1656c5393eb9788a8d090928",
+      "source_bytes": 3912,
+      "sha256": "af1beb5523240f489eb49c144d615ed748f7621c93815111faa336fe63bfd916",
+      "adapted": false
+    },
+    {
+      "path": "test/web-admin-gateway.test.js",
+      "source_blob": "a336255aaf51fca5e2af26eb9edc68f0a151eff5",
+      "source_bytes": 6063,
+      "sha256": "c0ed169dd8540b9ebd61bba47d85b07067af4507137e975db2fb6a0c95b3f72a",
+      "adapted": false
+    },
+    {
+      "path": "test/web-admin-history.test.js",
+      "source_blob": "2c136ea6ac82b06a4cc8a64a6bd804a629a3490d",
+      "source_bytes": 5957,
+      "sha256": "792e810305590b0675bf1b08a057b7ea27936912ca1badc6120b3d2af61af198",
+      "adapted": true
+    },
+    {
+      "path": "test/web-admin-homebridge-client.test.js",
+      "source_blob": "83547890ef8b1c279353407a5d90cead3390af53",
+      "source_bytes": 6236,
+      "sha256": "f63bd3d97e1c0f734aa7fa97d417959c00841540087467b2842ff7fa97f721c2",
+      "adapted": false
+    },
+    {
+      "path": "test/web-admin-homebridge-host.test.js",
+      "source_blob": "8b839f55218f23933b77158e7f2964b41ed41c0f",
+      "source_bytes": 7647,
+      "sha256": "ccb3ef97f89f5da0f378402b01733a82694e165643ae6705c7386754b5da1de7",
+      "adapted": true
+    },
+    {
+      "path": "test/web-admin-homebridge-maintenance.test.js",
+      "source_blob": "180b617626fdf84784a4294669a63e3149aa067a",
+      "source_bytes": 8217,
+      "sha256": "b99be94b97336a57901903bdd8a33f5c94c29441844365854c0662569280d50d",
+      "adapted": false
+    },
+    {
+      "path": "test/web-admin-keypad.test.js",
+      "source_blob": "c4e75998f3015a4f50e9a49d61f41bf2cc5055b5",
+      "source_bytes": 6557,
+      "sha256": "b59f7d7e9773a5301ebea2889a9c9a2b7524adf88e98890dffa9e3514e9cafc6",
+      "adapted": true
+    },
+    {
+      "path": "test/web-admin-network.test.js",
+      "source_blob": "547f6646640c4ce5779afb7b94407270620d5d5e",
+      "source_bytes": 854,
+      "sha256": "66040cae32135dac33ab2aae96cbf43661937bfc3d81c49d18aa47d1ce045ed9",
+      "adapted": false
+    },
+    {
+      "path": "test/web-admin-store.test.js",
+      "source_blob": "6c15a4485fc8713d9f4e31e80457587f0d13dbfa",
+      "source_bytes": 3882,
+      "sha256": "d8f5ff203762e371e079616f5984a7239ca363f2d088459e35714df919fab73f",
+      "adapted": true
+    },
+    {
+      "path": "test/web-admin-transactions.test.js",
+      "source_blob": "55328c263ca8d05e3a1c3fdaf6ddba9c040a5d28",
+      "source_bytes": 10838,
+      "sha256": "25fd704256e3d41de63730d11a5c3fab59b31c781b46dd300c8b18226ce79dc9",
+      "adapted": true
+    },
+    {
+      "path": "test/web-admin-view.test.js",
+      "source_blob": "cc8cf11b983eb19adfac9aa6ed304a233444d432",
+      "source_bytes": 2480,
+      "sha256": "8d1e480674d600cf55787415009c7f367dc7addc4177b5a8b41e55ba092d1679",
+      "adapted": false
+    },
+    {
+      "path": "test/web-admin.test.js",
+      "source_blob": "02e0f6508624086b32982ad543b2e8069242c2bf",
+      "source_bytes": 11612,
+      "sha256": "844ccfd5b42e5bf281919edfce130f562c02c206e6f60c335ce1da45275874bb",
+      "adapted": false
+    },
+    {
+      "path": "web-admin/public/app-icon-192.png",
+      "source_blob": "8c8fbc60ad8d7021b9d09dca6a101617a5d80b72",
+      "source_bytes": 12074,
+      "sha256": "79defe819b912713963e745a237b9f665e03c15d131cb1f3ac58f873d1f9f979",
+      "adapted": false
+    },
+    {
+      "path": "web-admin/public/app-icon-512.png",
+      "source_blob": "6655c2f51e8d674585cfa43999afcb614169cc4e",
+      "source_bytes": 32639,
+      "sha256": "2ecfc376b32e2f6454812aaaa0f18f1b11000b869ab3adcbd680099fcce6d2cb",
+      "adapted": false
+    },
+    {
+      "path": "web-admin/public/app-icon.svg",
+      "source_blob": "ea94410b1bfd8fd91eeced1bb4fabd469fdc1261",
+      "source_bytes": 1845,
+      "sha256": "448c91d642189edde75d525c5299690b0fd4a61f1bf98b6d168671f32832c0ff",
+      "adapted": false
+    },
+    {
+      "path": "web-admin/public/app.js",
+      "source_blob": "dc14c7d0590c1c75edae10c95dafc37b08e1543f",
+      "source_bytes": 99841,
+      "sha256": "3b79ebf1f5a113c48a47d45765593cc5b05935245a3707148a735dd35e27a6e5",
+      "adapted": true
+    },
+    {
+      "path": "web-admin/public/apple-touch-icon.png",
+      "source_blob": "a90dd64d583698470e786a8271756d6b4fa934a3",
+      "source_bytes": 12789,
+      "sha256": "ac27f0b0fbf1e969278351478f3921fc29d33b421dd3bef4b73792b2a986d184",
+      "adapted": false
+    },
+    {
+      "path": "web-admin/public/demo.js",
+      "source_blob": "1d1161dff90a3008598d03fac33a8fa924f55b58",
+      "source_bytes": 12011,
+      "sha256": "862e53412776d6d96a82b7442c60d4ace8dd0ede4c5cc616222aca6f3612b508",
+      "adapted": false
+    },
+    {
+      "path": "web-admin/public/homebridge-flow.js",
+      "source_blob": "7d26965ca92bdadd6e2dd839cab3b42d30d09ce6",
+      "source_bytes": 15726,
+      "sha256": "d3e9432647971b47bfa63c3b7d76238781c14ff8cae3716d6bd9f269e8a64db0",
+      "adapted": true
+    },
+    {
+      "path": "web-admin/public/index.html",
+      "source_blob": "6ff75e20e88686d24364b8c9c735cf55d8662b0a",
+      "source_bytes": 25174,
+      "sha256": "065f3a805612b8978e5aa6bf3125f65fb06405e323c50b77f6d16bf3b175ca34",
+      "adapted": true
+    },
+    {
+      "path": "web-admin/public/installation-help.html",
+      "source_blob": "b6f672156868d9d1e732b2525c5ec852e96ada33",
+      "source_bytes": 3056,
+      "sha256": "0555317237b5b53eb6def05f47dbc4db84623e6d83c82d1b2bb9fbba7ecba6ba",
+      "adapted": true
+    },
+    {
+      "path": "web-admin/public/keypad.js",
+      "source_blob": "dd20f024dc4b6da8c302a6e1e5bdff58d040721f",
+      "source_bytes": 3498,
+      "sha256": "6fde983a1de46ccf39002779e67515091586a4d8d2ba50f040b0b997acc9165e",
+      "adapted": false
+    },
+    {
+      "path": "web-admin/public/manifest.webmanifest",
+      "source_blob": "5b0d1c76aa59477b53cf68f1bf5568e92c74adc7",
+      "source_bytes": 461,
+      "sha256": "ed26eecb1be3e647e627ea183a39ece2b3da642f9226e0dadc34ba3eb14879dc",
+      "adapted": false
+    },
+    {
+      "path": "web-admin/public/settings.js",
+      "source_blob": "a5313b94aba01d5b3bee756ac122d03fcf33f294",
+      "source_bytes": 18574,
+      "sha256": "678c024a07240353ad2c39d48eb24133d1f29b8185184127eba194899602b228",
+      "adapted": true
+    },
+    {
+      "path": "web-admin/public/style.css",
+      "source_blob": "0f8d126c18ab96021da91a7fea9ed030d20e82c0",
+      "source_bytes": 42338,
+      "sha256": "67496241e79348abefb7c0240eb666995cf2e7d6742e4bc2090f59ef3279d663",
+      "adapted": false
+    },
+    {
+      "path": "src/ownership.js",
+      "source_blob": "3347c58f62a983490f9a9192ca9287727344d1a7",
+      "source_bytes": 2621,
+      "sha256": "3ee3d71b0e798d82deb273708acb7eca58fe888cff737a409ad647dea2929ac1",
+      "adapted": true
+    },
+    {
+      "path": "src/fault.js",
+      "source_blob": "a13cbbb45cf4828a3bd81ba75e41bbe85f544ab6",
+      "source_bytes": 269,
+      "sha256": "c25ba9433509328c1357b8805d43e55df8980afe5e5d2f96da949025300b4b63",
+      "adapted": false
+    }
+  ],
+  "destination_only_files": [
+    ".github/workflows/standalone.yml",
+    ".gitignore",
+    "AGENTS.md",
+    "README.md",
+    "bin/deconz-keypad-admin.js",
+    "docs/admin-source-comparison.md",
+    "docs/extensions.md",
+    "docs/node-source-provenance.md",
+    "docs/status.md",
+    "src/standalone-config.js",
+    "src/standalone.js",
+    "test/standalone.test.js"
+  ],
+  "excluded": [
+    "src/web-admin-manager.js",
+    "src/web-admin-controller.js",
+    "src/web-admin-coordinator.js",
+    "web-admin/public/controller.js",
+    "Homebridge runtime, commissioning, accessory and garage/bolt modules"
+  ]
+}

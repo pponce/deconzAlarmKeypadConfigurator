@@ -1,0 +1,24 @@
+{
+  "plugin": {
+    "package": "homebridge-deconz",
+    "version": "1.3.5",
+    "source_sha256": {
+      "lib/DeconzService/AlarmSystem.js": "e11ce0658dee7421f4ab723079938834c6e0f8fe985b6dc101747b9abfc8754f",
+      "lib/DeconzAccessory/index.js": "f355ab050ba917eef26fadc34ea3a68ea4cde605d26ab64cae4b1fa808b933de",
+      "lib/DeconzAccessory/Gateway.js": "a47c6467d1700e176ee5134d4a599b6377746eb3b727ca2cc2550d2bac9fe5e9",
+      "lib/DeconzPlatform.js": "4d17443170bd8c6f88dfe868c87178b47cd124ea1c59cf14c351e711d7ee1171",
+      "cli/ui.js": "23abbdfbb10d4c9ae8cb8ec54ec710bc9b56a4227aee8dc7fb1c4e08e6daf1d6"
+    }
+  },
+  "library": {
+    "package": "homebridge-lib",
+    "version": "8.1.5",
+    "source_sha256": {
+      "lib/CharacteristicDelegate.js": "dc699107d55c7844360fafb80241be9f9e50b983a32f76d18ac12a846dcd56df",
+      "lib/Platform.js": "073312e0376f97c7876af821a6ae532279e666f8807a3f2658f4b3c5561f2cd2",
+      "lib/ServiceDelegate.js": "dbf63f688877321b0abba300d44d92a713a815394d8dad49f30a9114a21c8586",
+      "lib/AccessoryDelegate.js": "d0cc420e15b9b2c0ebb8597728cea56d355ced14d35709ba38f876c813d608b6",
+      "lib/Delegate.js": "5d743230c83f4becffb14bf1e306c28ffdde69ce01ea8fb614c57deb14bf3dc1"
+    }
+  }
+}

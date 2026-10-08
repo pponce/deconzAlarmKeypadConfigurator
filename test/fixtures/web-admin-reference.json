@@ -1,0 +1,198 @@
+{
+  "repository": "pponce/homebridge-deconzKeypadAlarm-admin",
+  "commit": "45e26c1d586bdcfa22b3b3b486485ba78ee4db6e",
+  "files": [
+    {
+      "path": "configurator/__init__.py",
+      "sha": "387da82a22fa5c53296ad2c1cd45fa0cf941af40"
+    },
+    {
+      "path": "configurator/activity.py",
+      "sha": "af40e188be1ec2893bc8e1d932926b3e655ede40"
+    },
+    {
+      "path": "configurator/authorization.py",
+      "sha": "9723aec4c63c8cce8ab4babcdb5281084a52db1a"
+    },
+    {
+      "path": "configurator/backup.py",
+      "sha": "3401433c5accf93f5016ba3bd12f5ed5755a6b72"
+    },
+    {
+      "path": "configurator/broker.py",
+      "sha": "370d14ee3259f7025fa431efef8ab125af1f3a81"
+    },
+    {
+      "path": "configurator/collector.py",
+      "sha": "17aa3c8a4743243262cf4d600f06348f7d20b128"
+    },
+    {
+      "path": "configurator/common.py",
+      "sha": "2ac82ef5ce0b3df542de4f774f47715510b74735"
+    },
+    {
+      "path": "configurator/configuration.py",
+      "sha": "9d2ad742d0700f319e9768c58ec141cb68164b1d"
+    },
+    {
+      "path": "configurator/core.py",
+      "sha": "47be501b44cffd64b23f5736ca79570404312a31"
+    },
+    {
+      "path": "configurator/credential_evidence.py",
+      "sha": "3eb8f018928575d75f4c6360ff1d26d9b4ae4894"
+    },
+    {
+      "path": "configurator/debug.py",
+      "sha": "269209eba2ffa3a7baf5298403f3248080101261"
+    },
+    {
+      "path": "configurator/deployment.py",
+      "sha": "4cc21379b8bf7b14fe98cbb308dedcb4117eb2a5"
+    },
+    {
+      "path": "configurator/domain.py",
+      "sha": "f28f45c2e59375a9086d9e3e07ec4eada57f3aab"
+    },
+    {
+      "path": "configurator/domain_methods.py",
+      "sha": "7dd2bc011ae2e0dc80bf99e9e0d7e64115a4fbb9"
+    },
+    {
+      "path": "configurator/editing.py",
+      "sha": "a230668ae8c5278c921fb2d978c66b2edb30ebfe"
+    },
+    {
+      "path": "configurator/extensions.py",
+      "sha": "887f7e96ade7ec8c56030dbfd2a4cdb4ffc9d057"
+    },
+    {
+      "path": "configurator/gateway.py",
+      "sha": "306b40df4c1599fdcab84101dbaa3f36836c96f9"
+    },
+    {
+      "path": "configurator/history.py",
+      "sha": "b76ca2a3ad3fd9ce2045e0cf2b8788a628a37b4d"
+    },
+    {
+      "path": "configurator/homebridge.py",
+      "sha": "1c3b3df535e357b48620d901a9b2c1b880cef239"
+    },
+    {
+      "path": "configurator/homebridge_local.py",
+      "sha": "5280b7da9915e8f09d8202864357d0e5a66c0ee7"
+    },
+    {
+      "path": "configurator/homebridge_probe.py",
+      "sha": "ae2f53ef287cecbbf219bbe87e99dfddcfe521c4"
+    },
+    {
+      "path": "configurator/homebridge_sources.py",
+      "sha": "9dcfb26558f51c934cb97a2d3cc3e18f9f4e06a5"
+    },
+    {
+      "path": "configurator/host_client.py",
+      "sha": "7ba37d0cb66f1eae95d322e838dd164dd7fb49fb"
+    },
+    {
+      "path": "configurator/host_service.py",
+      "sha": "6c159d7aafb46d7b01f5f6a101e0586835d2982c"
+    },
+    {
+      "path": "configurator/keypad_core.py",
+      "sha": "83f52f15ad973159c517154a9ed1741ef1c315e5"
+    },
+    {
+      "path": "configurator/package.py",
+      "sha": "8e1d12f739f0da908b2c4e21c250c06abffe1736"
+    },
+    {
+      "path": "configurator/presentation.py",
+      "sha": "e38796f9ad2d7377fd10a9612be29940a50a5014"
+    },
+    {
+      "path": "configurator/schedule.py",
+      "sha": "e6ccf208e83095826972f90a8460405591cd0628"
+    },
+    {
+      "path": "configurator/server.py",
+      "sha": "fd231f6f1ca59030470dee918bc9858a38ccebb5"
+    },
+    {
+      "path": "configurator/setup.py",
+      "sha": "cd72a1ab603c7f0387b39d317396804edea6d03a"
+    },
+    {
+      "path": "configurator/tests/parity_fixture.py",
+      "sha": "ee24a546b3568f59d00cbc817e16f69b61314b8d"
+    },
+    {
+      "path": "configurator/tests/support.py",
+      "sha": "0d860c111734141231567e255afef523a061ebc5"
+    },
+    {
+      "path": "configurator/tests/test_backup_retention.py",
+      "sha": "64d795ddba5b3b79059a2890f6570fff5c360806"
+    },
+    {
+      "path": "configurator/tests/test_core.py",
+      "sha": "c1c5fc577fef96710e28ea54fc0a9f8c1af6081e"
+    },
+    {
+      "path": "configurator/tests/test_editing.py",
+      "sha": "50b2b843fe59aa44b11b1d6a4246977e45db4b00"
+    },
+    {
+      "path": "configurator/tests/test_extensions.py",
+      "sha": "e726c4e63654f79682f821d1c627cba69a501097"
+    },
+    {
+      "path": "configurator/tests/test_home_screen.py",
+      "sha": "1bf4c16ff2edc34e20444b0cafc7a42297e393d9"
+    },
+    {
+      "path": "configurator/tests/test_homebridge.py",
+      "sha": "8623a907b872ec2d8e7e790c8faaf6c1dda201fb"
+    },
+    {
+      "path": "configurator/tests/test_homebridge_selection.py",
+      "sha": "18bf4c649981a79ad25eabf00e029da2d5add7c3"
+    },
+    {
+      "path": "configurator/tests/test_lockout_status.py",
+      "sha": "0addd08c33080cc4d0b5be2efb5b5be1805a8c07"
+    },
+    {
+      "path": "configurator/tests/test_presentation.py",
+      "sha": "1e9f615224264f72ae63f02a36cfce95c9bb0606"
+    },
+    {
+      "path": "configurator/tests/test_roles.py",
+      "sha": "7757e839dbfb27b64e2a63cf3421e7279b3ee69c"
+    },
+    {
+      "path": "configurator/tests/test_setup_backup.py",
+      "sha": "99f373ad0adb99b52964a8e67478cd2ef9dd0ecf"
+    },
+    {
+      "path": "configurator/tests/test_setup_connect.py",
+      "sha": "05f312bf23cf3d912740b2528f3845ffa8436a2e"
+    },
+    {
+      "path": "configurator/tests/test_web_account.py",
+      "sha": "9d9c4a4a48f0147f96fe8aa49634ce5afe6db78f"
+    },
+    {
+      "path": "configurator/transactions.py",
+      "sha": "7db23c422c83fa7c071d5239d63211be07eb3942"
+    },
+    {
+      "path": "configurator/virtual_keypad.py",
+      "sha": "abf0f1d91b7cb83e83bc7d199e6f0f2470df835e"
+    },
+    {
+      "path": "configurator/web_account.py",
+      "sha": "1a53318f726f346a34329565bb4241f96bf4a94d"
+    }
+  ]
+}

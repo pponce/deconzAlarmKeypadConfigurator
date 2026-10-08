@@ -81,3 +81,4 @@ The Node.js UI must not simply be dropped into the Python branch: its changed en
 Compared Git blob IDs and file modes, read all six changed common files, reviewed original-only setup paths and both controller integrations, and inspected the latest Node.js UI commits. No source-code behavior, installed service, gateway data or runtime state changed during this comparison. No hardware tests were performed.
 
 The `legacy-python` branch remains unchanged at the inspected preservation commit. This update adds the comparison and source-selection record to `main`, with a link from its README. It does not implement the standalone Node.js application or claim that the Node.js sources have already been copied here.
+

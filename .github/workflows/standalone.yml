@@ -1,0 +1,65 @@
+name: Standalone admin
+on:
+  push:
+    branches: [main]
+    paths: ['src/**', 'bin/**', 'test/**', 'scripts/**', 'web-admin/**', 'package*.json', '.github/workflows/standalone.yml']
+  pull_request:
+    paths: ['src/**', 'bin/**', 'test/**', 'scripts/**', 'web-admin/**', 'package*.json', '.github/workflows/standalone.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: standalone-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      matrix:
+        node: ['22', '24']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - run: npm test
+      - run: node bin/deconz-keypad-admin.js help
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.2-noble
+      options: --init --ipc=host
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Install browser tooling
+        run: npm install --prefix "$RUNNER_TEMP/browser" --no-save --package-lock=false --ignore-scripts playwright@1.58.2
+      - name: Admin read workflows on desktop and mobile
+        id: reads
+        env:
+          PLAYWRIGHT_MODULE: ${{ runner.temp }}/browser/node_modules/playwright
+          PREVIEW_OUTPUT: ${{ runner.temp }}/screenshots
+        run: node scripts/web-admin-browser.mjs
+      - name: "Read result: ${{ steps.reads.outputs.result || steps.reads.outcome }}"
+        if: always()
+        run: echo "Read diagnostics are recorded in this step name."
+      - name: Standalone startup, durable writes and recovery
+        id: writes
+        env:
+          PLAYWRIGHT_MODULE: ${{ runner.temp }}/browser/node_modules/playwright
+          PREVIEW_OUTPUT: ${{ runner.temp }}/screenshots
+        run: node scripts/web-admin-write-browser.mjs
+      - name: "Write result: ${{ steps.writes.outputs.result || steps.writes.outcome }}"
+        if: always()
+        run: echo "Write diagnostics are recorded in this step name."
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: standalone-admin-browser
+          path: ${{ runner.temp }}/screenshots

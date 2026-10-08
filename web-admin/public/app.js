@@ -1,0 +1,862 @@
+'use strict';
+(() => {
+  const $ = s => document.querySelector(s);
+  const esc = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const tell = (message, error=false) => { $('#message').textContent=message; $('#message').classList.toggle('gp-error',error); };
+  let webAccount={role:'admin'}, regular=false;
+  const regularPages=['users','access','protection'];
+  let csrf='', overview=null, selected=null, adding=false, current=null, review=null, page='users', busy=false;
+  const pages=['gateway','access','users','history','protection','alarm','debug','keypad'];
+  let selectedExtension=null;
+  const phone=matchMedia('(max-width:760px), (max-width:950px) and (pointer:coarse)'),nav=$('#main-navigation'),menu=$('#mobile-navigation');
+  let phoneDetail=history.state?.configuratorUser===true;
+  function leaveUserDraft(){return !(phone.matches&&page==='users'&&$('#editor').dataset.dirty==='true')||confirm('Discard unsaved edits to this user?');}
+  function closeMenu(){if(menu.open)menu.close();}
+  function mobileLayout(){
+    document.body.classList.toggle('gp-phone-detail',phone.matches&&phoneDetail);
+    const summary=$('#user-alarm-access'),button=$('#user-list [aria-pressed="true"]');
+    if(summary){if(phone.matches&&phoneDetail)$('#mobile-user-summary').append(summary);else if(button)button.after(summary);}
+  }
+  function openUserDetail(){if(!phone.matches)return;if(!phoneDetail){history.pushState({configuratorUser:true},'');phoneDetail=true;}mobileLayout();$('#mobile-users-back').focus({preventScroll:true});window.scrollTo(0,0);}
+  $('#mobile-users-back').onclick=()=>{if(phoneDetail)history.back();};
+  window.addEventListener('popstate',()=>{phoneDetail=history.state?.configuratorUser===true;mobileLayout();if(!phoneDetail)$('#user-list [aria-pressed="true"]')?.focus();});
+  $('#mobile-menu').onclick=()=>{$('#mobile-navigation-slot').append(nav);menu.showModal();$('#mobile-menu').setAttribute('aria-expanded','true');};
+  $('#mobile-menu-close').onclick=closeMenu;
+  menu.addEventListener('click',event=>{if(event.target===menu)closeMenu();});
+  menu.addEventListener('close',()=>{$('#application').prepend(nav);$('#mobile-menu').setAttribute('aria-expanded','false');});
+  nav.addEventListener('click',event=>{if(event.target.closest('[data-page],[data-extension]'))closeMenu();});
+  phone.addEventListener('change',()=>{closeMenu();mobileLayout();});
+  function clearExtensionFrames(){for(const frame of document.querySelectorAll('#extension-frames iframe'))frame._resize?.disconnect();$('#extension-frames').replaceChildren();$('#extension-host').hidden=true;}
+  async function openExtension(extension){
+    if(regular)throw Error('Your account does not have permission for this action.');
+    if(demoMode)throw Error('Turn off demo data before opening extension settings.');
+    const url=new URL(extension.page,location.origin);
+    if(url.origin!==location.origin||!/^\/extensions\/[a-z][a-z0-9-]{0,26}\/index\.html$/.test(url.pathname)||url.search||url.hash)throw Error('Extension page unavailable.');
+    if(!leaveUserDraft())return;
+    closePageHelp();cancelKeypad();page='extension';selectedExtension=extension.id;
+    if(phoneDetail){phoneDetail=false;history.replaceState(null,'');mobileLayout();}
+    for(const id of pages)$('#'+id).hidden=true;
+    $('#configuration-filters').hidden=true;$('#configuration-context').hidden=true;
+    document.querySelectorAll('[data-page]').forEach(b=>b.setAttribute('aria-pressed','false'));
+    document.querySelectorAll('[data-extension]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.extension===extension.id)));
+    $('#extension-title').textContent=extension.name;$('#extension-host').hidden=false;
+    for(const frame of document.querySelectorAll('#extension-frames iframe'))frame.hidden=frame.dataset.extensionId!==extension.id;
+    let frame=[...document.querySelectorAll('#extension-frames iframe')].find(f=>f.dataset.extensionId===extension.id);
+    if(!frame){
+      frame=document.createElement('iframe');frame.dataset.extensionId=extension.id;frame.title=extension.name;frame.className='gp-extension-frame';
+      frame.onload=()=>{try{const doc=frame.contentDocument;if(!doc?.body)return;doc.body.classList.add('gp-extension-embedded');
+        const css=doc.createElement('link');css.rel='stylesheet';css.href='/style.css';doc.head.append(css);
+        const resize=()=>{if(!frame.hidden)frame.height=String(Math.max(400,doc.body.scrollHeight+24));};
+        frame._resize=new ResizeObserver(resize);frame._resize.observe(doc.body);css.onload=resize;resize();
+      }catch(_){tell('Extension could not be displayed. Reload and sign in again if needed.',true);}};
+      frame.src=url.href;$('#extension-frames').append(frame);
+    }
+    frame.hidden=false;remember();window.scrollTo(0,0);
+  }
+  let demoMode=false, selectedGateway='', gateways=[], contextReady=false;
+  // Keep navigation only, per tab. Never persist form drafts, PINs or session tokens.
+  function remember(){try{sessionStorage.setItem(demoMode?'configurator-demo-navigation':'configurator-navigation',JSON.stringify({page,selected,gateway:selectedGateway,alarm:selectedAlarm,...(page==='extension'?{extension:selectedExtension}:{})}));}catch(_){}}
+  function restoreNavigation(){
+    selectedExtension=null;
+    try{
+      const saved=JSON.parse(sessionStorage.getItem(demoMode?'configurator-demo-navigation':'configurator-navigation'));
+      if(typeof saved?.gateway==='string')selectedGateway=saved.gateway;
+      if(Number.isInteger(saved?.alarm))selectedAlarm=saved.alarm;
+      if(pages.includes(saved?.page))page=saved.page;
+      else if(!demoMode&&!regular&&saved?.page==='extension'&&typeof saved.extension==='string'&&/^[a-z][a-z0-9-]{0,26}$/.test(saved.extension)){
+        page='extension';selectedExtension=saved.extension;
+      }else if(page==='extension')page='users';
+      if(typeof saved?.selected==='string'&&/^[0-9a-f]{32}$/.test(saved.selected))selected=saved.selected;
+    }catch(_){if(page==='extension')page='users';}
+  }
+  async function showPage(){
+    if(regular&&!regularPages.includes(page))page='users';
+    if(page==='extension'){
+      // Resolve the saved ID through the current authorized registry, never a saved URL.
+      const extension=!demoMode&&(applicationSettings?.extensions||[]).find(row=>row.id===selectedExtension&&row.page);
+      if(extension){await openExtension(extension);await checkInterruptedChange();return;}
+      page='users';
+    }
+    selectedExtension=null;
+    $('#extension-host').hidden=true;document.querySelectorAll('[data-extension]').forEach(b=>b.setAttribute('aria-pressed','false'));closePageHelp();refreshGatewayConnections();if(page!=='keypad')cancelKeypad();if(page==='debug'&&!$('#debug-mode').checked)page='users';$('#'+page+' .gp-head').after($('#configuration-filters'));updateSelectorVisibility();$('#configuration-context').hidden=['gateway','history'].includes(page);$('#'+page+' .gp-head>div').append($('#configuration-context'));for(const id of pages)$('#'+id).hidden=id!==page;document.querySelectorAll('[data-page]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.page===page));remember();if(page!=='history'&&page!=='gateway'&&!inventory)await loadInventory();updateContext();if(page==='gateway')await loadInventory();else if(page==='access'){$('#grant-preview').replaceChildren();overview=await api('overview');renderGrantPreview();}else if(page==='alarm')await loadAlarm();else if(page==='protection')await loadLockout();else if(page==='history')await loadHistory(true);else if(page==='debug')await loadDebug();else if(page==='keypad')await loadKeypad();else{adding=false;await loadUsers();}await checkInterruptedChange();}
+  let inventory=null, selectedAlarm=null, attaching=null;
+  let alarmSample=null, alarmRevision=null;
+  let lockoutPolicy=null, lockoutSample=null, lockoutSampleAt=0, lockoutKeypads=[], lockoutAlarmName='';
+  const errors = {standalone_restart_required:'A connection change is saved. Restart the standalone admin server to activate it.',standalone_config_changed:'Connection settings changed. Close and reopen Settings before editing again.',forbidden:'Your account does not have permission for this action.',protected_identity:'Only an administrator can change this protected user.',administrator_attention_required:'An administrator must complete the required maintenance or recovery before this change can proceed.',username_invalid:'Use 1–64 letters, numbers, dots, underscores or hyphens, starting with a letter or number.',username_in_use:'That username is already in use.',last_admin_required:'Keep at least one enabled administrator account.',admin_username_required:'Choose your administrator username first.',current_password_incorrect:'The current password is incorrect.',password_length_invalid:'Use 8–256 characters for your new password.',passwords_do_not_match:'The new passwords do not match.',password_unchanged:'Choose a different password.',web_account_pending_review:'The password update needs review. Keep the saved state intact.',keypad_managed_alarm_required:'This page requires managed users on the selected alarm.',invalid_keypad_request:'The keypad request was not valid.',home_screen_name_invalid:'Use 1–32 printable characters for the Home-screen name.',account_revision_changed:'Web accounts changed while this request was starting. Refresh the page before trying again.',login_failed:'Username or password not recognized.',login_required:'Please sign in again.',login_rate_limited:'Too many attempts. Wait a minute before trying again.',
+    last_unrestricted_owner_required:'This alarm must retain an unrestricted owner. Assign another owner before removing this role.',
+    owner_must_be_unrestricted:'An owner must stay enabled with arm/disarm API access, unlimited uses and no schedule.',
+    pins_do_not_match:'The two PIN entries do not match.',
+    pin_unchanged:'Choose a different PIN.',
+    history_retention_changed_reload:'Activity retention changed in another session. Refresh the log and try again.',
+    history_confirmation_required:'Confirm before clearing activity history.',
+    invalid_history_retention:'Choose 1, 3, 7 or 30 days for activity retention.',
+    invalid_pin:'Use 4–16 digits for the PIN.',
+    unrestricted_homebridge_user_required:'Each included alarm needs an enabled grant with arm/disarm API access, unlimited uses and no schedule.',
+    invalid_homebridge_alarms:'Select at least one alarm for Homebridge.',
+    homebridge_alarm_removal_requires_review:'Existing Homebridge alarm bindings cannot be removed in this flow.',
+    homebridge_binding_changed:'The Homebridge credential binding changed. Reload and review before changing a PIN.',
+    pin_recovery_required:'PIN update needs recovery review. Keep controls unused and read the Homebridge failure details.',
+    revision_conflict:'These settings changed. Reload and review before saving.',
+    lockout_plugin_update_required:'Install the lockout-capable deCONZ plugin before using this page.',
+    invalid_alarm_timings:'Use whole seconds from 0 to 255 for all nine timing settings.',
+    disarm_before_timing_changes:'Disarm the alarm before saving timing settings.',
+    alarm_plugin_update_required:'Install the updated deCONZ plugin before editing alarm timings.',
+    alarm_timing_result_unknown_refresh:'Timing changes could not be confirmed. Reload and review the current values before saving again.',
+    invalid_lockout_policy:'Check the attempt count, time window and three ascending durations (maximum 3,600 seconds each).',
+    managed_users_required:'Enable managed users before enabling keypad protection.',
+    settings_changed_refresh:'Settings changed since you loaded them. Reload and review again.',
+    pin_already_assigned:'That PIN is already assigned to another user.',
+    gateway_result_unknown_refresh_before_retry:'The result could not be confirmed. Reload before making another change.',
+    explicit_main_migration_required:'First review Main and explicitly enable managed users.',
+    main_credential_protected_until_homebridge_sync:'The alarm owner must remain unrestricted. PIN changes also require coordinated Homebridge synchronization.',
+    ambiguous_expiry_choose_utc:'That expiry time occurs twice during a clock change. Choose an unambiguous time or use UTC.',
+    invalid_weekly_window:'Check each time window: the end must be after the start. Split overnight access into two days.',
+    invalid_timezone:'Enter a valid timezone, such as America/Los_Angeles or UTC.',
+    update_failed_or_revision_conflict:'This user may have changed. Reload and review before saving again.',
+    delete_failed_or_revision_conflict:'This user may have changed. Reload before trying deletion again.',
+    nonexistent_expiry:'That local time does not exist during the daylight-saving change. Choose another time.'};
+  async function api(path, body, context={gateway:selectedGateway,alarm:selectedAlarm}, options={}) {
+    const auth=path==='accounts'||path.startsWith('account/')||['login','logout','session','settings','account/password','setup/gateway','setup/application'].includes(path);
+    if(!auth&&!path.startsWith('history/')&&body!==undefined&&!contextReady)throw Error('Reload the selected gateway before making changes.');
+    if(demoMode&&!auth&&path!=='setup')return window.ConfiguratorDemo.request(path,body,context);
+    if(!auth&&path!=='setup'&&context.gateway?.startsWith('demo-'))throw Error('Demo targets cannot be sent to the server.');
+    const headers=body===undefined?{}:{'Content-Type':'application/json','X-CSRF-Token':csrf};
+    if(!auth&&!['gateways','activity-options','history/query','history/retention','history/clear','setup'].includes(path)){headers['X-Configurator-Gateway']=context.gateway;if(context.alarm!==null)headers['X-Configurator-Alarm']=String(context.alarm);}
+
+    if(['users/save','users/delete','users/rotate-pin','alarm/save','lockout/save','lockout/reset'].includes(path)){
+      if(!options.reviewed&&!confirm('Save this change? A policy snapshot will be retained. Remote gateway credentials require a separate backup by its administrator.'))throw Error('Change cancelled.');
+      body={...body,backup_acknowledged:true};
+    }
+    if(path==='overview')path='administration';
+    const response=await fetch('/api/'+path,{method:body===undefined?'GET':'POST',credentials:'same-origin',cache:'no-store',
+      headers,body:body===undefined?undefined:JSON.stringify(body)});
+    const result=await response.json();
+    if(!response.ok){ if(response.status===401) signedOut(); const error=new Error(errors[result.error]||'The request could not be completed ('+result.error+').');error.code=result.error;throw error; }
+    return result;
+  }
+  const homebridgeFlow=window.ConfiguratorHomebridgeFlow({api,extensions:()=>applicationSettings?.extensions||[],
+    nativeHomebridge:()=>applicationSettings?.homebridge?.profile==='homebridge-child-bridge',
+    save:(request,context)=>api('users/rotate-pin',request,context,{reviewed:true}),
+    extension:async(id,route,body)=>{
+      if(!/^[a-z][a-z0-9-]{0,26}$/.test(id)||!/^[a-z][a-z0-9-]{0,31}$/.test(route))throw Error('Integration route unavailable.');
+      const response=await fetch('/api/extensions/'+id+'/'+route,{method:body===undefined?'GET':'POST',credentials:'same-origin',cache:'no-store',
+        headers:body===undefined?{}:{'Content-Type':'application/json','X-CSRF-Token':csrf},body:body===undefined?undefined:JSON.stringify(body)});
+      const data=await response.json();if(!response.ok){if(response.status===401)signedOut();const error=new Error(errors[data.error]||'The integration could not complete this step ('+data.error+').');error.code=data.error;throw error;}return data;
+    }});
+  async function continueHomebridge(context,tx){
+    const result=await homebridgeFlow.open({context,transaction:tx});
+    if(result.resolved)clearInterruptedChange();
+    if(page==='users')await loadUsers();await checkInterruptedChange();
+    if(result.completed)tell('Homebridge access updated. All required checks are complete.');
+  }
+  window.addEventListener('message',event=>{
+    if(event.origin!==location.origin||event.data?.type!=='configurator-homebridge-flow'||regular||busy)return;
+    if(![...document.querySelectorAll('#extension-frames iframe')].some(frame=>frame.contentWindow===event.source))return;
+    act(async()=>{const tx=await api('transaction'),pending=tx.homebridge_pending?.[0];if(!pending)throw Error('No Homebridge update is waiting. Start user or PIN changes on Users.');await continueHomebridge({gateway:pending.gateway,alarm:pending.transaction.alarm},pending.transaction);});
+  });
+  async function act(fn) { if(busy)return; busy=true;const controls=['#settings-gear','#debug-mode','#demo-mode','#demo-reset','#gateway-select','#alarm-select','#access-alarm','#history-gateway','#history-alarm','#history-pause','#history-refresh','#history-clear','#history-retention','#history-keypad','#history-deconz','#history-administration'];controls.forEach(s=>{if($(s))$(s).disabled=true;});try{await fn();}catch(e){for(const id of ['pin','pin-repeat','password','recovery-pin']){const input=$('#'+id);if(input)input.value='';}tell(e.message||'Connection unavailable.',true);if(csrf)try{await checkInterruptedChange();}catch(_){};}finally{busy=false;controls.forEach(s=>{if($(s))$(s).disabled=false;});if($('#history-alarm'))$('#history-alarm').disabled=!historyGateway&&historyOptions.length!==1;if($('#editor').dataset.loading)$('#editor').querySelectorAll('input,select,button').forEach(x=>x.disabled=true);} }
+  function signedOut(){homebridgeFlow.clear();$('#user-list').replaceChildren();$('#mobile-user-summary').replaceChildren();for(const id of pages)$('#'+id).hidden=true;closeMenu();clearExtensionFrames();phoneDetail=false;history.replaceState(null,'');mobileLayout();$('#mobile-menu').hidden=true;clearInterruptedChange();window.ConfiguratorSettings.clear();$('#settings-gear').hidden=true;userLoadGeneration++;closePageHelp();gatewayStatusGeneration++;$('#gateway-connections').replaceChildren();$('#gateway-connections').hidden=true;cancelKeypad();$('#debug-output').value='';contextReady=false;inventory=null;$('#configuration-context').textContent='';$('#gateway-inventory').replaceChildren();$('#grant-preview').replaceChildren();csrf='';overview=null;current=null;review=null;selected=null;adding=false;$('#application').hidden=true;$('#logout').hidden=true;$('#login').hidden=false;$('#editor').replaceChildren();$('#activity').replaceChildren();lockoutPolicy=null;lockoutSample=null;$('#lockout-form').replaceChildren();$('#lockout-status').textContent='';$('#homebridge-panel').replaceChildren();alarmSample=null;alarmRevision=null;$('#alarm-form').replaceChildren();$('#alarm-state').textContent='Loading';$('#alarm-status').textContent='';}
+  let applicationSettings=null;
+  async function loadApplication(){
+    applicationSettings=await api('setup');
+    const nav=$('#extension-navigation');nav.replaceChildren();
+    for(const extension of applicationSettings.extensions||[]){if(!extension.page)continue;const a=document.createElement('button');a.type='button';a.className='gp-button';a.dataset.extension=extension.id;a.textContent=extension.name;a.setAttribute('aria-pressed','false');a.onclick=()=>act(()=>openExtension(extension));nav.append(a);}
+    $('#access-mode').textContent=applicationSettings.access_mode==='observe'?'Observation mode · changes and keypad commands are disabled.':'';
+  }
+  async function signedIn(){const session=await api('session');webAccount=session;regular=session.role==='regular';
+    document.body.classList.toggle('gp-regular',regular);
+    document.querySelectorAll('[data-page]').forEach(b=>b.hidden=regular?!regularPages.includes(b.dataset.page):b.dataset.page==='debug'&&!$('#debug-mode').checked);
+    for(const id of ['demo-mode','debug-mode'])$('#'+id).closest('label').hidden=regular;
+    demoMode=!regular&&sessionStorage.getItem('configurator-demo-active')==='true';restoreNavigation();if(regular&&!regularPages.includes(page))page='users';await loadGateways();await loadApplication();if(applicationSettings.onboarding_required){window.location.assign('/welcome.html');return;}$('#login').hidden=true;$('#application').hidden=false;$('#logout').hidden=false;$('#settings-gear').hidden=false;$('#mobile-menu').hidden=false;mobileLayout();if(!gateways.length){page=regular?'users':'gateway';contextReady=false;}else if(page!=='history')await loadInventory();else contextReady=true;await showPage();tell(demoMode?'Demo mode. Changes affect fictional data only.':'Connected to your local administration server.'); }
+  $('#login').onsubmit=e=>{e.preventDefault();act(async()=>{let password=$('#password').value;$('#password').value='';try{const r=await api('login',{username:$('#username').value.trim(),password});csrf=r.csrf;}finally{password='';}await signedIn();});};
+  $('#logout').onclick=()=>act(async()=>{await api('logout',{});signedOut();tell('Signed out.');});
+  $('#settings-gear').onclick=()=>act(async()=>{if(demoMode)throw Error('Turn off demo data before opening installation settings.');if(pendingOperation())throw Error('Finish the pending operation before opening settings.');await window.ConfiguratorSettings.open(api,message=>{signedOut();tell(message);},updated=>{applicationSettings={...applicationSettings,...updated};},webAccount);});
+  function pendingOperation(){return keypadSending||keypadQueue.length||review||overview?.transaction&&!['none','complete'].includes(overview.transaction.stage);}
+  async function loadGateways(){
+    gateways=(await api('gateways')).gateways;
+    if(!gateways.some(g=>g.id===selectedGateway))selectedGateway=gateways[0]?.id;
+    if(!selectedGateway)selectedGateway='';
+    $('#gateway-select').innerHTML=gateways.map(g=>`<option value="${esc(g.id)}" ${g.id===selectedGateway?'selected':''}>${esc(g.name)}</option>`).join('');
+    $('#demo-mode').checked=demoMode;$('#demo-banner').hidden=!demoMode;$('#demo-reset').hidden=!demoMode;
+    updateSelectorVisibility();
+  }
+  function clearContext(){clearInterruptedChange();userLoadGeneration++;cancelKeypad();$('#debug-output').value='';$('#protection').append($('#protection-editor'));$('#protection-editor').hidden=true;$('#protection-alarms').replaceChildren();$('#lockout-reset').disabled=true;contextReady=false;$('#gateway-inventory').replaceChildren();$('#grant-preview').replaceChildren();$('#activity').replaceChildren();overview=null;inventory=null;selected=null;selectedAlarm=null;adding=false;attaching=null;alarmSample=null;lockoutSample=null;current=null;$('#editor').replaceChildren();$('#homebridge-panel').replaceChildren();$('#alarm-form').replaceChildren();$('#lockout-form').replaceChildren();}
+  async function changeContext(gateway,alarm=null){if(pendingOperation())throw Error('Finish the pending operation before changing context.');clearContext();selectedGateway=gateway;selectedAlarm=alarm;await loadGateways();await loadInventory();await showPage();}
+  $('#gateway-select').onchange=()=>act(async()=>{const next=$('#gateway-select').value;$('#gateway-select').value=selectedGateway;await changeContext(next);});
+  $('#alarm-select').onchange=()=>act(async()=>{if(pendingOperation()){$('#alarm-select').value=String(selectedAlarm);throw Error('Finish the pending operation first.');}selectedAlarm=Number($('#alarm-select').value);selected=null;adding=false;attaching=null;updateContext();await showPage();});
+  try{$('#debug-mode').checked=sessionStorage.getItem('configurator-debug-visible')==='true';}catch(_){}
+  $('[data-page="debug"]').hidden=!$('#debug-mode').checked;
+  $('#debug-mode').onchange=()=>act(async()=>{
+    const enabled=$('#debug-mode').checked;
+    $('[data-page="debug"]').hidden=!enabled;
+    try{sessionStorage.setItem('configurator-debug-visible',String(enabled));}catch(_){}
+    if(!enabled&&page==='debug'){page='users';$('#debug-output').value='';await showPage();}
+  });
+  $('#demo-mode').onchange=()=>act(async()=>{
+    const next=$('#demo-mode').checked;
+    try{
+    if(pendingOperation())throw Error('Finish the pending operation before switching demo mode.');
+    
+    // Verify no active real transaction before hiding the live interface.
+    if(next&&selectedAlarm){const live=await api('transaction');if(!['none','complete'].includes(live.stage))throw Error('Finish the pending real operation first.');}
+    remember();clearContext();demoMode=next;selectedGateway=next?'demo-home':'';page='gateway';restoreNavigation();
+    $('#demo-mode').checked=demoMode;$('#demo-banner').hidden=!demoMode;$('#demo-reset').hidden=!demoMode;
+    sessionStorage.setItem('configurator-demo-active',String(demoMode));await loadGateways();await loadInventory();await showPage();tell(demoMode?'Demo mode: only fictional data will change.':'Real setup reloaded. Demo edits were not applied.');
+    }finally{$('#demo-mode').checked=demoMode;}
+  });
+  $('#demo-reset').onclick=()=>act(async()=>{if(!demoMode)return;if(!confirm('Reset all fictional users and grants? Your real setup is unaffected.'))return;window.ConfiguratorDemo.reset();clearContext();await loadInventory();await showPage();tell('Demo data reset.');});
+  function updateSelectorVisibility(){
+    const gatewayField=$('#gateway-select').closest('label');
+    const alarmField=$('#alarm-context-label');
+    gatewayField.hidden=gateways.length<=1;
+    alarmField.hidden=['gateway','access','users','protection'].includes(page)||(inventory?.alarms.length||0)<=1;
+    $('#configuration-filters').hidden=['gateway','history','extension'].includes(page)||(gatewayField.hidden&&alarmField.hidden);
+  }
+  function updateContext(){
+    updateSelectorVisibility();
+    if(!inventory)return;
+    if(!inventory.alarms.some(a=>Number(a.id)===selectedAlarm))selectedAlarm=Number(inventory.current_alarm_id||inventory.alarms[0]?.id)||null;
+    $('#alarm-select').innerHTML=inventory.alarms.map(a=>`<option value="${esc(a.id)}" ${Number(a.id)===selectedAlarm?'selected':''}>${esc(a.name)}</option>`).join('');
+    const alarm=inventory.alarms.find(a=>Number(a.id)===selectedAlarm);
+    if(page==='protection'){$('#configuration-context').innerHTML=`${demoMode?'DEMO · ':''}${esc(inventory.gateway.name)} · Protection by alarm`;remember();return;}
+    if(page==='users'){$('#configuration-context').innerHTML=`${demoMode?'DEMO · ':''}${esc(inventory.gateway.name)} · All gateway users`;remember();return;}
+    $('#configuration-context').innerHTML=`${demoMode?'DEMO · ':''}${esc(inventory.gateway.name)} · ${esc(alarm?.name||'No alarm')}`;
+    remember();
+  }
+  async function loadInventory(){
+    contextReady=false;inventory=null;updateSelectorVisibility();$('#configuration-context').textContent='Loading gateway context…';
+    const rows=[];
+    for(const g of (page==='gateway'?gateways:gateways.filter(x=>x.id===selectedGateway))){
+      try{const data=await api('inventory',undefined,{gateway:g.id,alarm:null});rows.push({g,data});if(g.id===selectedGateway)inventory=data;}
+      catch(e){rows.push({g,error:true});}
+    }
+    if(!inventory){$('#configuration-context').textContent='Selected gateway unavailable. No configuration fallback is used.';$('#alarm-select').replaceChildren();}
+    else{updateContext();contextReady=true;}
+    const keypadRow=k=>`<li class="gp-keypad-row"><div><strong>${esc(k.name)}</strong><span class="gp-sub">deCONZ sensor ID: ${esc(k.id)}</span></div><span class="gp-sub">${k.reachable?'Reported reachable':'Reachability not confirmed'}</span></li>`;
+    $('#gateway-inventory').innerHTML=rows.map(({g,data,error})=>`<details class="gp-gateway" ${g.id===selectedGateway?'open':''}><summary><strong>${esc(data?.gateway.name||g.name)}</strong> · ${error?'Unavailable':data.alarms.length+' alarms · '+data.keypads.length+' keypads'}</summary>${error?'<p>Could not read this gateway. Refresh to retry.</p>':`<h3>Alarms · ${data.alarms.length}</h3><div class="gp-device-grid">${data.alarms.map(a=>{
+      const pads=data.keypads.filter(k=>k.alarm_ids.includes(a.id));
+      return `<article class="gp-panel gp-body gp-alarm-card"><div class="gp-alarm-heading"><div><h3>${esc(a.name)}</h3><p>deCONZ Alarm ID: ${esc(a.id)}</p></div><span class="gp-pill">${esc(alarmLabel(a.state))}</span></div><h4 class="gp-keypad-title">Assigned keypads · ${pads.length}</h4><ul class="gp-keypad-list">${pads.map(keypadRow).join('')}</ul><button type="button" class="gp-button" data-open-alarm="${esc(a.id)}" data-gateway="${esc(g.id)}" ${a.current?'data-open-current-alarm':''}>Configure alarm</button></article>`;
+    }).join('')}</div><h3>Unassigned keypads · ${data.keypads.filter(k=>!k.alarm_ids.length).length}</h3><ul class="gp-keypad-list">${data.keypads.filter(k=>!k.alarm_ids.length).map(keypadRow).join('')}</ul>`}</details>`).join('');
+    document.querySelectorAll('[data-open-alarm]').forEach(b=>b.onclick=()=>act(async()=>{page='alarm';await changeContext(b.dataset.gateway,Number(b.dataset.openAlarm));}));
+  }
+  function grantDisplayState(grant,identityEnabled=true,now=Date.now()){
+    if(!identityEnabled)return {future:false,label:'User disabled'};
+    if(!grant)return {future:false,label:'No access granted'};
+    if(!grant.grant_enabled)return {future:false,label:'Grant disabled'};
+    if(grant.remaining_uses===0)return {future:false,label:'Uses exhausted'};
+    const rawExpiry=grant.schedule?.expires_at;
+    const expiry=typeof rawExpiry==='number'?rawExpiry:Date.parse(rawExpiry||'');
+    if(Number.isFinite(expiry)&&expiry<=now)return {future:false,label:'Expired'};
+    // A closed weekly window can open again; it is not permanent expiry.
+    return {future:true,label:'Grant enabled'};
+  }
+  function userDisplayState(user){
+    if(!user.enabled)return {future:false,label:'Disabled'};
+    const states=overview.alarms.flatMap(a=>a.users.filter(g=>g.id===user.id).map(g=>grantDisplayState(g)));
+    if(states.some(s=>s.future))return {future:true,label:'Enabled'};
+    if(!states.length)return {future:false,label:'No alarm access'};
+    const reasons=[...new Set(states.map(s=>s.label))];
+    return {future:false,label:reasons.length===1?reasons[0]:'No future access'};
+  }
+  function renderGrantPreview(){
+    const rows=overview.identities.map(u=>{
+      const grants=overview.alarms.flatMap(a=>a.users.filter(x=>x.id===u.id).map(grant=>({a,grant})));const state=userDisplayState(u);
+      return `<article class="gp-grant-user ${state.future?'gp-state-enabled':'gp-state-disabled'}"><h3>${esc(u.name)}${state.future?'':' · '+esc(state.label)}</h3>${grants.length?grants.map(({a,grant:g})=>{
+        const pads=g.all_keypads?'All assigned keypads (including future assignments)':a.keypads.filter(p=>g.keypads.some(k=>k.source===p.source&&k.endpoint===p.endpoint)).map(p=>p.name).join(', ')||'No physical keypad access';
+        const schedule=g.schedule?`${g.schedule.timezone} · ${g.schedule.windows.length} weekly windows${g.schedule.expires_at?' · expires '+g.schedule.expires_at:''}`:'Any time';
+        return `<div class="gp-grant-row ${grantDisplayState(g,u.enabled).future?'gp-state-enabled':'gp-state-disabled'}"><div><strong>${esc(a.name)}</strong><p>${esc(grantDisplayState(g,u.enabled).label)}${g.owner?' · Owner':''} · Arm ${g.arm?'✓':'—'} · Disarm ${g.disarm?'✓':'—'} · API ${g.api_arm_disarm?'✓':'—'}</p><p>${esc(pads)}</p><p>${g.remaining_uses===null?'Unlimited uses':g.remaining_uses+' uses remaining'} · ${esc(schedule)}</p></div><button class="gp-button" data-edit-grant="${u.id}" data-alarm="${a.id}">Edit access</button></div>`;
+      }).join(''):'<p>No alarm access. Add this existing identity through Users.</p>'}</article>`;
+    }).join('');
+    $('#grant-preview').innerHTML=rows+'<button id="edit-access" class="gp-button">Add or edit users</button>';
+    $('#edit-access').onclick=()=>document.querySelector('[data-page="users"]').click();
+    document.querySelectorAll('[data-edit-grant]').forEach(b=>b.onclick=()=>act(async()=>{selectedAlarm=Number(b.dataset.alarm);selected=b.dataset.editGrant;page='users';updateContext();await showPage();openUserDetail();}));
+  }
+  $('#inventory-refresh').onclick=()=>act(async()=>{if(selectedGateway)await api('discover',{}, {gateway:selectedGateway,alarm:null});await loadInventory();});
+  let userLoadGeneration=0;
+  async function loadUsers(){
+    const generation=++userLoadGeneration;
+    const target={gateway:selectedGateway,alarm:selectedAlarm,user:selected,demo:demoMode,session:csrf};
+    const matches=()=>generation===userLoadGeneration&&page==='users'&&target.gateway===selectedGateway&&target.alarm===selectedAlarm&&target.user===selected&&target.demo===demoMode&&target.session===csrf;
+    const editor=$('#editor');
+    editor.dataset.loading='true';editor.setAttribute('aria-busy','true');
+    editor.querySelectorAll('input,select,button').forEach(x=>x.disabled=true);
+    $('#homebridge-panel').inert=true;
+    editor.querySelector('.gp-user-loading')?.remove();
+    const status=document.createElement('div');status.className='gp-user-loading';status.setAttribute('role','status');status.textContent='Loading selected user…';editor.append(status);
+    try{
+      const fresh=await api('overview',undefined,{gateway:target.gateway,alarm:target.alarm});
+      if(!matches())return;
+      overview=fresh;
+
+    if(!overview.alarms.some(a=>a.id===selectedAlarm))selectedAlarm=overview.homebridge_alarm||overview.alarms[0]?.id;
+    const alarm=overview.alarms.find(a=>a.id===selectedAlarm);if(!alarm)throw Error('No alarm available on this gateway.');updateContext();overview.users=alarm.users;overview.managed=alarm.managed;overview.keypads=alarm.keypads;
+    $('#migration').hidden=overview.managed;$('#count').textContent=overview.identities.length+' gateway users';$('#add').disabled=overview.identities.length>=256;
+    if(!adding && !overview.identities.some(u=>u.id===selected))selected=overview.identities[0]?.id;
+    if(!adding)attaching=null;
+    if(!adding && selected && !overview.users.some(u=>u.id===selected)){
+      attaching=overview.identities.find(u=>u.id===selected);adding=true;
+    }
+    remember();renderList();renderUser();renderHomebridge();$('#homebridge-panel').inert=false;
+    }catch(error){
+      if(matches()){status.textContent='Could not load this user. Select a user again to retry.';editor.setAttribute('aria-busy','false');}
+      throw error;
+    }
+  }
+  function renderList(){ const draft=document.createElement('div');draft.innerHTML=overview.identities.map(u=>{const count=overview.alarms.filter(a=>a.users.some(g=>g.id===u.id)).length,state=userDisplayState(u);return `<button type="button" class="gp-person ${state.future?'gp-state-enabled':'gp-state-disabled'}" data-id="${u.id}" aria-pressed="${u.id===selected}"><span class="gp-avatar">${esc(u.name.slice(0,2).toUpperCase())}</span><span class="gp-person-meta"><span class="gp-person-name">${esc(u.name)}</span><span class="gp-sub">${esc(state.label)} · ${count?count+' alarm'+(count===1?'':'s')+' with access grants':'No alarm access'}</span></span><span>›</span></button>`;}).join('');
+    const list=$('#user-list'),wanted=new Set([...draft.children].map(b=>b.dataset.id));
+    list.querySelectorAll('[data-id]').forEach(b=>{if(!wanted.has(b.dataset.id))b.remove();});
+    let previous=null;
+    for(const next of [...draft.children]){
+      let button=[...list.querySelectorAll('[data-id]')].find(b=>b.dataset.id===next.dataset.id);
+      if(!button)button=next;
+      else{button.className=next.className;button.setAttribute('aria-pressed',next.getAttribute('aria-pressed'));if(button.innerHTML!==next.innerHTML)button.innerHTML=next.innerHTML;}
+      const position=previous?previous.nextSibling:list.firstChild;
+      if(button!==position)list.insertBefore(button,position);
+      previous=button;
+    }
+    document.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>act(async()=>{if(phone.matches&&b.dataset.id===selected&&!adding&&$('#editor').children.length){openUserDetail();return;}if(phone.matches&&$('#editor').dataset.dirty==='true'&&!confirm('Discard unsaved edits to this user?'))return;adding=false;attaching=null;selected=b.dataset.id;openUserDetail();
+      if(!overview.users.some(u=>u.id===selected)){const alarm=overview.alarms.find(a=>a.users.some(u=>u.id===selected));if(alarm){selectedAlarm=alarm.id;overview.users=alarm.users;overview.managed=alarm.managed;overview.keypads=alarm.keypads;}else{adding=true;attaching=overview.identities.find(u=>u.id===selected);}}
+      remember();await loadUsers();})); renderUserAlarmSummary(); }
+  function renderUserAlarmSummary(){
+    $('#user-alarm-access')?.remove();
+    const uid=attaching?.id||selected;
+    if((adding&&!attaching)||!uid)return;
+    const selectedButton=[...document.querySelectorAll('#user-list [data-id]')].find(b=>b.dataset.id===uid);
+    if(!selectedButton)return;
+    const box=document.createElement('section');box.className='gp-body gp-user-access-summary';box.id='user-alarm-access';
+    box.setAttribute('aria-label','Alarm access summary');
+    const identity=overview.identities.find(x=>x.id===uid);
+    if(!identity?.enabled)return;
+    box.innerHTML='<h3>Alarm access</h3><p class="gp-sub">Each alarm has its own permissions, keypads, schedule and remaining uses. Choose an alarm in the editor to configure its access.</p>'+overview.alarms.map(a=>{
+      const g=a.users.find(x=>x.id===uid);
+      const state=grantDisplayState(g,identity.enabled);
+      const summary=g?`${state.label} · ${g.remaining_uses===null?'Unlimited uses':g.remaining_uses+' uses remaining'} · ${g.schedule?'Scheduled access':'No schedule restriction'}`:'No access granted';
+      return `<div class="gp-note ${state.future?'gp-state-enabled':'gp-state-disabled'}"><strong>${esc(a.name)}</strong><p>${esc(summary)}</p></div>`;
+    }).join('');
+    selectedButton.after(box);mobileLayout();
+  }
+  function renderUserAlarmAccess(){
+    renderUserAlarmSummary();
+    const uid=attaching?.id||selected;
+    $('#access-alarm').onchange=()=>act(async()=>{selectedAlarm=Number($('#access-alarm').value);const a=overview.alarms.find(x=>x.id===selectedAlarm);overview.users=a.users;overview.managed=a.managed;overview.keypads=a.keypads;
+      const identity=overview.identities.find(x=>x.id===uid);attaching=identity&&!a.users.some(x=>x.id===uid)?identity:null;adding=!identity||Boolean(attaching);selected=identity?.id||null;
+      if(identity){adding=false;remember();await loadUsers();}else{$('#migration').hidden=a.managed;remember();renderUser();renderList();}});
+  }
+  function homebridgeIdentity(){if(overview?.homebridge_binding)return overview.homebridge_binding.user;const hb=overview?.homebridge_selection;if(!hb)return null;return hb.stage==='complete'?hb.user_id:hb.previous_selection?.user_id||(hb.stage==='none'?null:null);}
+  function renderUser(){ $('#editor').dataset.dirty='false';delete $('#editor').dataset.loading;$('#editor').setAttribute('aria-busy','false');closePageHelp();let userEdited=false;const u=adding?{id:attaching?.id||null,revision:0,user_revision:attaching?.user_revision??attaching?.revision??0,name:attaching?.name||'',enabled:attaching?.enabled??true,remaining_uses:null,api_arm_disarm:!overview.managed,schedule:null,grant_enabled:true,owner:!overview.managed,arm:true,disarm:true,all_keypads:false,keypads:[]}:overview.users.find(x=>x.id===selected);
+    if(!u){$('#editor').innerHTML='<div class="gp-body">No user is available. Review the gateway configuration locally.</div>';return;}
+    const homebridgeUser=homebridgeIdentity()===u.id;
+    const boundAlarms=(overview.homebridge_binding?.alarms||overview.homebridge_selection?.alarm_ids||(overview.homebridge_available?[]:[overview.homebridge_alarm||selectedAlarm])).slice().sort((a,b)=>a-b);
+    const eligibleAlarms=overview.alarms.filter(a=>a.users.some(x=>x.id===u.id&&x.enabled&&x.grant_enabled&&x.arm&&x.disarm&&x.api_arm_disarm&&x.remaining_uses===null&&!x.schedule));
+    const hbReady=overview.homebridge_status?.configured!==false;
+    const hbEligible=hbReady&&!adding&&eligibleAlarms.length>0&&boundAlarms.every(id=>eligibleAlarms.some(a=>a.id===id));
+    const selectedName=overview.identities.find(x=>x.id===homebridgeIdentity())?.name||'the current user';
+    const protectedUser=u.owner||(homebridgeUser&&boundAlarms.includes(selectedAlarm));
+    const schedule=u.schedule||null;
+    $('#editor').innerHTML=`<div class="gp-body"><div class="gp-identity-row"><label class="gp-field">Name<input id="name" maxlength="64" required value="${esc(u.name)}"></label><label class="gp-check"><input id="enabled" type="checkbox" ${u.enabled?'checked':''}>Enabled on this gateway</label></div>
+      <label class="gp-field">${attaching?'Current PIN (verify alarm uniqueness)':adding?'PIN':'PIN · leave blank to keep it'}<input id="pin" type="password" inputmode="numeric" autocomplete="new-password" pattern="[0-9]{4,16}" maxlength="16" ${adding?'required':''} ></label>
+      ${!adding&&(overview.pin_rotation_available||overview.homebridge_sync===false)?'<label class="gp-field">Repeat PIN<input id="pin-repeat" type="password" inputmode="numeric" autocomplete="new-password" pattern="[0-9]{4,16}" maxlength="16"></label><p class="gp-sub">PIN changes apply to this gateway only. Changes are verified through the coordinated maintenance transaction.</p>':''}
+      ${!adding&&(overview.homebridge_available||overview.homebridge_status)?`<div class="gp-homebridge-selection">
+        <p class="gp-sub gp-form-note">${homebridgeIdentity()?`Current Homebridge user: <strong>“${esc(selectedName)}”</strong>.`:'No Homebridge user is selected on this gateway.'}</p>
+        <label class="gp-check"><input id="hb-use" type="checkbox" aria-describedby="hb-choice-note" aria-controls="hb-configuration" ${homebridgeUser?'checked':''} ${!hbEligible?'disabled':''}>Use this user for Homebridge on this gateway</label>
+        <p id="hb-choice-note" class="gp-sub gp-form-note">${!hbReady?esc(window.ConfiguratorHomebridgeReadiness(overview.homebridge_status?.error)):homebridgeUser?'This user is currently selected for Homebridge.':!hbEligible?`To choose this user for Homebridge, first give them enabled API arm/disarm access, unlimited uses and no schedule or expiry on ${boundAlarms.length?'every alarm already linked to Homebridge':'at least one alarm'}.`:'Select this option to use this user’s PIN for Homebridge.'}</p>
+        <div id="hb-configuration" ${homebridgeUser?'':'hidden'}>
+          <h3>Alarms to use with Homebridge</h3>
+          <p class="gp-sub">Existing linked alarms stay selected when changing the Homebridge user.</p>
+          <div id="hb-alarms">${overview.alarms.map(a=>`<label class="gp-check"><input type="checkbox" data-hb-alarm="${a.id}" ${boundAlarms.includes(a.id)?'checked disabled':eligibleAlarms.some(x=>x.id===a.id)?'':'disabled'}>${esc(a.name)}${boundAlarms.includes(a.id)?' · already linked to Homebridge':''}</label>`).join('')}</div>
+          <p class="gp-sub gp-form-note">Select the alarms and enter this user’s PIN twice to synchronize Homebridge. Save access changes first. Homebridge is stopped and restarted through coordinated maintenance.</p>
+          <p class="gp-sub gp-form-note">Saving opens a guided Homebridge update. Any required preparation and physical confirmations happen here, without switching pages.</p>
+        </div>
+      </div>`:''}
+      <fieldset class="gp-alarm-access"><legend>Access for one alarm</legend>
+      <div class="gp-alarm-access-heading"><label class="gp-field">Configure access for alarm<select id="access-alarm">${overview.alarms.map(a=>`<option value="${a.id}" ${a.id===selectedAlarm?'selected':''}>${esc(a.name)}</option>`).join('')}</select></label>
+      <p class="gp-sub">Every setting in this group applies only to <strong>${esc(overview.alarms.find(a=>a.id===selectedAlarm)?.name||'this alarm')}</strong>. Other alarm grants stay unchanged.</p></div>
+      ${homebridgeUser&&boundAlarms.includes(selectedAlarm)?'<div class="gp-note">Used by Homebridge. The PIN field above updates deCONZ and Homebridge together. Switch Homebridge to another user before restricting access.</div>':''}
+      <label class="gp-check"><input id="grant-enabled" type="checkbox" ${u.grant_enabled?'checked':''} ${protectedUser?'disabled':''}>Enable this alarm grant</label>
+      <label class="gp-check"><input id="owner" type="checkbox" ${u.owner?'checked':''}>Owner for this alarm (unrestricted time, uses and API)</label>
+      <p id="owner-policy-note" class="gp-sub gp-form-note" hidden>Owner keeps this user and alarm grant enabled, allows arming/disarming and API access, and removes time and use limits. Uncheck Owner to edit those restrictions. Keypad choices remain separate. Each alarm must retain at least one owner.</p>
+      <label class="gp-check"><input id="allow-arm" type="checkbox" ${u.arm?'checked':''} ${protectedUser?'disabled':''}>Allow arming</label>
+      <label class="gp-check"><input id="allow-disarm" type="checkbox" ${u.disarm?'checked':''} ${protectedUser?'disabled':''}>Allow disarming</label>
+      <label class="gp-check"><input id="api-access" type="checkbox" ${u.api_arm_disarm?'checked':''} ${protectedUser?'disabled':''}>Allow alarm arm/disarm via API</label>
+      <p class="gp-sub gp-form-note">API access and physical-keypad access are separate. No selected keypads means no physical access.</p>
+      <hr class="gp-rule"><h3>Which keypads can this user access?</h3><p class="gp-sub">Choose where this user may enter a PIN for this alarm. This does not change keypad device settings.</p>
+      <label class="gp-check"><input id="all-keypads" type="checkbox" ${u.all_keypads?'checked':''}>All keypads assigned to this alarm, including future assignments</label>
+      <div id="keypad-choices">${overview.keypads.map((p,i)=>`<label class="gp-check"><input data-keypad="${i}" type="checkbox" ${u.keypads.some(k=>k.source===p.source&&k.endpoint===p.endpoint)?'checked':''}>${esc(p.name)}</label>`).join('')}</div>
+      <hr class="gp-rule"><h3>Limits for this alarm</h3><p class="gp-sub gp-form-note" id="alarm-limits-note">These limits apply to this user’s access to ${esc(overview.alarms.find(a=>a.id===selectedAlarm)?.name||'this alarm')}, across all allowed keypads. Three remaining uses means three total, not three per keypad. Other alarms have their own allowance and schedule. Choosing all or specific keypads does not change these limits.</p>
+      <div class="gp-access-limit"><h3>Usage allowance</h3><label class="gp-check"><input id="unlimited" type="checkbox" ${u.remaining_uses===null?'checked':''} ${protectedUser?'disabled':''}>Unlimited uses</label><p id="uses-unlimited-note" class="gp-sub" ${u.remaining_uses===null?'':'hidden'}>No use limit for this alarm.</p>
+      <div class="gp-field" id="uses-limit" ${u.remaining_uses===null?'hidden':''}><div class="gp-uses-heading"><label for="uses">Uses remaining</label><button class="gp-button" id="refresh-uses" type="button" ${adding?'hidden':''} title="Reload this user’s saved settings and remaining uses">Refresh</button></div><input id="uses" type="number" min="0" max="1000000" step="1" required value="${u.remaining_uses===null?'':u.remaining_uses}" ${u.remaining_uses===null||protectedUser?'disabled':''}><span class="gp-sub">Shared across this user’s allowed keypads for this alarm. Zero remaining uses blocks keypad access under this grant.</span></div></div>
+      <div class="gp-access-limit"><h3>Schedule &amp; expiration</h3><p class="gp-sub gp-form-note">Choose when this user may access this alarm. This applies to every allowed keypad.</p><div class="gp-note" ${overview.schedules?'hidden':''}>Requires the schedule-capable deCONZ update. No schedule is being enforced by this interface.</div>
+      <label class="gp-check"><input id="scheduled" type="checkbox" ${schedule?'checked':''} ${!overview.schedules||protectedUser?'disabled':''}>Restrict access by time</label>
+      <div id="schedule-fields" ${schedule?'':'hidden'}><label class="gp-field">Timezone<input id="zone" value="${esc(schedule?.timezone||Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC')}" placeholder="America/Los_Angeles"></label>
+      <div class="gp-row"><div class="gp-title-row"><h3>Weekly access</h3><button type="button" class="gp-help-button" id="weekly-help" aria-label="Help for Weekly access" aria-expanded="false" aria-controls="help-weekly" aria-describedby="help-weekly"><span aria-hidden="true">?</span></button></div><div id="help-weekly" class="gp-page-help" popover="manual" role="tooltip"><strong>Weekly access</strong><p>Add separate windows for the same day; overlapping windows combine. Up to 28 windows are allowed.</p><p><strong>From 12:00 AM</strong> starts at midnight at the beginning of the selected day. <strong>Until 12:00 AM</strong> ends at midnight at the end of that day. For example, Monday 9:00 PM–12:00 AM ends as Tuesday begins.</p><p>Use <strong>All day</strong> for the entire selected day (12:00 AM–12:00 AM). End times are exclusive: 11:59 PM leaves out the final minute. Times use the schedule’s timezone; the picker follows your browser’s time format. Expiry and remaining uses still apply.</p></div><button type="button" class="gp-button" id="add-window">+ Time window</button></div><div id="windows"></div><p class="gp-sub">With no windows, access is allowed every day until expiry. Split overnight access into two days. Until midnight means the end of the selected day; see Weekly access help.</p>
+      <div class="gp-expiry-row"><label class="gp-field gp-expiry-field">Expires at · optional<input id="expires" type="datetime-local"></label><button type="button" class="gp-button" id="clear-expiry" aria-label="Clear expiration date and time">Clear</button></div><p class="gp-sub">Uses the timezone above. Blank means no expiry. Clock-change gaps and ambiguous expiry times require another time. Weekly windows follow DST.</p></div></div>
+      ${!overview.managed?'<div class="gp-note gp-warning"><label class="gp-check"><input type="checkbox" id="enable-management">Enable managed users for this alarm with this unrestricted owner.</label></div>':''}
+      <div class="gp-note">Disabling preserves the PIN and allowance. Re-enabling does not refill it. An accepted keypad disarm consumes a use when accepted by deCONZ.</div>
+      </fieldset></div>
+      <div class="gp-footer"><button type="button" class="gp-delete" id="delete" ${protectedUser?'disabled':''}>${adding?'Cancel':'Remove alarm access'}</button><div><button class="gp-button" type="button" id="reload">Reload</button> <button class="gp-button primary">${attaching?'Add alarm access':adding?'Create user':overview.managed?'Save changes':'Enable managed users'}</button></div></div>`;
+    renderUserAlarmAccess();setupPageHelp($('#weekly-help'));
+    if($('#hb-use'))$('#hb-use').onchange=()=>{$('#hb-configuration').hidden=!$('#hb-use').checked;};
+    function keypadChoices(){const all=$('#all-keypads').checked;document.querySelectorAll('[data-keypad]').forEach(x=>x.disabled=all);$('#keypad-choices').classList.toggle('gp-muted-choices',all);}
+    $('#all-keypads').onchange=keypadChoices;keypadChoices();
+    const dayNames=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];const hm=n=>String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0');
+    function addWindow(w={day:1,start:540,end:1020}){
+      if($('#windows').children.length>=28){tell('Use at most 28 weekly time windows.',true);return;}
+      const row=document.createElement('div');row.className='gp-window';
+      row.innerHTML=`<label class="gp-field">Day<select class="window-day">${dayNames.map((d,i)=>`<option value="${d}" ${i+1===w.day?'selected':''}>${d}</option>`).join('')}</select></label><label class="gp-check"><input class="window-full-day" type="checkbox" ${w.start===0&&w.end===1440?'checked':''}>All day</label><label class="gp-field window-time-start">From<input class="window-start" type="time" value="${hm(w.start)}"></label><label class="gp-field window-time-end">Until<input class="window-end" type="time" value="${hm(w.end===1440?0:w.end)}"></label><button type="button" class="gp-delete" aria-label="Remove time window">Remove</button>`;
+      const full=row.querySelector('.window-full-day'),start=row.querySelector('.window-start'),end=row.querySelector('.window-end');
+      let timedStart=full.checked?'09:00':start.value,timedEnd=full.checked?'17:00':end.value;
+      function showTimes(){row.querySelector('.window-time-start').hidden=full.checked;row.querySelector('.window-time-end').hidden=full.checked;}
+      full.onchange=()=>{
+        if(full.checked){timedStart=start.value;timedEnd=end.value;start.value='00:00';end.value='00:00';}
+        else{start.value=timedStart;end.value=timedEnd;}
+        showTimes();
+      };
+      showTimes();
+      row.querySelector('button').onclick=()=>{userEdited=true;$('#editor').dataset.dirty='true';row.remove();};$('#windows').append(row);
+    }
+    (schedule?.windows||[]).forEach(addWindow);
+    $('#add-window').onclick=()=>{userEdited=true;$('#editor').dataset.dirty='true';addWindow();};
+    if(schedule?.expires_at){const parts=new Intl.DateTimeFormat('sv-SE',{timeZone:schedule.timezone,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(schedule.expires_at));$('#expires').value=parts.replace(' ','T');}
+    const originalExpiry=$('#expires').value;
+    $('#clear-expiry').onclick=()=>{$('#expires').value='';userEdited=true;$('#editor').dataset.dirty='true';$('#expires').focus();};
+    const homebridgeGrant=homebridgeUser&&boundAlarms.includes(selectedAlarm);
+    const ownsOtherAlarm=overview.alarms.some(a=>a.id!==selectedAlarm&&a.users.some(g=>g.id===u.id&&g.owner));
+    function syncRestrictions(){
+      const owner=$('#owner').checked, protectedGrant=owner||homebridgeGrant;
+      if(protectedGrant){
+        for(const id of ['enabled','grant-enabled','allow-arm','allow-disarm','api-access','unlimited'])$('#'+id).checked=true;
+        $('#scheduled').checked=false;
+      }
+      $('#enabled').disabled=owner||ownsOtherAlarm||homebridgeUser;
+      for(const id of ['grant-enabled','allow-arm','allow-disarm','api-access','unlimited'])$('#'+id).disabled=protectedGrant;
+      $('#scheduled').disabled=protectedGrant||!overview.schedules;
+      $('#owner-policy-note').hidden=!owner;
+      const unlimited=$('#unlimited').checked, scheduled=$('#scheduled').checked;
+      $('#uses').disabled=protectedGrant||unlimited;
+      $('#uses-limit').hidden=unlimited;$('#uses-unlimited-note').hidden=!unlimited;
+      $('#schedule-fields').hidden=!scheduled;
+      $('#schedule-fields').querySelectorAll('input,select,button').forEach(x=>x.disabled=protectedGrant||!scheduled||!overview.schedules);
+    }
+    $('#owner').onchange=syncRestrictions;
+    syncRestrictions();
+    if(regular){$('#owner').closest('label').hidden=true;$('#owner').disabled=true;}
+    if(regular&&overview.identities.some(row=>row.id===u.id&&row.read_only)){
+      $('#editor').querySelectorAll('input,button,select').forEach(control=>{if(!['access-alarm','reload'].includes(control.id))control.disabled=true;});
+      const notice=document.createElement('p');notice.className='gp-note';notice.textContent='Protected alarm owner · only an administrator can change this user.';$('#editor').prepend(notice);
+    }
+    $('#unlimited').onchange=syncRestrictions;$('#scheduled').onchange=syncRestrictions;
+
+    $('#editor').oninput=()=>{userEdited=true;$('#editor').dataset.dirty='true';};
+    $('#editor').onchange=()=>{userEdited=true;$('#editor').dataset.dirty='true';};
+    $('#refresh-uses').onclick=()=>act(async()=>{if(userEdited&&!confirm('Refresh this user’s saved settings and remaining uses? Unsaved edits will be discarded.'))return;adding=false;await loadUsers();tell('User settings and remaining uses refreshed from the gateway.');});
+    $('#reload').onclick=()=>act(async()=>{adding=false;await loadUsers();tell('Reloaded. Unsaved edits discarded.');});
+    $('#delete').onclick=()=>act(async()=>{if(adding){adding=false;await loadUsers();return;}if(!confirm(demoMode?'Remove this fictional alarm grant? The demo identity is deleted if it has no grants left.':'Remove access to this alarm? Other alarm grants remain; the gateway identity remains.'))return;await api('users/delete',{id:u.id,alarm:selectedAlarm,revision:u.revision,user_revision:u.user_revision});await loadUsers();tell('Alarm access removed.');});
+    $('#editor').onsubmit=e=>{e.preventDefault();act(async()=>{
+      const body={id:u.id,alarm:selectedAlarm,revision:u.revision,user_revision:u.user_revision,grant_enabled:$('#grant-enabled').checked,owner:$('#owner').checked,arm:$('#allow-arm').checked,disarm:$('#allow-disarm').checked,all_keypads:$('#all-keypads').checked,keypads:$('#all-keypads').checked?[]:[...document.querySelectorAll('[data-keypad]:checked')].map(x=>{const p=overview.keypads[Number(x.dataset.keypad)];return {source:p.source,endpoint:p.endpoint};}),name:$('#name').value.trim(),enabled:$('#enabled').checked,api_arm_disarm:$('#api-access').checked,
+        remaining_uses:$('#unlimited').checked?null:Number($('#uses').value)};
+      if($('#pin').value)body.pin=$('#pin').value;
+      if(!overview.managed)body.enable_management=$('#enable-management').checked;
+      if(overview.schedules){body.schedule=$('#scheduled').checked?{timezone:$('#zone').value.trim(),weekly:[...document.querySelectorAll('.gp-window')].map(row=>row.querySelector('.window-day').value+' '+row.querySelector('.window-start').value+'-'+(row.querySelector('.window-end').value==='00:00'?'24:00':row.querySelector('.window-end').value)).join('\n'),expires_local:$('#expires').value,not_before:schedule?.not_before||null}:null;}
+      if(schedule&&body.schedule&&body.schedule.timezone===schedule.timezone&&body.schedule.weekly===(schedule.windows||[]).map(w=>dayNames[w.day-1]+' '+hm(w.start)+'-'+hm(w.end)).join('\n')&&$('#expires').value===originalExpiry){delete body.schedule;body.preserve_schedule=true;}
+      const useHomebridge=$('#hb-use')?.checked||false;
+      const selectedHbAlarms=[...document.querySelectorAll('[data-hb-alarm]:checked')].map(x=>Number(x.dataset.hbAlarm));
+      const bindingChanged=useHomebridge&&(!homebridgeUser||JSON.stringify(selectedHbAlarms)!==JSON.stringify(boundAlarms));
+      if(homebridgeUser&&!useHomebridge&&overview.homebridge_available)throw Error('Select another user for Homebridge to replace this binding.');
+      if(bindingChanged&&!body.pin)throw Error('Enter and repeat this user’s PIN to synchronize Homebridge.');
+      const credentialOnly=!adding&&Boolean(body.pin);
+      if(!adding&&body.pin&&body.pin!==$('#pin-repeat').value)throw Error('The PIN entries do not match.');
+      if(credentialOnly){
+        // Credential operations preserve policies; avoid silently saving only part of a form.
+        const expectedWindows=(schedule?.windows||[]).map(w=>dayNames[w.day-1]+' '+hm(w.start)+'-'+hm(w.end)).join('\n');
+        const unchanged=body.name===u.name&&body.enabled===u.enabled&&body.api_arm_disarm===u.api_arm_disarm&&body.remaining_uses===u.remaining_uses&&['grant_enabled','owner','arm','disarm','all_keypads'].every(k=>body[k]===u[k])&&JSON.stringify(body.keypads)===JSON.stringify(u.keypads)&&
+          $('#scheduled').checked===Boolean(schedule)&&(!schedule||body.preserve_schedule===true||(body.schedule?.timezone===schedule.timezone&&body.schedule.weekly===expectedWindows&&$('#expires').value===originalExpiry));
+        if(!unchanged)throw Error('Save name or access changes separately before changing this PIN. Clear the PIN fields to save those changes first.');
+        const request={id:u.id,revision:u.user_revision,user_revision:u.user_revision,new_pin:body.pin,repeat_pin:$('#pin-repeat').value};
+        if(useHomebridge)request.homebridge_selection={expected_user_id:homebridgeIdentity(),alarms:selectedHbAlarms};
+        $('#pin').value='';$('#pin-repeat').value='';delete body.pin;
+        try{
+          if(!demoMode&&!regular&&(useHomebridge||homebridgeUser)){
+            const changedUser=homebridgeIdentity()!==u.id;
+            const result=await homebridgeFlow.open({context:{gateway:selectedGateway,alarm:selectedAlarm},request,
+              summary:changedUser?'Change Homebridge user from '+selectedName+' to '+u.name+'.':'Update the PIN and Homebridge access for '+u.name+'.',
+              success:changedUser?'Homebridge now uses '+u.name+'. All required integration checks are complete.':'PIN synchronized with deCONZ and Homebridge. All required integration checks are complete.',
+              alarms:overview.alarms.filter(a=>(useHomebridge?selectedHbAlarms:boundAlarms).includes(a.id)).map(a=>a.name)});
+            await loadUsers();await checkInterruptedChange();if(result.completed)tell('Homebridge access updated.');else if(result.pending)tell('Homebridge update needs attention. Use Continue to finish the saved update.',true);
+          }else{await api('users/rotate-pin',request);await loadUsers();tell('PIN updated and verified.');}
+        }
+        catch(error){await loadUsers();throw error;}
+        finally{request.new_pin='';request.repeat_pin='';}
+        return;
+      }
+      $('#pin').value='';if($('#pin-repeat'))$('#pin-repeat').value='';
+      try{await api('users/save',body);}finally{delete body.pin;}
+      adding=false;await loadUsers();tell(demoMode?'Saved in demo data only.':'Saved. A private recovery snapshot was created before the change.');
+    });};
+  }
+  function renderHomebridge(){if(regular){$('#homebridge-panel').replaceChildren();renderInterruptedChange(overview?.transaction);return;}
+    const panel=$('#homebridge-panel'),binding=overview?.homebridge_binding,tx=overview?.transaction;
+    panel.replaceChildren();panel.hidden=!binding;
+    if(binding){const name=overview.identities.find(u=>u.id===binding.user)?.name||'Selected identity';
+      const p=document.createElement('p');p.textContent='Homebridge uses '+name+' for '+binding.alarms.map(id=>overview.alarms.find(a=>a.id===id)?.name||'Alarm '+id).join(', ')+'. PIN changes use coordinated maintenance.';panel.append(p);}
+    renderInterruptedChange(tx);
+  }
+  let interruptedId='';
+  function clearInterruptedChange(){interruptedId='';$('#interrupted-change').replaceChildren();$('#interrupted-change').hidden=true;}
+  async function checkInterruptedChange(){
+    if(demoMode||!csrf||!selectedGateway)return;
+    const context={gateway:selectedGateway,alarm:selectedAlarm},session=csrf;
+    const tx=await api('transaction',undefined,context);
+    if(!demoMode&&session===csrf&&context.gateway===selectedGateway&&context.alarm===selectedAlarm){
+      const pending=!regular&&tx.homebridge_pending?.[0];
+      if(pending)renderInterruptedChange(pending.transaction,{gateway:pending.gateway,alarm:pending.transaction.alarm});
+      else renderInterruptedChange(tx,context);
+    }
+  }
+  function renderInterruptedChange(tx,context={gateway:selectedGateway,alarm:selectedAlarm}){
+    if(regular){clearInterruptedChange();if(tx?.pending){$('#interrupted-change').hidden=false;$('#interrupted-change').textContent='An interrupted change needs an administrator. Changes remain held until it is resolved.';}return;}
+    if(!tx||['none','complete'].includes(tx.stage)){clearInterruptedChange();return;}
+    if(interruptedId===tx.id)return;
+    clearInterruptedChange();interruptedId=tx.id;
+    const panel=$('#interrupted-change');panel.hidden=false;
+    if(tx.homebridge){
+      const p=document.createElement('p');p.textContent='A Homebridge update needs attention on '+(gateways.find(g=>g.id===context.gateway)?.name||context.gateway)+'. Continue the saved update to complete its checks.';panel.append(p);
+      const next=document.createElement('button');next.type='button';next.className='gp-button primary';next.textContent='Continue Homebridge update';next.onclick=()=>act(()=>continueHomebridge(context,tx));panel.append(next);
+      $('#editor').querySelectorAll('input,select,button').forEach(x=>x.disabled=true);return;
+    }
+    const recoveryRequest=(path,body)=>api(path,body,context);
+    {
+      const p=document.createElement('p');p.textContent='An interrupted change needs attention on '+(gateways.find(g=>g.id===context.gateway)?.name||context.gateway)+'. Further changes are held until its outcome and required maintenance are verified.';panel.append(p);
+      const controls=document.createElement('div');controls.className='gp-body';
+      controls.innerHTML=`<h3>An interrupted change needs attention</h3><p class="gp-sub">${esc(({rotate_pin:'A PIN update',save_user:'A user access change',keypad_send:'An alarm command',save_timings:'An alarm timing change',save_lockout:'A keypad protection change',reset_lockout:'A keypad lockout reset'})[tx.operation]||'A settings change')} did not finish normally. This guide checks what completed without sending the original change again.</p><h4>1. Check what needs attention</h4><p class="gp-sub">If an integration below requires maintenance, follow its instructions first. An alarm acknowledgement alone does not verify an external integration.</p><div id="recovery-extension-links"></div>${tx.operation==='rotate_pin'?'<label class="gp-field">PIN submitted for this transaction<input id="recovery-pin" type="password" inputmode="numeric" autocomplete="off" maxlength="16"></label><button type="button" class="gp-button" id="recovery-prove">Verify credential evidence</button>':''}<h4>2. Verify the saved outcome</h4><p class="gp-sub">Check the recorded result. If it cannot be verified, this guide will explain that more evidence is needed.</p><button type="button" class="gp-button" id="recovery-review">Check interrupted change</button><p id="recovery-result" role="status"></p><div id="recovery-completion" hidden><h4>3. Finish the interrupted change</h4><label class="gp-check"><input type="checkbox" id="recovery-ack">I reviewed the evidence and required maintenance steps.</label><button type="button" class="gp-button primary" id="recovery-confirm" disabled>Finish recovery</button></div>`;
+      panel.append(controls);
+      for(const extension of applicationSettings?.extensions||[]){if(!extension.page)continue;const link=document.createElement('a');link.href=extension.page;link.className='gp-button';link.textContent=extension.name;$('#recovery-extension-links').append(link);}
+      let recovery=null;
+      $('#recovery-review').onclick=()=>act(async()=>{recovery=null;$('#recovery-completion').hidden=true;$('#recovery-confirm').disabled=true;$('#recovery-ack').checked=false;const result=await recoveryRequest('recovery/review',{});recovery=result;$('#recovery-completion').hidden=!result.ready;$('#recovery-result').textContent=result.ready?'Evidence verified. Review the maintenance steps, then confirm completion.':'Independent verification or extension maintenance is still required. The transaction remains held.';$('#recovery-confirm').disabled=!result.ready;});
+      $('#recovery-confirm').onclick=()=>act(async()=>{if(!recovery?.ready||!$('#recovery-ack').checked)throw Error('Review the recovery evidence and check the confirmation first.');const request={transaction_id:recovery.transaction_id,token:recovery.token,reviewed:true};recovery=null;$('#recovery-confirm').disabled=true;await recoveryRequest('recovery/confirm',request);clearInterruptedChange();if(page==='users')await loadUsers();tell('Recovery completed. The gateway write was not repeated.');});
+      if($('#recovery-prove'))$('#recovery-prove').onclick=()=>act(async()=>{let pin=$('#recovery-pin').value;$('#recovery-pin').value='';try{await recoveryRequest('recovery/credential',{transaction_id:tx.id,pin});recovery=null;$('#recovery-confirm').disabled=true;$('#recovery-result').textContent='Credential evidence verified. Review recovery next.';}finally{pin='';}});
+      $('#editor').querySelectorAll('input,select,button').forEach(x=>x.disabled=true);
+    }
+  }
+  $('#add').onclick=()=>{if(busy)return;if(phone.matches&&$('#editor').dataset.dirty==='true'&&!confirm('Discard unsaved edits to this user?'))return;openUserDetail();selected=null;attaching=null;adding=true;renderList();renderUser();renderHomebridge();
+    $('#name').focus();};
+  let keypadAvailable=false,keypadGeneration=0,keypadQueue=[],keypadSending=false,keypadNumber=0;
+  const keypadEntry=new window.BrowserKeypad.Entry({submit:queueKeypad,change:entry=>{
+    $('#keypad-light').classList.toggle('on',Boolean(entry.deadline));
+    $('#keypad-light').setAttribute('aria-label',entry.deadline?'Entry light on':'Entry light off');
+    $('#keypad-entry').textContent=entry.count?('•'.repeat(Math.min(4,entry.count))+(entry.count>4?' + '+(entry.count-4):'')):'Ready';
+    $('#keypad-mode-label').textContent=entry.mode==='disarm'?'Digits alone disarm. Select a mode above before entering a code to arm.':entry.mode.replaceAll('_',' ')+' selected — enter code';
+    document.querySelectorAll('[data-keypad-mode]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.keypadMode===entry.mode));
+  }});
+  function cancelKeypad(){keypadGeneration++;for(const r of keypadQueue)r.body.code='';keypadQueue=[];keypadEntry.clear();keypadAvailable=false;}
+  function keypadResult(text,tone='gp-history-admin'){
+    const li=document.createElement('li');li.className=tone;
+    const time=document.createElement('time');time.textContent=new Date().toLocaleTimeString();li.append(time,document.createTextNode(text));
+    const list=$('#keypad-results');list.append(li);while(list.children.length>80)list.firstChild.remove();list.scrollTop=list.scrollHeight;
+  }
+  function showKeypadSimulation(data){$('#keypad-simulation').textContent=data?.simulation?`Simulation: alarm ${data.simulation.alarm.replaceAll('_',' ')} · ${data.simulation.remaining_seconds?'locked for '+data.simulation.remaining_seconds+'s':'PIN entry available'}`:'';}
+  async function loadKeypad(){
+    cancelKeypad();$('#keypad-results').replaceChildren();keypadNumber=0;
+    document.querySelectorAll('#keypad-device button').forEach(b=>b.disabled=true);
+    $('#keypad-badge').textContent=demoMode?'DEMO':'LIVE';
+    $('#keypad-description').textContent=demoMode?'Demo · Code 2323. No real requests or movement.':'Live · REST permissions apply; physical-keypad lockouts do not.';
+    try{
+      const info=await api('keypad');keypadAvailable=info.available===true;
+      if(!demoMode)$('#keypad-description').textContent+=' '+(info.extension_notice||'Alarm commands use the selected gateway and alarm.');
+      showKeypadSimulation(info);
+      document.querySelectorAll('#keypad-device button').forEach(b=>b.disabled=!keypadAvailable);
+    }catch(e){keypadResult(e.message,'gp-state-disabled');throw e;}
+  }
+  function queueKeypad(code,mode){
+    if(!keypadAvailable||page!=='keypad'||!csrf||document.hidden)return;
+    if(keypadQueue.length>=16){cancelKeypad();keypadResult('Requests stopped: connection too slow. Reopen Keypad before continuing.','gp-state-disabled');return;}
+    keypadQueue.push({body:{code,mode,request_id:crypto.randomUUID().replaceAll('-','')},context:{gateway:selectedGateway,alarm:selectedAlarm},demo:demoMode,generation:keypadGeneration,created:Date.now(),number:++keypadNumber});
+    void drainKeypad();
+  }
+  async function drainKeypad(){
+    if(keypadSending)return;keypadSending=true;
+    try{while(keypadQueue.length){
+      const item=keypadQueue.shift();
+      if(item.generation!==keypadGeneration||item.demo!==demoMode||page!=='keypad'){item.body.code='';continue;}
+      if(Date.now()-item.created>2000){item.body.code='';keypadResult(`Request ${item.number} dropped: too old to send.`);continue;}
+      const length=item.body.code.length;
+      try{
+        const result=await api('keypad/send',item.body,item.context);
+        if(item.generation!==keypadGeneration)continue;
+        const label=result.uncertain?'Result unavailable':result.result==='accepted'?'Accepted':result.result==='locked'?'Blocked during simulated lockout':result.result==='duplicate'?'Duplicate ignored':'Rejected';
+        keypadResult(`Request ${item.number} · ${length} digit(s) · ${label}. ${result.extension||''}`,result.uncertain?'gp-history-admin':result.result==='accepted'?'gp-state-enabled':result.result==='locked'?'gp-history-lockout':'gp-state-disabled');
+        if(result.uncertain){cancelKeypad();keypadResult('Stopped after an uncertain result. No automatic retry. Reopen Keypad when ready.');}
+      }catch(e){if(item.generation===keypadGeneration){cancelKeypad();keypadResult('Request result unavailable. No automatic retry. Reopen Keypad when ready.','gp-state-disabled');}}
+      finally{item.body.code='';}
+    }}finally{keypadSending=false;}
+  }
+  document.querySelectorAll('[data-keypad-digit]').forEach(b=>b.onclick=()=>{if(keypadAvailable&&!busy)keypadEntry.digit(b.dataset.keypadDigit);});
+  document.querySelectorAll('[data-keypad-mode]').forEach(b=>b.onclick=()=>{if(keypadAvailable&&!busy)keypadEntry.select(b.dataset.keypadMode);});
+  document.querySelectorAll('[data-keypad-unused]').forEach(b=>b.onclick=()=>tell(b.dataset.keypadUnused+' has no assigned action. No request sent.'));
+  $('#keypad-device').onkeydown=e=>{if(e.ctrlKey||e.metaKey||e.altKey||e.repeat||!keypadAvailable||busy)return;if(/^[0-9]$/.test(e.key)){e.preventDefault();keypadEntry.digit(e.key);}else if(e.key==='Escape'){e.preventDefault();keypadEntry.clear();}};
+  $('#keypad-clear').onclick=()=>keypadEntry.clear();
+  $('#keypad-clear-results').onclick=()=>$('#keypad-results').replaceChildren();
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){keypadGeneration++;for(const item of keypadQueue)item.body.code='';keypadQueue=[];keypadEntry.clear();}});
+  window.addEventListener('pagehide',cancelKeypad);
+  setInterval(()=>{if(page==='keypad'&&demoMode&&keypadAvailable&&!keypadSending&&!busy&&!document.hidden){const generation=keypadGeneration;api('keypad').then(data=>{if(generation===keypadGeneration)showKeypadSimulation(data);}).catch(()=>{});}},1000);
+
+  async function loadDebug(){
+    const unavailable=demoMode;
+    for(const id of ['start','wrong','valid','stop','clear','copy'])$('#debug-'+id).disabled=true;
+    $('#debug-output').value='';
+    if(unavailable){$('#debug-status').textContent='Debug capture is available for live gateway events. Demo testing sends no requests.';return;}
+    try{
+      const data=await api('debug');
+      $('#debug-output').value=JSON.stringify(data,null,2);
+      $('#debug-status').textContent=(data.active?`Recording · ${data.seconds_left}s left`:'Capture stopped')+` · ${data.events.length} rows · ${data.dropped} omitted at the limit`;
+      for(const id of ['start','clear','copy'])$('#debug-'+id).disabled=false;
+      for(const id of ['wrong','valid','stop'])$('#debug-'+id).disabled=!data.active;
+    }catch(e){$('#debug-status').textContent='Capture unavailable for this alarm or connection. Select an available alarm.';throw e;}
+  }
+  for(const [id,action] of Object.entries({start:'start',stop:'stop',clear:'clear',wrong:'wrong_attempt',valid:'valid_attempt'}))
+    $('#debug-'+id).onclick=()=>act(async()=>{if(demoMode)return;await api('debug/control',{action});await loadDebug();});
+  $('#debug-copy').onclick=()=>{navigator.clipboard.writeText($('#debug-output').value).then(()=>tell('Sanitized debug output copied.')).catch(()=>{$('#debug-output').select();tell('Select and copy the debug output manually.');});};
+  setInterval(()=>{if(csrf&&page==='debug'&&!busy&&!document.hidden)act(loadDebug);},3000);
+
+  let gatewayStatusGeneration=0;
+  function renderGatewayConnections(rows,unknown=false){
+    const box=$('#gateway-connections');box.hidden=false;
+    box.innerHTML=rows.map(g=>{
+      const connected=unknown?null:g.connected;
+      const state=connected===true?'Connected':connected===false?'Disconnected':'Status unavailable';
+      const tone=connected===true?'gp-state-enabled':connected===false?'gp-state-disabled':'';
+      return `<span class="gp-gateway-connection ${tone}" title="Activity collector connection to this gateway">${demoMode?'Demo · ':''}${esc(g.name)} · ${state}</span>`;
+    }).join('');
+  }
+  async function refreshGatewayConnections(){
+    if(!csrf)return;
+    const generation=++gatewayStatusGeneration,session=csrf,demo=demoMode;
+    try{
+      const data=await api('activity-options');
+      if(generation===gatewayStatusGeneration&&csrf===session&&demoMode===demo)renderGatewayConnections(data.gateways);
+    }catch(_){
+      if(generation===gatewayStatusGeneration&&csrf===session&&demoMode===demo)renderGatewayConnections(gateways,true);
+    }
+  }
+  // Status-only polling does not reload history or change its refresh preference.
+  setInterval(()=>{if(csrf&&!busy&&!document.hidden)refreshGatewayConnections();},10000);
+
+  let historyGateway='',historyAlarm='',historyOptions=[],historyPaused=true,historyRetention=90,historyCategories=['keypad','deconz','administration'];
+  function historyRemember(){try{sessionStorage.setItem(demoMode?'configurator-demo-history-filter':'configurator-history-filter',JSON.stringify({gateway:historyGateway,alarm:historyAlarm,categories:historyCategories}));}catch(_){}}
+  function historyTitle(row){
+    if(row.source==='Keypad'&&row.action==='Code rejected'&&row.user==='Unknown')return 'Rejected PIN';
+    return row.user+' · '+row.action;
+  }
+  function historyTone(row){
+    if(row.action==='Lockout expired')return 'gp-state-enabled';
+    const keypad=row.source==='Browser keypad'||row.source==='Keypad'||row.source?.startsWith('Keypad · ');
+    if(keypad){
+      if(['Lockout detected','Requests blocked during lockout','Keypad lockout active'].includes(row.action))return 'gp-history-lockout';
+      if(row.action==='Code accepted')return 'gp-state-enabled';
+      if(row.action==='Code rejected')return 'gp-state-disabled';
+      if(row.result?.startsWith('Accepted; '))return 'gp-state-enabled';
+    }
+    if(row.source==='REST/API'){
+      if(row.result==='Credential rejected; alarm unchanged')return 'gp-state-disabled';
+      if(row.result==='Accepted by deCONZ; actual alarm state is reported separately')return 'gp-state-enabled';
+    }
+    return 'gp-history-admin';
+  }
+  async function loadHistory(options=false){
+    if(options){
+      try{const saved=JSON.parse(sessionStorage.getItem(demoMode?'configurator-demo-history-filter':'configurator-history-filter'));historyGateway=typeof saved?.gateway==='string'?saved.gateway:'';historyAlarm=typeof saved?.alarm==='string'?saved.alarm:'';historyCategories=Array.isArray(saved?.categories)?['keypad','deconz','administration'].filter(c=>saved.categories.includes(c)):['keypad','deconz','administration'];}catch(_){historyGateway='';historyAlarm='';historyCategories=['keypad','deconz','administration'];}
+    }
+    historyOptions=(await api('activity-options')).gateways;
+      if(!historyOptions.some(g=>g.id===historyGateway)){historyGateway='';historyAlarm='';}
+      $('#history-gateway').innerHTML='<option value="">All gateways</option>'+historyOptions.map(g=>`<option value="${esc(g.id)}" ${g.id===historyGateway?'selected':''}>${esc(g.name)}</option>`).join('');
+      renderHistoryAlarms();
+    document.querySelectorAll('[data-history-category]').forEach(c=>c.checked=historyCategories.includes(c.dataset.historyCategory));
+    const data=await api('history/query',{gateway:historyGateway||null,alarm:historyAlarm?Number(historyAlarm):null,categories:historyCategories});
+    historyRetention=data.retention_days??90;
+    $('#history-retention').innerHTML=(historyRetention===90?'<option value="90" disabled>90 days (existing)</option>':'')+[1,3,7,30].map(days=>`<option value="${days}">${days} day${days===1?'':'s'}</option>`).join('');
+    $('#history-retention').value=String(historyRetention);
+    $('#stream').textContent=historyPaused?'Auto-refresh disabled':demoMode?'Demo · history disabled':data.connected?'Live':'Collection gap';
+    $('#activity').innerHTML=data.rows.length?data.rows.map(r=>`<article class="gp-history-row ${historyTone(r)}"><time datetime="${esc(r.time)}">${esc(new Date(r.time).toLocaleString())}</time><div class="gp-sub">${esc(r.gateway_name||'Gateway')} · ${esc(r.alarm_name||'Alarm unspecified')}</div><div class="gp-setting-title">${esc(historyTitle(r))}</div><div class="gp-sub">${esc(r.source)} · ${esc(r.result)}</div></article>`).join(''):demoMode?'<div class="gp-body">Activity history records real requests only. Demo actions do not create log rows.</div>':'<div class="gp-body">No collected activity matches this filter.</div>';
+  }
+  function renderHistoryAlarms(){
+    const sole=historyOptions.length===1?historyOptions[0]:null;
+    const alarms=(historyOptions.find(g=>g.id===historyGateway)||sole)?.alarms||[];
+    if(alarms.length<=1)historyAlarm='';
+    const gatewayField=$('#history-gateway').closest('label'),alarmField=$('#history-alarm').closest('label');
+    gatewayField.hidden=historyOptions.length<=1;alarmField.hidden=alarms.length<=1;
+    gatewayField.parentElement.hidden=gatewayField.hidden&&alarmField.hidden;
+    if(!alarms.some(a=>String(a.id)===historyAlarm))historyAlarm='';
+    if(sole)historyGateway=historyAlarm?sole.id:'';
+    $('#history-alarm').disabled=busy||(!historyGateway&&!sole);
+    $('#history-alarm').innerHTML='<option value="">All alarms</option>'+alarms.map(a=>`<option value="${a.id}" ${String(a.id)===historyAlarm?'selected':''}>${esc(a.name)}${a.observed===false?' (historical)':''}</option>`).join('');
+  }
+  $('#history-gateway').onchange=()=>act(async()=>{historyGateway=$('#history-gateway').value;historyAlarm='';renderHistoryAlarms();historyRemember();await loadHistory();});
+  document.querySelectorAll('[data-history-category]').forEach(c=>c.onchange=()=>act(async()=>{historyCategories=[...document.querySelectorAll('[data-history-category]:checked')].map(x=>x.dataset.historyCategory);historyRemember();await loadHistory();}));
+  $('#history-alarm').onchange=()=>act(async()=>{historyAlarm=$('#history-alarm').value;if(historyOptions.length===1)historyGateway=historyAlarm?historyOptions[0].id:'';historyRemember();await loadHistory();});
+
+  $('#history-pause').onclick=()=>{
+    historyPaused=!historyPaused;
+    $('#history-pause').textContent=historyPaused?'Enable refresh':'Disable refresh';
+    $('#history-pause').setAttribute('aria-pressed',String(!historyPaused));
+    $('#stream').textContent=historyPaused?'Auto-refresh disabled':'Refreshing';
+    if(!historyPaused)act(loadHistory);
+  };
+  $('#history-refresh').onclick=()=>act(loadHistory);
+  $('#history-clear').onclick=()=>act(async()=>{
+    const gateway=historyOptions.find(g=>g.id===historyGateway);
+    const alarm=gateway?.alarms.find(a=>String(a.id)===historyAlarm);
+    const scope=alarm?`${gateway.name} / ${alarm.name}`:gateway?`all alarms on ${gateway.name}`:'all gateways and alarms';
+    if(!window.confirm(`Clear all collected activity logs for ${scope}, including categories hidden by display filters? This cannot be undone. New activity will continue to be collected.`))return;
+    await api('history/clear',{gateway:historyGateway||null,alarm:historyAlarm?Number(historyAlarm):null,confirmed:true});
+    await loadHistory();tell('Activity logs cleared for the selected scope.');
+  });
+  $('#history-retention').onchange=()=>act(async()=>{
+    const days=Number($('#history-retention').value),previous=historyRetention;
+    $('#history-retention').value=String(previous);
+    const shorter=days<previous;
+    if(shorter&&!window.confirm(`Keep only ${days} day${days===1?'':'s'} of activity? Logs older than this will be permanently cleared across ALL gateways and alarms. This cannot be undone. Increasing retention later will not restore deleted logs.`))return;
+    await api('history/retention',{days,expected_days:previous,confirmed:shorter});
+    await loadHistory();tell(`Activity retention saved: ${days} day${days===1?'':'s'} across all gateways and alarms.`);
+  });
+
+  const label=key=>key.replace(/_seconds$/,'').replaceAll('_',' ').replace(/^./,c=>c.toUpperCase());
+  const alarmLabel=value=>({disarmed:'Disarmed',armed_stay:'Armed (Home)',armed_night:'Armed (Night)',armed_away:'Armed (Away)',exit_delay:'Exit delay',entry_delay:'Entry delay',not_ready:'Not ready',in_alarm:'Triggered',arming_stay:'Arming · Stay',arming_night:'Arming · Night',arming_away:'Arming · Away'}[value]||'Unknown');
+  function renderAlarmStatus(){
+    $('#alarm-state').textContent=alarmLabel(alarmSample.state);
+    $('#alarm-status').textContent=`Requested: ${alarmLabel(alarmSample.target)} · ${alarmSample.seconds_remaining}s remaining (last received)`;
+    if($('#alarm-save'))$('#alarm-save').disabled=!alarmSample.timing_supported||alarmSample.state!=='disarmed'||alarmSample.target!=='disarmed';
+  }
+  async function loadAlarm(form=true){if(form)$('#alarm-form').replaceChildren();
+    try{alarmSample=await api('alarm');renderAlarmStatus();}
+    catch(e){alarmSample=null;$('#alarm-state').textContent='Unavailable';$('#alarm-status').textContent='Could not read alarm state. Reload before making changes.';if($('#alarm-save'))$('#alarm-save').disabled=true;throw e;}
+    if(!form)return;alarmRevision=alarmSample.revision;
+    const descriptions={entry_delay:'Time to disarm after a sensor triggers.',exit_delay:'Time to leave before this mode becomes armed.',trigger_duration:'Time in the triggered state; physical alarm output depends on device configuration.'};
+    $('#alarm-form').innerHTML=['stay','night','away'].map(mode=>`<h3>${alarmLabel('armed_'+mode)}</h3>`+Object.entries(descriptions).map(([field,description])=>{
+      const key='armed_'+mode+'_'+field;
+      return `<div class="gp-settings-row"><div><div class="gp-setting-title">${esc(label(field))}</div><div class="gp-sub">${esc(description)}</div></div><label class="gp-field">Seconds<input data-alarm-timer="${key}" type="number" min="0" max="255" step="1" required value="${alarmSample.timings[key]}" ${alarmSample.timing_supported?'':'disabled'}></label></div>`;
+    }).join('')).join('')+`<p class="gp-sub">${alarmSample.timing_supported?'No values change until you save.':'Install the updated plugin to enable timing changes.'}</p><div class="gp-footer"><button class="gp-button" id="alarm-reload" type="button">Reload saved settings</button><button class="gp-button primary" id="alarm-save">Save alarm timings</button></div>`;
+    $('#alarm-reload').onclick=()=>act(()=>loadAlarm());renderAlarmStatus();
+  }
+  $('#alarm-form').onsubmit=e=>{e.preventDefault();act(async()=>{
+    const timings=Object.fromEntries([...document.querySelectorAll('[data-alarm-timer]')].map(x=>[x.dataset.alarmTimer,Number(x.value)]));
+    if(!confirm(demoMode?'Save these fictional alarm timings?':'Save these alarm timings? Keep Home and keypad controls unused until saving finishes.'))return;
+    $('#alarm-save').disabled=true;
+    try{await api('alarm/save',{timings,revision:alarmRevision});await loadAlarm();tell('Alarm timings saved and verified. No services restarted.');}
+    catch(e){await loadAlarm();throw e;}
+  });};
+  setInterval(()=>{if(csrf&&page==='alarm'&&!busy&&!document.hidden)act(()=>loadAlarm(false));},3000);
+  function renderLockoutStatus(){
+    const elapsed=Math.floor((performance.now()-lockoutSampleAt)/1000);
+    const stale=!lockoutSample||elapsed>15, enabled=lockoutSample?.policy.enabled;
+    const describe=pad=>{
+      if(stale||pad.known===false)return {status:'Status unavailable',kind:'unknown',detail:'Waiting for verified keypad status.'};
+      if(!enabled)return {status:'Protection off',kind:'off',detail:'PIN lockout protection is disabled for this alarm.'};
+      const seconds=Math.max(0,pad.remaining_seconds-elapsed);
+      if(pad.remaining_seconds>0&&seconds===0)return {status:'Verifying lockout',kind:'unknown',detail:'The timer has ended. Waiting for a fresh status.'};
+      return {status:seconds>0?'Locked out':'Not locked out',kind:seconds>0?'locked':'clear',
+        detail:(seconds>0?`Remaining: ${Math.floor(seconds/60)}m ${seconds%60}s · `:'')+`Stored escalation: ${pad.level} of 3.`};
+    };
+    const rows=lockoutKeypads.map(pad=>({...pad,...describe(pad)}));
+    const locked=rows.filter(p=>p.kind==='locked').length, unknown=rows.filter(p=>p.kind==='unknown').length;
+    const summary=stale?'Status unavailable':!enabled?'Protection off':!rows.length?'No assigned keypads':
+      `${locked} of ${rows.length} keypad${rows.length===1?'':'s'} locked out${unknown?` · ${unknown} status unavailable`:''}`;
+    if($('#lockout-state').textContent!==summary)$('#lockout-state').textContent=summary;
+    $('#lockout-status').textContent=stale?'Unable to confirm current lockout status. Status refreshes automatically.':
+      !enabled?'These protection settings apply to every physical keypad assigned to this alarm.':
+      'Each keypad has its own lockout and escalation level. After the quiet-time period, its stored escalation resets on its next attempt.';
+    const renderRow=pad=>`<li class="gp-keypad-status" data-keypad-status="${esc(pad.id||'unmatched')}" data-state="${pad.kind}"><div class="gp-keypad-status-heading"><strong>${esc(pad.name)}</strong><span class="gp-pill">${pad.status}</span></div><div class="gp-sub">${esc(pad.detail)}</div></li>`;
+    const duplicates=new Set(rows.filter((p,i)=>rows.some((other,j)=>i!==j&&other.name===p.name)).map(p=>p.name));
+    const unmatched=(lockoutSample?.unmatched_keypads||[]).map((pad,i)=>({...pad,...describe(pad),name:`Unmatched stored keypad ${i+1}`}));
+    $('#protection-keypads').innerHTML=`<strong>Keypads covered by ${esc(lockoutAlarmName)}</strong>`+
+      (rows.length?`<ul class="gp-keypad-status-list">${rows.map(p=>renderRow({...p,name:p.name+(duplicates.has(p.name)?` (Keypad ${p.id})`:'')})).join('')}</ul>`:'<p>No keypads are currently assigned to this alarm.</p>')+
+      (unmatched.length?`<p class="gp-sub">Other stored keypad states could not be matched to currently assigned keypads. They are excluded from the count above.</p><ul class="gp-keypad-status-list">${unmatched.map(renderRow).join('')}</ul>`:'');
+  }
+  async function loadLockout(form=true){if(!form&&!$('#protection-editor').closest('[data-protection-alarm]'))return;if(form){
+    const editor=$('#protection-editor');editor.hidden=true;$('#lockout-reset').disabled=true;$('#lockout-form').replaceChildren();lockoutSample=null;lockoutKeypads=[];
+    // Preserve the one editor's IDs and handlers while rebuilding the alarm accordion.
+    $('#protection').append(editor);$('#protection-alarms').replaceChildren();
+    const data=await api('inventory');
+    if(!data.alarms.some(a=>Number(a.id)===selectedAlarm))selectedAlarm=Number(data.alarms[0]?.id)||null;
+    $('#protection-alarms').innerHTML=data.alarms.map(a=>{const pads=data.keypads.filter(p=>p.alarm_ids.some(id=>Number(id)===Number(a.id)));return `<details class="gp-gateway" data-protection-alarm="${esc(a.id)}" ${Number(a.id)===selectedAlarm?'open':''}><summary><strong>${esc(a.name)}</strong> · ${pads.length} assigned keypad${pads.length===1?'':'s'}</summary><div class="protection-content"></div></details>`;}).join('')||'<p>No alarms are available on this gateway.</p>';
+    const current=[...document.querySelectorAll('[data-protection-alarm]')].find(x=>Number(x.dataset.protectionAlarm)===selectedAlarm);
+    if(!current)return;
+    current.querySelector('.protection-content').append(editor);editor.hidden=false;
+    document.querySelectorAll('[data-protection-alarm]').forEach(details=>details.querySelector('summary').onclick=e=>{
+      e.preventDefault();if(busy)return;
+      if(details.open){details.open=false;return;}
+      act(async()=>{selectedAlarm=Number(details.dataset.protectionAlarm);updateContext();await loadLockout();});
+    });
+    const alarm=data.alarms.find(a=>Number(a.id)===selectedAlarm);
+    const pads=data.keypads.filter(p=>p.alarm_ids.some(id=>Number(id)===selectedAlarm));
+    lockoutAlarmName=alarm.name;lockoutKeypads=pads.map(p=>({...p,known:false}));renderLockoutStatus();
+  }
+    try{lockoutSample=await api('lockout');lockoutKeypads=lockoutSample.keypads;lockoutSampleAt=performance.now();renderLockoutStatus();}
+    catch(e){lockoutSample=null;renderLockoutStatus();throw e;}
+    if(!form)return;
+    $('#lockout-reset').disabled=false;lockoutPolicy=lockoutSample.policy;
+    if(regular){$('#lockout-form').replaceChildren();return;}
+    const p=lockoutPolicy;
+    $('#lockout-form').innerHTML=`<label class="gp-check"><input type="checkbox" id="lockout-enabled" ${p.enabled?'checked':''} ${lockoutSample.managed?'':'disabled'}>Enable PIN lockout protection</label>
+      <p class="gp-sub">Counts failed requests, not complete PIN entries. See page help for an example.</p>
+      <label class="gp-field">Failed requests<input id="lockout-threshold" type="number" min="1" max="100" step="1" required value="${p.threshold}"></label>
+      <label class="gp-field">Attempt window (seconds)<input id="lockout-window" type="number" min="1" max="3600" step="1" required value="${p.window_seconds}"></label>
+      ${p.durations_seconds.map((v,i)=>`<label class="gp-field">Lockout ${i+1} (seconds)<input data-lockout-duration="${i}" type="number" min="1" max="3600" step="1" required value="${v}"></label>`).join('')}
+      <p class="gp-sub">Use ascending durations. After the third level, its duration repeats. Maximum: 3,600 seconds (one hour).</p>
+      <label class="gp-field">Reset escalation after quiet time (seconds)<input id="lockout-quiet" type="number" min="3600" max="604800" step="1" required value="${p.reset_seconds}"></label>
+      <p class="gp-sub">Measured from the last counted wrong PIN. A successful PIN clears the attempt counter. Saving an enabled policy preserves an active lockout; disabling clears it.</p>
+      <div class="gp-footer"><button class="gp-button" id="lockout-reload" type="button">Reload</button><button class="gp-button primary">Save protection settings</button></div>`;
+    $('#lockout-reload').onclick=()=>act(()=>loadLockout());
+  }
+  $('#lockout-form').onsubmit=e=>{e.preventDefault();act(async()=>{
+    const body={enabled:$('#lockout-enabled').checked,threshold:Number($('#lockout-threshold').value),window_seconds:Number($('#lockout-window').value),
+      durations_seconds:[...document.querySelectorAll('[data-lockout-duration]')].map(x=>Number(x.value)),reset_seconds:Number($('#lockout-quiet').value),revision:lockoutPolicy.revision};
+    await api('lockout/save',body);await loadLockout();tell('Keypad protection saved. No services restarted.');
+  });};
+  $('#lockout-reset').onclick=()=>act(async()=>{await api('lockout/reset',{reset:true});await loadLockout();tell('Lockouts, failure counters and escalation reset for all keypads on this alarm.');});
+  setInterval(()=>{if(csrf&&page==='protection'&&!busy&&!document.hidden)act(()=>loadLockout(false));},3000);
+  setInterval(()=>{if(csrf&&page==='protection'&&lockoutSample)renderLockoutStatus();},1000);
+  let currentHelp=null,helpPinned=false,helpTimer=null;
+  function closePageHelp(){
+    clearTimeout(helpTimer);helpTimer=null;helpPinned=false;
+    if(currentHelp){const {button,panel}=currentHelp;currentHelp=null;button.setAttribute('aria-expanded','false');if(panel.matches(':popover-open'))panel.hidePopover();}
+  }
+  function openPageHelp(button,event){
+    clearTimeout(helpTimer);
+    const panel=document.getElementById(button.getAttribute('aria-controls'));
+    if(currentHelp?.button===button&&panel.matches(':popover-open'))return;
+    closePageHelp();currentHelp={button,panel};button.setAttribute('aria-expanded','true');
+    panel.style.left='12px';panel.style.top='12px';panel.showPopover();
+    const anchor=button.getBoundingClientRect();
+    const below=window.innerHeight-anchor.bottom-20,above=anchor.top-20;
+    const placeBelow=below>=200||below>=above;
+    panel.style.maxHeight=Math.max(60,Math.min(window.innerHeight*.65,placeBelow?below:above))+'px';
+    const rect=panel.getBoundingClientRect();
+    const x=event?.pointerType==='mouse'?event.clientX:anchor.left;
+    panel.style.left=Math.max(12,Math.min(x+12,window.innerWidth-rect.width-12))+'px';
+    panel.style.top=Math.max(12,placeBelow?anchor.bottom+8:anchor.top-rect.height-8)+'px';
+  }
+  function leavePageHelp(){
+    clearTimeout(helpTimer);helpTimer=setTimeout(()=>{
+      if(currentHelp&&!helpPinned&&document.activeElement!==currentHelp.button&&!currentHelp.panel.matches(':hover')&&!currentHelp.button.matches(':hover'))closePageHelp();
+    },160);
+  }
+  function setupPageHelp(button){
+    const panel=document.getElementById(button.getAttribute('aria-controls'));
+    button.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse')openPageHelp(button,event);});
+    button.addEventListener('pointerleave',leavePageHelp);
+    button.addEventListener('focus',()=>openPageHelp(button));
+    button.addEventListener('blur',leavePageHelp);
+    button.addEventListener('click',()=>{if(currentHelp?.button===button&&helpPinned)closePageHelp();else{openPageHelp(button);helpPinned=true;}});
+    panel.addEventListener('pointerenter',()=>clearTimeout(helpTimer));panel.addEventListener('pointerleave',leavePageHelp);
+    panel.addEventListener('toggle',event=>{if(event.newState==='closed'&&!panel.matches(':popover-open')&&currentHelp?.panel===panel){button.setAttribute('aria-expanded','false');currentHelp=null;helpPinned=false;}});
+  }
+  document.querySelectorAll('.gp-help-button').forEach(setupPageHelp);
+  document.addEventListener('pointerdown',event=>{if(currentHelp&&!currentHelp.panel.contains(event.target)&&!currentHelp.button.contains(event.target))closePageHelp();});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape')closePageHelp();});
+  document.addEventListener('scroll',event=>{if(currentHelp&&!currentHelp.panel.contains(event.target)&&!currentHelp.button.matches(':hover')&&!currentHelp.panel.matches(':hover'))closePageHelp();},true);
+  window.addEventListener('resize',closePageHelp);
+
+  document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>act(async()=>{const next=b.dataset.page;if(next===page)return;if(!leaveUserDraft())return;if(phone.matches){phoneDetail=false;history.replaceState(null,'');mobileLayout();}if(page==='settings'&&review){tell('Use Back to editing or Discard changes before leaving the review.');return;}page=next;await showPage();if(phone.matches){const heading=$('#'+page+' h2');if(heading){heading.tabIndex=-1;heading.focus({preventScroll:true});}window.scrollTo(0,0);}}));
+  setInterval(()=>{if(csrf&&!demoMode&&!busy&&!document.hidden)checkInterruptedChange().catch(()=>{});},15000);
+  setInterval(()=>{if(csrf&&page==='history'&&!historyPaused&&!busy&&!document.hidden)act(loadHistory);},3000);
+  act(async()=>{try{const session=await api('session');csrf=session.csrf;await signedIn();}catch(_){signedOut();tell('Sign in to continue.');}});
+})();

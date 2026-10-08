@@ -1,0 +1,191 @@
+// Restart-aware participant for the existing administration transaction. The
+// host port owns the reviewed PIN storage operation; this participant owns the
+// durable sequence and must never infer success from a restart acknowledgement.
+import { isDeepStrictEqual as same } from 'node:util';
+import { WebAdminFiles } from './web-admin-files.js';
+import { requireWeb, object, exact, integer } from './web-admin-common.js';
+import { webJournalWithoutSecrets } from './web-admin-transactions.js';
+
+const stages = ['stop_requested', 'stopped', 'pin_saved', 'start_requested', 'running', 'complete'];
+const gatewayId = value => typeof value === 'string' && /^[a-z][a-z0-9-]{0,31}$/.test(value);
+export function validateAlarmBinding(row) {
+  requireWeb(exact(row, ['gateway', 'identity', 'user', 'alarms']) && gatewayId(row.gateway) &&
+    typeof row.identity === 'string' && /^[0-9A-F]{16}$/.test(row.identity) &&
+    typeof row.user === 'string' && /^[0-9a-f]{32}$/.test(row.user) && Array.isArray(row.alarms) &&
+    row.alarms.length > 0 && row.alarms.every(id => integer(id, 1, 255)) &&
+    same(row.alarms, [...new Set(row.alarms)].sort((a, b) => a - b)), 'homebridge_binding_invalid');
+  return row;
+}
+export const homebridgeEligibleUser = row => !!row && ['enabled', 'grant_enabled', 'arm', 'disarm', 'api_arm_disarm'].every(key => row[key] === true) &&
+  row.remaining_uses === null && row.schedule === null;
+function validateState(row) {
+  requireWeb(exact(row, ['schema', 'bindings', 'lease']) && row.schema === 1 && Array.isArray(row.bindings) && row.bindings.length <= 16, 'homebridge_state_invalid');
+  row.bindings.forEach(validateAlarmBinding);
+  requireWeb(new Set(row.bindings.map(binding => binding.gateway)).size === row.bindings.length, 'homebridge_state_invalid');
+  if (row.lease !== null) {
+    const lease = row.lease;
+    requireWeb(exact(lease, ['id', 'gateway', 'binding', 'previous', 'stage', 'host']) &&
+      typeof lease.id === 'string' && /^[0-9a-f]{32}$/.test(lease.id) && lease.gateway === lease.binding?.gateway &&
+      stages.includes(lease.stage) && object(lease.host), 'homebridge_state_invalid');
+    validateAlarmBinding(lease.binding); if (lease.previous !== null) validateAlarmBinding(lease.previous);
+  }
+  webJournalWithoutSecrets(row); return row;
+}
+export class WebHomebridgeMaintenanceStore {
+  constructor(storagePath) { this.files = new WebAdminFiles(storagePath); }
+  async read() { return await this.files.read('web-homebridge-maintenance.json', validateState) ?? { schema: 1, bindings: [], lease: null }; }
+  write(row) { return this.files.write('web-homebridge-maintenance.json', row, validateState); }
+}
+
+export class WebHomebridgeMaintenance {
+  #request = null;
+  #prepared = null;
+  constructor({ store, registrations, host }) {
+    Object.assign(this, { store, registrations: new Map(registrations.map(row => [row.id, row.identity])), host });
+    this.api_version = 1; this.uncertain = false;
+  }
+  async state() { return validateState(await this.store.read()); }
+  async save(row) {
+    validateState(row);
+    try { await this.store.write(structuredClone(row)); }
+    catch { this.uncertain = true; throw Error('homebridge_storage_review_required'); }
+  }
+  async guard() {
+    requireWeb(!this.uncertain, 'homebridge_storage_review_required');
+    const row = await this.state(); requireWeb(!row.lease || row.lease.stage === 'complete', 'homebridge_shared_service_recovery_required');
+  }
+  async status() {
+    const row = await this.state();
+    const readiness = typeof this.host.readiness === 'function' ? await this.host.readiness() :
+      { configured: typeof this.host.available !== 'function' || await this.host.available(), error: null };
+    return { ...readiness, profile: 'homebridge-child-bridge', pending: this.uncertain || !!row.lease && row.lease.stage !== 'complete',
+      bindings: row.bindings.map(({ gateway, user, alarms }) => ({ gateway, user, alarms })) };
+  }
+  async viewStatus() { return this.status(); }
+  async hiddenUsers(gateway) { return (await this.state()).bindings.filter(row => row.gateway === gateway).map(row => row.user); }
+  async authorizeRecovery(transaction, credentials) {
+    const row = await this.current(transaction);
+    requireWeb(row.lease.stage !== 'complete', 'no_matching_transaction');
+    try { await this.host.authenticate(credentials); return { authorized: true, transaction_id: transaction.id }; }
+    finally { if (object(credentials)) { credentials.password = ''; if (Object.hasOwn(credentials, 'otp')) credentials.otp = ''; } }
+  }
+  async selectionPlan(gateway, user, value, snapshot) {
+    requireWeb(!this.uncertain, 'homebridge_storage_review_required');
+    const row = await this.state(), previous = row.bindings.find(binding => binding.gateway === gateway) ?? null;
+    requireWeb(exact(value, ['expected_user_id', 'alarms']) && value.expected_user_id === (previous?.user ?? null), 'homebridge_binding_changed');
+    const binding = validateAlarmBinding({ gateway, identity: this.registrations.get(gateway), user, alarms: value.alarms });
+    requireWeb(!previous || previous.identity === binding.identity, 'homebridge_gateway_identity_changed');
+    requireWeb(!previous || previous.alarms.every(id => binding.alarms.includes(id)), 'homebridge_alarm_removal_requires_review');
+    requireWeb(binding.alarms.every(id => homebridgeEligibleUser(snapshot.grants[id]?.[user])), 'unrestricted_homebridge_user_required');
+    return { previous: structuredClone(previous), binding: structuredClone(binding) };
+  }
+  async protect(gateway, alarm, plan, payload, snapshot) {
+    await this.guard();
+    const binding = (await this.state()).bindings.find(row => row.gateway === gateway);
+    if (plan.homebridge_selection) return true;
+    if (!binding || binding.user !== plan.uid) return false;
+    if (plan.operation === 'rotate_pin') {
+      requireWeb(binding.alarms.every(id => homebridgeEligibleUser(snapshot.grants[id]?.[binding.user])), 'homebridge_user_must_remain_unrestricted');
+      return true;
+    }
+    if (plan.operation === 'save_user') requireWeb(payload.enabled === true, 'homebridge_user_must_remain_unrestricted');
+    if (binding.alarms.includes(alarm) && ['save_user', 'delete_user'].includes(plan.operation)) {
+      requireWeb(!plan.deleting && homebridgeEligibleUser(payload), 'homebridge_user_must_remain_unrestricted');
+    }
+    return false;
+  }
+  async applies(context) {
+    const binding = (await this.state()).bindings.find(row => row.gateway === context.gateway);
+    return context.operation === 'rotate_pin' && (!!context.homebridge_selection || binding?.user === context.identity_id);
+  }
+  // This scope is entered only by authenticated Admin dispatch, after the
+  // browser's explicit restart confirmation. It does not save a PIN/password.
+  async withRequest({ pin, confirmed, credentials }, operation) {
+    requireWeb(!this.#request, 'homebridge_update_in_progress');
+    requireWeb(confirmed === true, 'homebridge_restart_confirmation_required');
+    requireWeb(typeof pin === 'string' && /^[0-9]{4,16}$/.test(pin), 'invalid_pin');
+    this.#request = { pin, confirmed };
+    try { await this.host.authenticate(credentials); return await operation(); }
+    finally {
+      this.#request = null; this.#prepared = null;
+      if (object(credentials)) { credentials.password = ''; if (Object.hasOwn(credentials, 'otp')) credentials.otp = ''; }
+      await this.host.clearAuthentication();
+    }
+  }
+  async preflight(context) {
+    await this.guard(); requireWeb(this.#request?.confirmed === true, 'homebridge_restart_confirmation_required');
+    const row = await this.state(), previous = row.bindings.find(binding => binding.gateway === context.gateway) ?? null;
+    const selection = context.homebridge_selection;
+    if (selection) requireWeb(same(selection.previous, previous), 'homebridge_binding_changed');
+    const binding = validateAlarmBinding(selection?.binding ?? previous);
+    requireWeb(binding.gateway === context.gateway && binding.identity === context.identity && binding.user === context.identity_id &&
+      this.registrations.get(binding.gateway) === binding.identity, 'homebridge_binding_changed');
+    const prepared = await this.host.prepare(structuredClone(binding)); webJournalWithoutSecrets(prepared);
+    this.#prepared = { previous, binding, host: prepared };
+  }
+  async pause(tx) {
+    requireWeb(this.#prepared && this.#request?.confirmed === true, 'homebridge_restart_confirmation_required');
+    const row = await this.state(); requireWeb(!row.lease || row.lease.stage === 'complete', 'homebridge_shared_service_recovery_required');
+    row.lease = { id: tx.id, gateway: tx.gateway, ...structuredClone(this.#prepared), stage: 'stop_requested' };
+    await this.save(row); // Durable before the first service request.
+    await this.host.stop(structuredClone(row.lease));
+    await this.host.assertStopped(structuredClone(row.lease));
+    // Private credential backup belongs to the host adapter, never this journal.
+    await this.host.snapshotStopped(structuredClone(row.lease), this.#request.pin);
+    row.lease.stage = 'stopped'; await this.save(row);
+  }
+  async current(tx) {
+    requireWeb(!this.uncertain, 'homebridge_storage_review_required');
+    const row = await this.state(), lease = row.lease;
+    requireWeb(lease && lease.id === tx.id && lease.gateway === tx.gateway && lease.binding.identity === tx.identity, 'homebridge_transaction_changed');
+    return row;
+  }
+  async verify(tx) {
+    const row = await this.current(tx), lease = row.lease;
+    await this.host.verifyGateway(structuredClone(lease), structuredClone(tx));
+    if (['start_requested', 'running', 'complete'].includes(lease.stage)) {
+      await this.host.verifyRunning(structuredClone(lease), structuredClone(tx)); return;
+    }
+    await this.host.assertStopped(structuredClone(lease));
+    requireWeb(lease.stage !== 'stop_requested', 'homebridge_snapshot_unverified');
+    const applied = tx.write_attempted && !tx.definite_rejection;
+    requireWeb(!applied || tx.verified === true, 'homebridge_gateway_write_unverified');
+    // The host must compare-and-replace and recognize an already-applied result.
+    // Recovery may verify the same intent but must never perform a gateway PUT.
+    await this.host.commitStopped(structuredClone(lease), { applied });
+    lease.stage = 'pin_saved'; await this.save(row);
+  }
+  async resume(tx) {
+    const row = await this.current(tx), lease = row.lease;
+    if (lease.stage === 'pin_saved') {
+      lease.stage = 'start_requested'; await this.save(row);
+      await this.host.start(structuredClone(lease));
+    }
+    requireWeb(['start_requested', 'running', 'complete'].includes(lease.stage), 'homebridge_restart_unverified');
+    await this.host.verifyRunning(structuredClone(lease), structuredClone(tx));
+    if (lease.stage !== 'complete') { lease.stage = 'running'; await this.save(row); }
+  }
+  async complete(tx) {
+    const row = await this.current(tx), lease = row.lease;
+    requireWeb(['running', 'complete'].includes(lease.stage), 'homebridge_restart_unverified');
+    const expected = tx.write_attempted && !tx.definite_rejection ? lease.binding : lease.previous;
+    const current = row.bindings.find(binding => binding.gateway === lease.gateway) ?? null;
+    requireWeb(same(current, lease.previous) || same(current, expected), 'homebridge_binding_changed');
+    row.bindings = row.bindings.filter(binding => binding.gateway !== lease.gateway);
+    if (expected) row.bindings.push(structuredClone(expected));
+    lease.stage = 'complete'; await this.save(row);
+  }
+  async recovery_ready(tx) {
+    try {
+      const row = await this.current(tx), lease = row.lease;
+      await this.host.verifyGateway(structuredClone(lease), structuredClone(tx));
+      if (['start_requested', 'running', 'complete'].includes(lease.stage)) await this.host.verifyRunning(structuredClone(lease), structuredClone(tx));
+      else {
+        requireWeb(lease.stage !== 'stop_requested', 'homebridge_snapshot_unverified');
+        await this.host.assertStopped(structuredClone(lease));
+        await this.host.verifySnapshot(structuredClone(lease));
+      }
+      return true;
+    } catch { return false; }
+  }
+}
