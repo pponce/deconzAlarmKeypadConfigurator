@@ -33,13 +33,13 @@
     },
     {
       "path": "scripts/web-admin-write-browser.mjs",
-      "source_blob": "07bf34e1193242ded427f9b8859221c413ca5bf9",
-      "source_bytes": 19194,
-      "sha256": "b2c1ee8e9f18027a73932d1834fd109a83df70b69f77acf0ebeff9a6d2440b51",
+      "source_blob": "78a619479bcc87f6373b81d0d4f6e589ba3f2b38",
+      "source_bytes": 19843,
+      "sha256": "37f89df9339338aefb1924578bbf110cfc8275cb4d4a51ccfbde2874cb121881",
       "adapted": true,
-      "source_commit": "1c75a1481f0fb98f3a4a4c5f9cec1353addd3e59",
+      "source_commit": "8dc390539e97c44b68820da64900f10620299709",
       "source_version": "0.4.38",
-      "source_sha256": "46278b6cc0c5b6e39c7e09bcf535da62f0d4753232e08cdddd92c269b338e151"
+      "source_sha256": "ddc2aa3874ca5da0674ee0abb789fc9209b8f990ae97a9f35b1eb0fc5576e094"
     },
     {
       "path": "src/web-admin-activity.js",
