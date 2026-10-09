@@ -7,7 +7,7 @@ import { WebGatewayRejected } from './web-admin-gateway.js';
 import { requireWeb, object, exact, integer } from './web-admin-common.js';
 import { WebAdminFiles, webDigest } from './web-admin-files.js';
 
-const failureReasons = new Set(['homebridge_cli_unavailable', 'homebridge_cli_discovery_failed', 'homebridge_pin_write_unverified', 'homebridge_ui_result_unknown', 'homebridge_ui_response_invalid', 'homebridge_restart_unverified',
+const failureReasons = new Set(['homebridge_binding_changed', 'homebridge_child_not_running', 'homebridge_binding_invalid', 'homebridge_cli_unavailable', 'homebridge_cli_discovery_failed', 'homebridge_pin_write_unverified', 'homebridge_ui_result_unknown', 'homebridge_ui_response_invalid', 'homebridge_restart_unverified',
   'homebridge_process_unverified', 'homebridge_process_changed', 'homebridge_file_unavailable', 'homebridge_cache_schema_unsupported',
   'homebridge_accessory_identity_changed', 'homebridge_backup_invalid', 'homebridge_configuration_changed', 'homebridge_login_required',
   'web_private_storage_write_failed', 'web_private_storage_invalid', 'web_private_storage_too_large', 'homebridge_storage_review_required',
@@ -125,7 +125,7 @@ export class WebAdminTransactions {
       for (const [name, participant] of this.participants) if (!participant.applies || await participant.applies(structuredClone(context))) selected.set(name, participant);
       context = { ...context, maintenance_participants: [...selected.keys()] };
       try { for (const participant of selected.values()) await participant.preflight(structuredClone(context)); }
-      catch { throw new WebAdminError('maintenance_preflight_failed'); }
+      catch (error) { throw new WebAdminError('maintenance_preflight_failed:' + failureReason(error) + ':' + failureKind(error)); }
       const tx = { ...context, schema: 1, id: randomBytes(16).toString('hex'), stage: 'preparing', participants: Object.fromEntries([...selected].map(([name, participant]) => [name, participant.api_version])),
         intent, paused: [], write_attempted: false, verified: false, snapshot_digest: webDigest(snapshot), backup: null };
       await this.save(tx); // Durable before any participant is paused.

@@ -1,3 +1,7 @@
+## PIN authorization and user form follow-up
+
+Ported from combined release 0.4.38, source commit `1c75a1481f0fb98f3a4a4c5f9cec1353addd3e59`: optional Homebridge login only for log clearing, safe preflight reasons, and implicit selection for the existing Homebridge user. Standalone runtime and host storage adaptations remain independent.
+
 # Node source extraction
 
 Source: `pponce/homebridge-gdoor-admin-controller`, `web-admin-lan-controller-timings`, commit `e037d9c252f72eb3828e4cb9d625acd1db45023c` (0.4.25). Its main branch was still at the older 0.4.24 when this port began.

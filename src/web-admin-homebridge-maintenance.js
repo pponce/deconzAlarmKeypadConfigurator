@@ -103,7 +103,8 @@ export class WebHomebridgeMaintenance {
     return context.operation === 'rotate_pin' && (!!context.homebridge_selection || binding?.user === context.identity_id);
   }
   // This scope is entered only by authenticated Admin dispatch, after the
-  // browser's explicit restart confirmation. It does not save a PIN/password.
+  // browser's explicit PIN confirmation. Homebridge login is only needed for
+  // optional log clearing (or a legacy host).
   async withRequest({ pin, confirmed, credentials, clearLogs = false }, operation) {
     requireWeb(!this.#request, 'homebridge_update_in_progress');
     requireWeb(confirmed === true, 'homebridge_restart_confirmation_required');
@@ -111,7 +112,7 @@ export class WebHomebridgeMaintenance {
     requireWeb(typeof clearLogs === 'boolean', 'invalid_request');
     this.#request = { pin, confirmed, clearLogs };
     try {
-      await this.host.authenticate(credentials);
+      if (clearLogs || typeof this.host.applyApi !== 'function') await this.host.authenticate(credentials);
       const result = await operation();
       await this.afterTransaction(result); return result;
     }

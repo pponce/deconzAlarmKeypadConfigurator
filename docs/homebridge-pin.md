@@ -20,7 +20,7 @@ If selected, after the entire PIN transaction succeeds we call the same administ
 
 ## Requirements
 
-Run Homebridge on the same Linux host, with homebridge-deconz in its own child bridge and Homebridge UI accepting local HTTP connections. The combined controller plugin must use a separate child bridge. The standalone administrator must run as the same operating-system account as Homebridge, with its own separate private data directory. Homebridge UI administrator authentication authorizes each update; its password is not saved. HTTPS-only Homebridge UI configurations still require additional certificate-trust support.
+Run Homebridge on the same Linux host, with homebridge-deconz in its own child bridge and Homebridge UI accepting local HTTP connections. The combined controller plugin must use a separate child bridge. The standalone administrator must run as the same operating-system account as Homebridge, with its own separate private data directory. The existing web-admin administrator session authorizes PIN changes. Homebridge UI administrator credentials are requested only for optional log clearing; the prompt explains this purpose and the password is not saved. Legacy offline recovery still requires Homebridge authorization. HTTPS-only Homebridge UI configurations still require additional certificate-trust support.
 
 ## Sequence and recovery
 

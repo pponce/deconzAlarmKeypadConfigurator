@@ -1,3 +1,7 @@
+## Homebridge PIN authorization and user form
+
+Web-admin administrators authorize new PIN API updates; Homebridge UI credentials are requested only for optional log clearing. Legacy offline recovery still requires Homebridge authorization. Live scoped API readback checks gateway/accessory identity and readiness without authenticated UI process inspection. Preflight errors retain a safe reason/kind and explicitly report no PIN write. The current Homebridge user keeps implicit selection with its redundant checkbox hidden and clear blank-PIN guidance. Local validation: 44 focused combined tests and all 154 standalone tests passed; both demos rebuilt and combined browser syntax checked. Remote browser/release validation pending.
+
 # Standalone Node port status
 
 ## 2026-10-09 — Official Homebridge PIN API and optional log clearing

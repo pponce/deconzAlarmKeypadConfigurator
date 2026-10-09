@@ -59,7 +59,7 @@ try {
       assert.equal(await page.locator('#hb-use').evaluate(el => el.closest('.gp-identity-options').querySelector('label:first-child input').id), 'enabled');
       assert.equal(await page.locator('#pin-guidance').evaluate(el => Boolean(el.compareDocumentPosition(document.querySelector('#pin')) & Node.DOCUMENT_POSITION_FOLLOWING)), true);
       await page.getByLabel('Use for homebridge', { exact: true }).check();
-      assert.match(await page.locator('#pin-guidance').textContent(), /^Enter in pin to use for homebridge and this user\./);
+      assert.match(await page.locator('#pin-guidance').textContent(), /^Enter a PIN in both fields to use for Homebridge and this user\./);
       await page.locator('#hb-use').uncheck();
       assert.equal(await page.locator('#pin-guidance').textContent(), 'For user edits, leave both fields blank to keep the current PIN.');
       await page.locator('#hb-use').check(); await page.locator('[data-hb-alarm="1"]').check();
@@ -69,8 +69,7 @@ try {
       const restart = page.getByRole('button', { name: 'Update PIN', exact: true });
       assert.equal(await restart.isEnabled(), false); assert.equal(f.maintenance.includes('stop'), false);
       assert.match(await page.locator('#hb-flow-content').textContent(), /same page/);
-      await page.locator('[name="homebridge-username"]').fill('BridgeAdmin');
-      await page.locator('[name="homebridge-password"]').fill('synthetic-bridge-password');
+      assert.equal(await page.locator('[name="homebridge-username"]').count(), 0);
       await page.locator('[name="homebridge-restart-confirmed"]').check();
       // A failed submission must not adopt the older completed policy transaction.
       const beforeFailure = f.writes.length;
@@ -92,8 +91,7 @@ try {
       await page.locator('#pin').fill('6789'); await page.locator('#pin-repeat').fill('6789');
       await page.locator('#editor button.primary').click();
       await page.getByRole('button', { name: 'Continue', exact: true }).click();
-      await page.locator('[name="homebridge-username"]').fill('BridgeAdmin');
-      await page.locator('[name="homebridge-password"]').fill('synthetic-bridge-password');
+      assert.equal(await page.locator('[name="homebridge-username"]').count(), 0);
       await page.locator('[name="homebridge-restart-confirmed"]').check();
       // A stopped bridge with no confirmed backup must have a usable cancel path.
       f.state.failBackupOnce = true;
@@ -102,8 +100,7 @@ try {
       await page.getByText('Cancel the unfinished PIN change', { exact: true }).waitFor();
       await page.locator('#hb-flow-close').click();
       await page.getByRole('button', { name: 'Continue Homebridge update', exact: true }).click();
-      await page.locator('[name="homebridge-username"]').fill('BridgeAdmin');
-      await page.locator('[name="homebridge-password"]').fill('synthetic-bridge-password');
+      assert.equal(await page.locator('[name="homebridge-username"]').count(), 0);
       await page.getByRole('button', { name: 'Cancel PIN change and restore service', exact: true }).click();
       await page.getByText('Update finished without applying the change', { exact: true }).waitFor();
       await page.getByRole('button', { name: 'Done', exact: true }).click();
@@ -140,6 +137,10 @@ try {
       assert.equal(f.maintenance.filter(value => value === 'stop').length, stopsBefore); assert.equal(f.maintenance.filter(value => value === 'start').length, startsBefore);
       assert.equal(await page.locator('#login').isVisible(), false); assert.equal(await page.locator('#users').isVisible(), true);
       assert.equal(await page.locator('[name="homebridge-password"]').count(), 0);
+      await page.locator('#user-list [data-id="' + 'a'.repeat(32) + '"]').click();
+      assert.equal(await page.locator('#hb-use').count(), 0);
+      assert.match(await page.locator('#pin-guidance').textContent(), /Leave both fields blank to keep the current PIN/);
+      assert.equal(await page.locator('#hb-configuration').isVisible(), true);
       // Isolated recovery dialog: successful auth plus blocked review must show
       // the reason, remove password fields, and never replay a PIN or restart.
       const recoveryPage = await page.context().newPage();

@@ -21,7 +21,7 @@ async function fixture(t, clearLogs = false) {
   const events = [], journals = [], pins = { 'alarm-1': '1111', 'alarm-2': '2222' };
   const control = { losePut: false, rejectPut: false, failClear: false, failSnapshot: false, wrongGateway: false, wrongMapping: false };
   const status = { pid: 8123, status: 'ok', manuallyStopped: false };
-  const client = { bridge, async login() {}, close() {}, async status() { return { ...status }; },
+  const client = { bridge, async login() { events.push('login'); }, close() {}, async status() { throw Error('PIN API must not require Homebridge UI status'); },
     async waitFor(check) { assert.equal(await check(status), true); return { ...status }; },
     async command() { throw Error('New API updates must not send service commands'); },
     async clearLogs() { assert.equal(record.stage, 'complete'); events.push('clear logs'); if (control.failClear) throw Error('synthetic secret must not escape'); return { cleared: true }; },
@@ -62,9 +62,9 @@ async function fixture(t, clearLogs = false) {
     snapshot: {}, intent: { kind: 'identity', sensitive: true, expected: {} }, validateAgain: async () => true,
     write: async () => { events.push('gateway write'); return {}; }, verify: async () => input.intent };
   const credentials = () => ({ username: 'Owner', password: 'synthetic-password' });
-  const run = () => integration.withRequest({ pin: '2468', confirmed: true, credentials: credentials(), clearLogs }, () => transactions.execute(input));
+  const run = () => integration.withRequest({ pin: '2468', confirmed: true, credentials: clearLogs ? credentials() : undefined, clearLogs }, () => transactions.execute(input));
   const recover = async () => {
-    await integration.authorizeRecovery(record, credentials());
+    if (clearLogs) await integration.authorizeRecovery(record, credentials());
     const review = await transactions.review('test', identity, async () => true); assert.equal(review.ready, true);
     const result = await transactions.recover('test', identity, { transaction_id: review.transaction_id, token: review.token, reviewed: true }, async () => true);
     await integration.afterTransaction({ ...result, saved: record.write_attempted && !record.definite_rejection });
@@ -78,7 +78,7 @@ test('official discovery and PIN API update both alarms without any cache file, 
   assert.deepEqual(await f.host.readiness(), { configured: true, error: null });
   assert.equal((await f.run()).saved, true); assert.deepEqual(f.pins, { 'alarm-1': '2468', 'alarm-2': '2468' });
   assert.equal(f.record().stage, 'complete'); assert.equal(f.state().lease.stage, 'complete');
-  assert.deepEqual(f.state().bindings, [binding]); assert.equal(f.events.includes('clear logs'), false);
+  assert.deepEqual(f.state().bindings, [binding]); assert.equal(f.events.includes('login'), false); assert.equal(f.events.includes('clear logs'), false);
   assert.equal(f.events.filter(x => x === 'gateway write').length, 1);
   assert.equal(JSON.stringify(f.journals).includes('2468'), false); assert.equal(JSON.stringify(f.journals).includes('synthetic-password'), false);
   await assert.rejects(readFile(path.join(f.root, 'accessories', 'cachedAccessories.AABBCCDDEEFF')), /ENOENT/);
@@ -124,4 +124,21 @@ test('wrong gateway or alarm mapping prevents gateway and Homebridge writes', as
     await assert.rejects(f.run(), /maintenance_preflight_failed/);
     assert.equal(f.events.includes('gateway write'), false); assert.equal(f.events.some(x => x.startsWith('put ')), false);
   }
+});
+
+test('API recovery without log clearing needs no Homebridge login and never repeats a PIN write', async t => {
+  const f = await fixture(t); const complete = f.integration.complete.bind(f.integration); let fail = true;
+  f.integration.complete = async tx => { if (fail) { fail = false; throw Error('synthetic failure'); } return complete(tx); };
+  await assert.rejects(f.run(), /transaction_recovery_required/);
+  await f.recover(); assert.equal(f.record().stage, 'complete');
+  assert.equal(f.events.includes('login'), false); assert.equal(f.events.filter(x => x.startsWith('put ')).length, 2);
+});
+test('preflight exposes only safe reason and kind, before creating a transaction or writing a PIN', async t => {
+  const f = await fixture(t);
+  f.host.runDiscovery = async () => { throw Error('private path and secret'); };
+  await assert.rejects(f.run(), error => error.message === 'maintenance_preflight_failed:homebridge_cli_discovery_failed:coded_error');
+  assert.equal(f.record(), null); assert.deepEqual(f.events, []);
+  f.host.prepare = async () => { throw new TypeError('private path and secret'); };
+  await assert.rejects(f.run(), error => error.message === 'maintenance_preflight_failed:maintenance_step_failed:type_error');
+  assert.equal(f.record(), null);
 });

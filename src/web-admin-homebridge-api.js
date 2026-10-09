@@ -54,7 +54,7 @@ export class WebHomebridgeApiHost extends WebHomebridgeHost {
     if (lease.host.mode !== 'api') return super.current(lease);
     const config = await this.configuration();
     requireWeb(config.digest === lease.host.configuration && config.bridge === lease.host.bridge, 'homebridge_configuration_changed');
-    requireWeb(this.client?.bridge === config.bridge, 'homebridge_login_required'); return config;
+    return config;
   }
   async discover(config, identity) {
     let rows;
@@ -95,28 +95,27 @@ export class WebHomebridgeApiHost extends WebHomebridgeHost {
     }
     return pins;
   }
+  // Web-admin authorization is sufficient for the local PIN API. Homebridge
+  // UI authentication is only used by optional log cleanup and legacy recovery.
   async running(lease) {
     const config = await this.current(lease);
-    const state = await this.client.waitFor(async row => row.status === 'ok' && !row.manuallyStopped && row.pid !== process.pid &&
-      await this.stamp(row.pid) !== null);
-    const stamp = await this.stamp(state.pid), port = await this.discover(config, lease.binding.identity);
-    return { config, state, stamp, port };
+    const port = await this.discover(config, lease.binding.identity);
+    return { config, port, identity: lease.binding.identity };
   }
   async unchanged(context) {
-    const state = await this.client.status();
-    requireWeb(state.status === 'ok' && !state.manuallyStopped && state.pid === context.state.pid &&
-      await this.stamp(state.pid) === context.stamp, 'homebridge_process_changed');
+    const config = await this.configuration();
+    requireWeb(config.digest === context.config.digest && config.bridge === context.config.bridge,
+      'homebridge_configuration_changed');
+    requireWeb(await this.discover(config, context.identity) === context.port, 'homebridge_process_changed');
   }
   async prepare(binding) {
     validateAlarmBinding(binding); const config = await this.configuration();
-    requireWeb(this.client?.bridge === config.bridge && this.registrations.get(binding.gateway)?.identity === binding.identity, 'homebridge_binding_changed');
-    const state = await this.client.status();
-    requireWeb(state.status === 'ok' && !state.manuallyStopped && state.pid !== process.pid, 'homebridge_child_not_running');
-    const stamp = await this.stamp(state.pid); requireWeb(stamp !== null, 'homebridge_process_unverified');
+    requireWeb(this.registrations.get(binding.gateway)?.identity === binding.identity, 'homebridge_binding_changed');
     const port = await this.discover(config, binding.identity);
     const mapping = this.apiMapping(binding, await this.api(port, binding.identity, '/accessories'));
-    await this.pins(port, binding, mapping); await this.unchanged({ state, stamp });
-    return { mode: 'api', configuration: config.digest, bridge: config.bridge, pid: state.pid, stamp, mapping };
+    await this.pins(port, binding, mapping);
+    await this.unchanged({ config, port, identity: binding.identity });
+    return { mode: 'api', configuration: config.digest, bridge: config.bridge, mapping };
   }
   async snapshotApi(lease, newPin) {
     requireWeb(validPin(newPin), 'invalid_pin');
