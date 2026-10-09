@@ -136,7 +136,6 @@ try {
       assert.equal(f.maintenance.filter(value => value === 'stop').length, stopsBefore); assert.equal(f.maintenance.filter(value => value === 'start').length, startsBefore);
       assert.equal(await page.locator('#login').isVisible(), false); assert.equal(await page.locator('#users').isVisible(), true);
       assert.equal(await page.locator('[name="homebridge-password"]').count(), 0);
-      await page.locator('#user-list [data-id="' + 'a'.repeat(32) + '"]').click();
       assert.equal(await page.locator('#hb-use').count(), 0);
       assert.match(await page.locator('#pin-guidance').textContent(), /Leave both fields blank to keep the current PIN/);
       assert.equal(await page.locator('#hb-configuration').isVisible(), true);
