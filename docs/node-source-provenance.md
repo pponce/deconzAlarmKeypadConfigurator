@@ -1,3 +1,7 @@
+## PIN confirmation simplification
+
+Ported the checkbox removal from combined 0.4.39, commit `dcd5cba06961d0fd6aa2b268a49524757d826a41`. Update PIN is the explicit confirmation.
+
 ## PIN authorization and user form follow-up
 
 Ported from combined release 0.4.38, source commit `99be89244667537f968d13599b4fd7fc46102c53`: optional Homebridge login only for log clearing, safe preflight reasons, and implicit selection for the existing Homebridge user. Standalone runtime and host storage adaptations remain independent.

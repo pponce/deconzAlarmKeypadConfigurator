@@ -6,13 +6,13 @@
   "files": [
     {
       "path": "package.json",
-      "source_blob": "62bf5ecba7579590695481bc1df323fb87a80c1a",
+      "source_blob": "9a58015ef8aa176f7c3b613c152fd97e5263af7e",
       "source_bytes": 1289,
-      "sha256": "b21558d9cd288541eed0e428dcc74f73eeaa2ca9666c401dcce0ccb571766cd6",
+      "sha256": "613796c45f018d2f7efba968d27b949e39689e8d8b5dac1365c58bd6bc823674",
       "adapted": true,
-      "source_sha256": "7b08587d7dcfe67cf1ad4bd85a6e6019507266f968effe20bfbd5a256bb76007",
-      "source_commit": "1c75a1481f0fb98f3a4a4c5f9cec1353addd3e59",
-      "source_version": "0.4.38"
+      "source_sha256": "2ad656d0e660d0523fd034c636e79af03c0034002e8568ce33af8c002970b061",
+      "source_commit": "dcd5cba06961d0fd6aa2b268a49524757d826a41",
+      "source_version": "0.4.39"
     },
     {
       "path": "scripts/web-admin-browser-fixture.mjs",
@@ -33,13 +33,13 @@
     },
     {
       "path": "scripts/web-admin-write-browser.mjs",
-      "source_blob": "78a619479bcc87f6373b81d0d4f6e589ba3f2b38",
-      "source_bytes": 19843,
-      "sha256": "37f89df9339338aefb1924578bbf110cfc8275cb4d4a51ccfbde2874cb121881",
+      "source_blob": "bdd38f8b550b790be2819e7d93b25328bbec8c2f",
+      "source_bytes": 19910,
+      "sha256": "eb117445d931b368201c498dd166f0774f9bd600048faae939be9d0e97470850",
       "adapted": true,
-      "source_commit": "8dc390539e97c44b68820da64900f10620299709",
-      "source_version": "0.4.38",
-      "source_sha256": "ddc2aa3874ca5da0674ee0abb789fc9209b8f990ae97a9f35b1eb0fc5576e094"
+      "source_commit": "dcd5cba06961d0fd6aa2b268a49524757d826a41",
+      "source_version": "0.4.39",
+      "source_sha256": "cb212029c94e0d8095c4739703e3aeb0b8a503aaae4d59130d2e1be87dceb5f1"
     },
     {
       "path": "src/web-admin-activity.js",
@@ -467,13 +467,13 @@
     },
     {
       "path": "web-admin/public/homebridge-flow.js",
-      "source_blob": "2c01d59989e29a37ad902203cd91b034713d16d5",
-      "source_bytes": 23059,
-      "sha256": "719901962ddbeb7051af238105d90eb153afeac51268bed3e57deeba17e8c159",
+      "source_blob": "56a156154eecfe2fba35bbce1ddf46052e5020d8",
+      "source_bytes": 22604,
+      "sha256": "e5c16f0d56d9821e45272e260e39204ec28f9e010898ca2c838d83e3026452b8",
       "adapted": true,
-      "source_commit": "1c75a1481f0fb98f3a4a4c5f9cec1353addd3e59",
-      "source_version": "0.4.38",
-      "source_sha256": "84f4e6ea0598eaadb5a9505f33eb388e18ed8b72d4a4618e2de1559e98abd494"
+      "source_commit": "dcd5cba06961d0fd6aa2b268a49524757d826a41",
+      "source_version": "0.4.39",
+      "source_sha256": "27a46229c27bb0eea82227ce550d08602fc799c3a8fd76346c135648935f9ca6"
     },
     {
       "path": "web-admin/public/index.html",

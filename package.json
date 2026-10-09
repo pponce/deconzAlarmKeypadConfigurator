@@ -1,6 +1,6 @@
 {
   "name": "deconz-alarm-keypad-configurator",
-  "version": "0.1.0-dev.5",
+  "version": "0.1.0-dev.6",
   "private": true,
   "description": "Standalone deCONZ keypad, alarm user, PIN and access administration",
   "type": "module",

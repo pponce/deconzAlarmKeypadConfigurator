@@ -67,10 +67,10 @@ try {
       assert.equal(await page.locator('[name="homebridge-clear-logs"]').isChecked(), false);
       await page.getByRole('button', { name: 'Continue', exact: true }).click();
       const restart = page.getByRole('button', { name: 'Update PIN', exact: true });
-      assert.equal(await restart.isEnabled(), false); assert.equal(f.maintenance.includes('stop'), false);
+      assert.equal(await restart.isEnabled(), true); assert.equal(f.maintenance.includes('stop'), false);
       assert.match(await page.locator('#hb-flow-content').textContent(), /same page/);
       assert.equal(await page.locator('[name="homebridge-username"]').count(), 0);
-      await page.locator('[name="homebridge-restart-confirmed"]').check();
+      assert.equal(await page.locator('[name="homebridge-restart-confirmed"]').count(), 0);
       // A failed submission must not adopt the older completed policy transaction.
       const beforeFailure = f.writes.length;
       let failedSubmissions = 0;
@@ -91,7 +91,7 @@ try {
       await page.locator('#editor button.primary').click();
       await page.getByRole('button', { name: 'Continue', exact: true }).click();
       assert.equal(await page.locator('[name="homebridge-username"]').count(), 0);
-      await page.locator('[name="homebridge-restart-confirmed"]').check();
+      assert.equal(await page.locator('[name="homebridge-restart-confirmed"]').count(), 0);
       // A stopped bridge with no confirmed backup must have a usable cancel path.
       f.state.failBackupOnce = true;
       const writesBeforeCancel = f.writes.length;
@@ -115,7 +115,7 @@ try {
       await page.getByRole('button', { name: 'Continue', exact: true }).click();
       await page.locator('[name="homebridge-username"]').fill('BridgeAdmin');
       await page.locator('[name="homebridge-password"]').fill('synthetic-bridge-password');
-      await page.locator('[name="homebridge-restart-confirmed"]').check();
+      assert.equal(await page.locator('[name="homebridge-restart-confirmed"]').count(), 0);
       const stopsBefore = f.maintenance.filter(value => value === 'stop').length;
       const startsBefore = f.maintenance.filter(value => value === 'start').length;
       const pinWritesBefore = f.writes.filter(([, route]) => route === '/alarmsystems/users/' + 'a'.repeat(32)).length;
@@ -143,7 +143,7 @@ try {
       await page.locator('#editor button.primary').click();
       await page.getByRole('button', { name: 'Continue', exact: true }).click();
       assert.equal(await page.locator('[name="homebridge-username"]').count(), 0);
-      await page.locator('[name="homebridge-restart-confirmed"]').check();
+      assert.equal(await page.locator('[name="homebridge-restart-confirmed"]').count(), 0);
       await page.getByRole('button', { name: 'Update PIN', exact: true }).click();
       await page.getByText('Homebridge access updated', { exact: true }).waitFor();
       await page.getByRole('button', { name: 'Done', exact: true }).click();

@@ -87,13 +87,13 @@ window.ConfiguratorHomebridgeFlow=deps=>{
     const native=deps.nativeHomebridge?.()===true;
     text('p',native?'The PIN will be updated through Homebridge deCONZ without restarting it. This web interface stays open on the same page. Homebridge saves the setting on its normal schedule; a crash or power loss before then could restore its previous PIN.':'Homebridge accessories will be temporarily unavailable. Complete the checks below, then start the update here.');
     const items=checks(rows.map(row=>({...row,spec:row.status.flow.preparation})));
-    let login,confirmation;
-    if(native){if(active.clearLogs===true)login=homebridgeLogin(true);const label=text('label','');label.className='gp-check';confirmation=document.createElement('input');confirmation.type='checkbox';confirmation.name='homebridge-restart-confirmed';label.append(confirmation,document.createTextNode('I confirm the PIN update in deCONZ and Homebridge.'));items.push({inputs:[{input:confirmation,name:'homebridge_confirmed'}]});}
+    let login;
+    if(native&&active.clearLogs===true)login=homebridgeLogin(true);
     const go=button(native?'Update PIN':'Start update',async()=>{
       // Capture explicit checked values before replacing the form with progress.
       const prepared=items.filter(row=>row.extension).map(row=>({...row,body:Object.fromEntries(row.inputs.map(x=>[x.name,x.input.checked]))}));
       if(prepared.some(row=>Object.values(row.body).some(v=>v!==true)))throw Error('Complete every preparation check first.');
-      if(native){if(!confirmation.checked)throw Error('Confirm the PIN update before continuing.');active.request.homebridge_confirmed=true;active.request.homebridge_clear_logs=active.clearLogs===true;if(login)active.request.homebridge_login=login();}
+      if(native){active.request.homebridge_confirmed=true;active.request.homebridge_clear_logs=active.clearLogs===true;if(login)active.request.homebridge_login=login();}
       active.validate=null;view('3 of 4 · Update','Updating Homebridge access');
       const progress=text('p','Checking preparation…');
       try{
