@@ -107,6 +107,8 @@ export class WebAdminBackend {
         if (action === 'transaction_status') {
           if (!this.transactions?.status) return this.unavailable();
           const value = await this.transactions.status(gateway);
+          if (!regular && value.homebridge && this.integration?.logStatus) value.homebridge_logs = await this.integration.logStatus(value.id);
+          if (!regular && value.homebridge && this.integration?.method) value.homebridge_method = await this.integration.method(value.id);
           return regular ? limitedTransaction(value) : value;
         }
         if (!this.history?.rows) return this.unavailable();
@@ -148,10 +150,16 @@ export class WebAdminBackend {
         const homebridgePin = action === 'rotate_pin' && this.integration?.applies && await this.integration.applies({ operation: action, gateway, identity_id: payload.id, homebridge_selection: payload.homebridge_selection });
         if (homebridgePin) {
           requireWeb(!regular && typeof this.integration.withRequest === 'function', 'forbidden');
-          const { homebridge_confirmed, homebridge_login, ...request } = payload;
-          result = await this.integration.withRequest({ pin: payload.new_pin, confirmed: homebridge_confirmed, credentials: homebridge_login }, () => editor.dispatch(action, request));
+          const { homebridge_confirmed, homebridge_login, homebridge_clear_logs = false, ...request } = payload;
+          result = await this.integration.withRequest({ pin: payload.new_pin, confirmed: homebridge_confirmed, credentials: homebridge_login, clearLogs: homebridge_clear_logs }, () => editor.dispatch(action, request));
         } else {
-          try { result = await editor.dispatch(action, payload); }
+          try {
+            result = await editor.dispatch(action, payload);
+            if (action === 'recover_transaction') {
+              const tx = await this.transactions.load(gateway);
+              await this.integration?.afterTransaction?.({ ...result, saved: tx.write_attempted && !tx.definite_rejection });
+            }
+          }
           finally { if (action === 'recover_transaction') await this.integration?.host?.clearAuthentication?.(); }
         }
         return regular ? { saved: result.saved === true } : result;

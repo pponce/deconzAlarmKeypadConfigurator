@@ -7,7 +7,7 @@ import { WebGatewayRejected } from './web-admin-gateway.js';
 import { requireWeb, object, exact, integer } from './web-admin-common.js';
 import { WebAdminFiles, webDigest } from './web-admin-files.js';
 
-const failureReasons = new Set(['homebridge_ui_result_unknown', 'homebridge_ui_response_invalid', 'homebridge_restart_unverified',
+const failureReasons = new Set(['homebridge_cli_unavailable', 'homebridge_cli_discovery_failed', 'homebridge_pin_write_unverified', 'homebridge_ui_result_unknown', 'homebridge_ui_response_invalid', 'homebridge_restart_unverified',
   'homebridge_process_unverified', 'homebridge_process_changed', 'homebridge_file_unavailable', 'homebridge_cache_schema_unsupported',
   'homebridge_accessory_identity_changed', 'homebridge_backup_invalid', 'homebridge_configuration_changed', 'homebridge_login_required',
   'web_private_storage_write_failed', 'web_private_storage_invalid', 'web_private_storage_too_large', 'homebridge_storage_review_required',
@@ -33,7 +33,7 @@ function failureKind(error) {
   if (error instanceof TypeError) return 'type_error';
   return failureReason(error) === 'maintenance_step_failed' ? 'unexpected_error' : 'coded_error';
 }
-const diagnosticFiles = new Set(['web-admin-homebridge-host.js', 'web-admin-homebridge-maintenance.js', 'web-admin-homebridge-client.js', 'web-admin-transactions.js']);
+const diagnosticFiles = new Set(['web-admin-homebridge-host.js', 'web-admin-homebridge-api.js', 'web-admin-homebridge-maintenance.js', 'web-admin-homebridge-client.js', 'web-admin-transactions.js']);
 function failureLocation(error) {
   const root = new URL('./', import.meta.url).href;
   for (const line of String(error?.stack ?? '').split('\n').slice(1, 20)) {

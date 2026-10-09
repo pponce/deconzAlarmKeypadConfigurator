@@ -73,7 +73,7 @@ npm start -- --data-dir /absolute/private/path
 
 **Homebridge is not required.** If you already use Homebridge with `homebridge-deconz`, the optional integration lets you select the deCONZ user and PIN used by its alarm accessories.
 
-The current integration requires Homebridge on the same Linux host, `homebridge-deconz` in its own child bridge, and a Homebridge UI accepting local HTTP connections. Run this server as the same operating-system account as Homebridge so it can access the necessary files. Compatibility depends on package identities, reviewed source fingerprints and saved accessory-data validation. Different package version numbers are accepted when the checked files still match; changed source files require review.
+The current integration requires Homebridge on the same Linux host, `homebridge-deconz` in its own child bridge, and a Homebridge UI accepting local HTTP connections. Run this server as the same operating-system account as Homebridge so it can access the necessary files. New PIN updates use the official homebridge-deconz API and its UI discovery command; they do not require exact dependency versions, source fingerprints or accessory-file edits.
 
 With this admin server stopped, run:
 
@@ -83,11 +83,11 @@ node bin/deconz-keypad-admin.js homebridge
 
 Provide the Homebridge storage directory, its `config.json` path and the installed `homebridge-deconz` package directory, then restart this server. Include your `--data-dir` option if you use one.
 
-A synchronized PIN update asks for your confirmation and a Homebridge administrator login. It temporarily stops and restarts the deCONZ child bridge while this standalone web interface remains available.
+A synchronized PIN update asks for your confirmation and a Homebridge administrator login. It updates and verifies the running PIN without restarting Homebridge. Homebridge saves the setting on its normal schedule. The confirmation window explains PIN logging and offers optional clearing of the current Homebridge log after success.
 
 In the user editor, **Use for homebridge** appears below **Enabled on this gateway**. The guidance above the PIN fields changes with that selection. Leave both PIN fields blank to keep the current PIN when saving other user edits.
 
-If an update is interrupted, reopen **Continue Homebridge update**. When the saved record confirms that no PIN write was attempted, **Cancel PIN change and restore service** restores the child bridge and closes the pending operation after verification. Otherwise, continue the saved checks without repeating the PIN change. The screen identifies failed checks, and the server allows time for the child bridge's device API to become reachable after restarting. Homebridge authorization may be requested again; passwords are not saved. The private backup keeps one before/after copy of Homebridge accessory data, replaced by the next prepared PIN update. It does not back up the deCONZ gateway’s old PIN or provide automatic rollback of both systems.
+If an update is interrupted, reopen **Continue Homebridge update**. When the saved record confirms that no PIN write was attempted, **Cancel PIN change and restore service** restores the child bridge and closes the pending operation after verification. Otherwise, continue the saved checks without repeating the PIN change. The screen identifies failed checks, and the server allows time for the child bridge's device API to become reachable after restarting. Homebridge authorization may be requested again; passwords are not saved. New updates retain one small private PIN recovery record, replaced by the next prepared update. It does not back up the deCONZ gateway’s old PIN or provide automatic rollback of both systems. See [Homebridge PIN updates](docs/homebridge-pin.md) for persistence, log clearing and legacy recovery details.
 
 
 ## Testing and contributions

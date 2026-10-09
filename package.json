@@ -1,19 +1,28 @@
 {
   "name": "deconz-alarm-keypad-configurator",
-  "version": "0.1.0-dev.3",
+  "version": "0.1.0-dev.4",
   "private": true,
   "description": "Standalone deCONZ keypad, alarm user, PIN and access administration",
   "type": "module",
-  "engines": { "node": "^22.13.0 || ^24.0.0" },
-  "bin": { "deconz-keypad-admin": "bin/deconz-keypad-admin.js" },
+  "engines": {
+    "node": "^22.13.0 || ^24.0.0"
+  },
+  "bin": {
+    "deconz-keypad-admin": "bin/deconz-keypad-admin.js"
+  },
   "scripts": {
     "start": "node bin/deconz-keypad-admin.js serve",
     "setup": "node bin/deconz-keypad-admin.js init",
     "test": "node --test test/*.test.js",
     "test:browser": "node scripts/web-admin-browser.mjs && node scripts/web-admin-write-browser.mjs"
   },
-  "dependencies": { "@js-temporal/polyfill": "0.5.1" },
-  "repository": { "type": "git", "url": "https://github.com/pponce/deconzAlarmKeypadConfigurator.git" },
+  "dependencies": {
+    "@js-temporal/polyfill": "0.5.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pponce/deconzAlarmKeypadConfigurator.git"
+  },
   "license": "UNLICENSED",
   "author": "pponce"
 }

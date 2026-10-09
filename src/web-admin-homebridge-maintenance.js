@@ -6,7 +6,7 @@ import { WebAdminFiles } from './web-admin-files.js';
 import { requireWeb, object, exact, integer } from './web-admin-common.js';
 import { webJournalWithoutSecrets } from './web-admin-transactions.js';
 
-const stages = ['stop_requested', 'stopped', 'pin_saved', 'start_requested', 'running', 'complete'];
+const stages = ['stop_requested', 'stopped', 'api_preparing', 'api_prepared', 'api_write_requested', 'pin_saved', 'start_requested', 'running', 'complete'];
 const gatewayId = value => typeof value === 'string' && /^[a-z][a-z0-9-]{0,31}$/.test(value);
 export function validateAlarmBinding(row) {
   requireWeb(exact(row, ['gateway', 'identity', 'user', 'alarms']) && gatewayId(row.gateway) &&
@@ -104,12 +104,17 @@ export class WebHomebridgeMaintenance {
   }
   // This scope is entered only by authenticated Admin dispatch, after the
   // browser's explicit restart confirmation. It does not save a PIN/password.
-  async withRequest({ pin, confirmed, credentials }, operation) {
+  async withRequest({ pin, confirmed, credentials, clearLogs = false }, operation) {
     requireWeb(!this.#request, 'homebridge_update_in_progress');
     requireWeb(confirmed === true, 'homebridge_restart_confirmation_required');
     requireWeb(typeof pin === 'string' && /^[0-9]{4,16}$/.test(pin), 'invalid_pin');
-    this.#request = { pin, confirmed };
-    try { await this.host.authenticate(credentials); return await operation(); }
+    requireWeb(typeof clearLogs === 'boolean', 'invalid_request');
+    this.#request = { pin, confirmed, clearLogs };
+    try {
+      await this.host.authenticate(credentials);
+      const result = await operation();
+      await this.afterTransaction(result); return result;
+    }
     finally {
       this.#request = null; this.#prepared = null;
       if (object(credentials)) { credentials.password = ''; if (Object.hasOwn(credentials, 'otp')) credentials.otp = ''; }
@@ -125,11 +130,17 @@ export class WebHomebridgeMaintenance {
     requireWeb(binding.gateway === context.gateway && binding.identity === context.identity && binding.user === context.identity_id &&
       this.registrations.get(binding.gateway) === binding.identity, 'homebridge_binding_changed');
     const prepared = await this.host.prepare(structuredClone(binding)); webJournalWithoutSecrets(prepared);
-    this.#prepared = { previous, binding, host: prepared };
+    this.#prepared = { previous, binding, host: { ...prepared, clearLogs: this.#request.clearLogs, logClearState: this.#request.clearLogs ? 'pending' : 'not_requested' } };
   }
   async pause(tx) {
     requireWeb(this.#prepared && this.#request?.confirmed === true, 'homebridge_restart_confirmation_required');
     const row = await this.state(); requireWeb(!row.lease || row.lease.stage === 'complete', 'homebridge_shared_service_recovery_required');
+    if (this.#prepared.host.mode === 'api') {
+      row.lease = { id: tx.id, gateway: tx.gateway, ...structuredClone(this.#prepared), stage: 'api_preparing' };
+      await this.save(row);
+      await this.host.snapshotApi(structuredClone(row.lease), this.#request.pin);
+      row.lease.stage = 'api_prepared'; await this.save(row); return;
+    }
     row.lease = { id: tx.id, gateway: tx.gateway, ...structuredClone(this.#prepared), stage: 'stop_requested' };
     await this.save(row); // Durable before the first service request.
     await this.host.stop(structuredClone(row.lease));
@@ -149,6 +160,19 @@ export class WebHomebridgeMaintenance {
   }
   async verify(tx) {
     const row = await this.current(tx), lease = row.lease;
+    if (lease.host.mode === 'api') {
+      await this.host.verifyGateway(structuredClone(lease), structuredClone(tx));
+      const applied = tx.write_attempted && !tx.definite_rejection;
+      if (!applied) { await this.host.checkApi(lease, { applied: false }); return; }
+      requireWeb(tx.verified === true, 'homebridge_gateway_write_unverified');
+      if (['start_requested', 'running', 'complete'].includes(lease.stage)) {
+        await this.host.verifyApiRunning(lease, tx); return;
+      }
+      requireWeb(['api_prepared', 'api_write_requested', 'pin_saved'].includes(lease.stage), 'homebridge_snapshot_unverified');
+      lease.stage = 'api_write_requested'; await this.save(row);
+      await this.host.applyApi(structuredClone(lease));
+      lease.stage = 'pin_saved'; await this.save(row); return;
+    }
     if (this.noWriteRestore(tx, lease)) {
       await this.host.noWriteState(structuredClone(lease), structuredClone(tx));
       lease.host.restoreWithoutPin = true; await this.save(row); return;
@@ -168,6 +192,10 @@ export class WebHomebridgeMaintenance {
   }
   async resume(tx) {
     const row = await this.current(tx), lease = row.lease;
+    if (lease.host.mode === 'api') {
+      await this.host.verifyApiRunning(structuredClone(lease), structuredClone(tx));
+      if (lease.stage !== 'complete') { lease.stage = 'running'; await this.save(row); } return;
+    }
     if (lease.host.restoreWithoutPin === true) {
       requireWeb(tx.write_attempted === false, 'homebridge_gateway_write_unverified');
       const state = await this.host.noWriteState(structuredClone(lease), structuredClone(tx));
@@ -204,6 +232,13 @@ export class WebHomebridgeMaintenance {
     let check = 'saved_operation';
     try {
       const row = await this.current(tx), lease = row.lease;
+      if (lease.host.mode === 'api') {
+        check = 'gateway_state'; await this.host.verifyGateway(lease, tx);
+        check = 'homebridge_api';
+        if (['start_requested', 'running', 'complete'].includes(lease.stage)) await this.host.verifyApiRunning(lease, tx);
+        else await this.host.checkApi(lease, { applied: tx.write_attempted && !tx.definite_rejection, prepared: true });
+        return true;
+      }
       if (this.noWriteRestore(tx, lease)) {
         check = 'restore_service';
         await this.host.noWriteState(structuredClone(lease), structuredClone(tx)); return true;
@@ -223,8 +258,32 @@ export class WebHomebridgeMaintenance {
       return true;
     } catch (error) {
       const allowed = new Set(['homebridge_snapshot_unverified', 'homebridge_backup_changed', 'homebridge_cache_changed', 'homebridge_gateway_revision_changed', 'homebridge_gateway_identity_changed', 'homebridge_user_must_remain_unrestricted', 'homebridge_configuration_changed', 'homebridge_login_required', 'homebridge_transaction_changed', 'homebridge_storage_review_required', 'homebridge_file_unavailable', 'homebridge_saved_pin_unverified', 'homebridge_process_changed', 'homebridge_process_unverified', 'homebridge_alarm_mapping_changed']);
+      for (const code of ['homebridge_alarm_api_unavailable', 'homebridge_alarm_api_not_ready', 'homebridge_alarm_api_response_invalid', 'homebridge_cli_discovery_failed', 'homebridge_pin_write_unverified', 'homebridge_restart_unverified']) allowed.add(code);
       diagnostics.push({ participant: 'homebridge', check, reason: allowed.has(error.message) ? error.message : 'verification_failed' });
       return false;
     }
+  }
+  async logStatus(transactionId) {
+    const row = await this.state();
+    return row.lease?.id === transactionId ? row.lease.host.logClearState ?? 'not_requested' : 'not_requested';
+  }
+  async method(transactionId) {
+    const row = await this.state(); return row.lease?.id === transactionId && row.lease.host.mode === 'api' ? 'api' : 'legacy';
+  }
+  // Called only after the entire transaction has completed. Optional cleanup
+  // never participates in PIN recovery, never replays, and never clears a hold.
+  async afterTransaction(result) {
+    if (!result?.transaction_id) return;
+    let row;
+    try {
+      row = await this.state(); const lease = row.lease;
+      if (lease?.id !== result.transaction_id || lease.stage !== 'complete' || lease.host.logClearState !== 'pending') return;
+      const applied = same(row.bindings.find(item => item.gateway === lease.gateway), lease.binding) && result.saved !== false;
+      if (!applied) { lease.host.logClearState = 'skipped'; await this.store.write(row); return; }
+      lease.host.logClearState = 'requested'; await this.store.write(row); // Durable before deletion.
+      try { await this.host.clearLogs(); lease.host.logClearState = 'cleared'; }
+      catch { lease.host.logClearState = 'failed'; }
+      await this.store.write(row);
+    } catch { /* A cleanup failure must not reopen a completed PIN transaction. */ }
   }
 }

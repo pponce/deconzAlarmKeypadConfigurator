@@ -18,6 +18,7 @@ function fixture() {
         pin: '111-22-333', setupUri: 'X-HM://private-fixture' },
     ] };
     if (!commandReply) throw Error(secret);
+    if (input.route === '/api/platform-tools/hb-service/log/truncate') { assert.deepEqual(input.body, {}); return { status: 200, value: { status: 0 } }; }
     return { status: 200, value: { ok: true } };
   };
   const client = new WebHomebridgeClient({ origin: 'http://127.0.0.1:8581', bridge, exchange, clock: () => time,
@@ -34,6 +35,13 @@ test('local UI client is inert until explicit authentication and accepts only lo
     assert.throws(() => homebridgeUiOrigin(value), /homebridge_ui_address_invalid/);
   }
   assert.equal(homebridgeUiOrigin('http://[::1]:8581'), 'http://[::1]:8581');
+});
+test('log clearing uses the administrator API with JSON and propagates failure without restarting', async () => {
+  const f = fixture(); await assert.rejects(f.client.clearLogs(), /homebridge_login_required/);
+  await f.login(); assert.deepEqual(await f.client.clearLogs(), { cleared: true });
+  assert.deepEqual(f.calls.filter(row => row.method === 'PUT'), [{ route: '/api/platform-tools/hb-service/log/truncate', method: 'PUT' }]);
+  f.loseCommand(); await assert.rejects(f.client.clearLogs(), /homebridge_ui_result_unknown/);
+  assert.equal(f.calls.some(row => row.route.startsWith('/api/server/')), false);
 });
 test('login checks administrator permission and exact child identity; passwords and pairing codes do not survive', async () => {
   const f = fixture(), credentials = { username: 'Owner', password: 'fixture-password', otp: '123456' };

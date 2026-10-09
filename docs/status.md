@@ -1,5 +1,14 @@
 # Standalone Node port status
 
+## 2026-10-09 — Official Homebridge PIN API and optional log clearing
+
+New updates use the maintainer's Configuration API and installed ui discovery command. The owner explicitly accepts upstream PIN logging and normal deferred persistence; no routine restart or saved accessory-file edit is made. Source fingerprints remain only for already-pending legacy offline operations. Preserve identity, mapping, grant, auth, private storage, single gateway write and recovery checks. Small private PIN recovery data replaces full-cache snapshots for new updates. Live API readback establishes runtime application, not a disk flush.
+
+The review window offers an unchecked option to clear the entire current Homebridge log after all transaction participants complete. Use the administrator log/truncate API with a JSON body; record deletion intent once and keep failures separate from PIN completion. Never automatically repeat deletion or uncertain PIN writes. Archived/downloaded/externally collected logs are unaffected.
+
+Focused synthetic checks cover multiple alarm updates, no service requests/cache files/library fingerprints, lost replies, pre-write cancellation, mapping mismatch, recovery and optional cleanup failure. Full CI and browser results will be recorded before owner installation. No npm publication, host installation or hardware acceptance is claimed.
+
+
 ## 2026-10-09 — Source-based Homebridge PIN compatibility
 
 Remove exact installed package-version equality as requested. Package names and every previously reviewed source fingerprint still must match. The manifest labels the originating releases as reviewed_version, informational provenance only. All cache schema/identity/mapping/PIN checks, stopped-process checks, backup, compare-and-replace and restart/recovery checks remain. New regression coverage accepts version-only changes while rejecting wrong package identity, modified source under either version, and missing source.
@@ -47,6 +56,6 @@ No live deCONZ gateway, Homebridge child bridge, garage door or bolt was contact
 
 - A fresh-host installation and physical alarm acceptance remain owner testing tasks; synthetic CI does not establish hardware acceptance.
 - Initial setup is terminal-based. There is no browser installer, automatic API-key enrollment, packaged service installer, automatic update mechanism or Python data importer yet.
-- Homebridge PIN maintenance is local Linux only, with the existing reviewed homebridge-deconz 1.3.5/homebridge-lib 8.1.5 source checks, one child bridge, local HTTP UI and matching OS ownership. Changed source fingerprints and remote/HTTPS UI support need separate review.
+- Homebridge PIN updates require local Linux, the installed homebridge-deconz UI command, one child bridge, local HTTP UI and matching OS ownership. New API updates do not require source fingerprints; legacy pending offline operations retain their reviewed checks. Remote/HTTPS UI support needs separate work.
 - Uncertain credential writes remain held when reliable evidence is unavailable. Policy backups do not contain gateway PINs. There is no unsafe bypass or automatic retry.
 - Future controller support is an extension seam, not a functioning add-on. Shared code is extracted source rather than a published common package.

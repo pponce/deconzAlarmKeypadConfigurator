@@ -64,8 +64,9 @@ try {
       assert.equal(await page.locator('#pin-guidance').textContent(), 'For user edits, leave both fields blank to keep the current PIN.');
       await page.locator('#hb-use').check(); await page.locator('[data-hb-alarm="1"]').check();
       await page.locator('#pin').fill('6789'); await page.locator('#pin-repeat').fill('6789'); await page.locator('#editor button.primary').click();
+      assert.equal(await page.locator('[name="homebridge-clear-logs"]').isChecked(), false);
       await page.getByRole('button', { name: 'Continue', exact: true }).click();
-      const restart = page.getByRole('button', { name: 'Save PIN and restart Homebridge deCONZ', exact: true });
+      const restart = page.getByRole('button', { name: 'Update PIN', exact: true });
       assert.equal(await restart.isEnabled(), false); assert.equal(f.maintenance.includes('stop'), false);
       assert.match(await page.locator('#hb-flow-content').textContent(), /same page/);
       await page.locator('[name="homebridge-username"]').fill('BridgeAdmin');
@@ -113,6 +114,8 @@ try {
       await page.locator('#hb-use').check(); await page.locator('[data-hb-alarm="1"]').check();
       await page.locator('#pin').fill('6789'); await page.locator('#pin-repeat').fill('6789');
       await page.locator('#editor button.primary').click();
+      await page.locator('[name="homebridge-clear-logs"]').check();
+      f.state.failClearLogs = true;
       await page.getByRole('button', { name: 'Continue', exact: true }).click();
       await page.locator('[name="homebridge-username"]').fill('BridgeAdmin');
       await page.locator('[name="homebridge-password"]').fill('synthetic-bridge-password');
@@ -129,10 +132,12 @@ try {
       await page.locator('[name="homebridge-username"]').fill('BridgeAdmin');
       await page.locator('[name="homebridge-password"]').fill('synthetic-bridge-password');
       await page.getByRole('button', { name: 'Continue', exact: true }).click();
+      await page.getByText('PIN updated successfully, but Homebridge logs could not be confirmed cleared. You can clear them from Homebridge UI.', { exact: true }).waitFor();
+      assert.equal(f.maintenance.filter(value => value === 'logs cleared').length, 1);
       await page.getByRole('button', { name: 'Done', exact: true }).click();
       await page.getByText('Homebridge access updated.', { exact: true }).waitFor();
       assert.equal(f.writes.filter(([, route]) => route === '/alarmsystems/users/' + 'a'.repeat(32)).length, pinWritesBefore + 1);
-      assert.equal(f.maintenance.filter(value => value === 'stop').length, stopsBefore + 1); assert.equal(f.maintenance.filter(value => value === 'start').length, startsBefore + 1);
+      assert.equal(f.maintenance.filter(value => value === 'stop').length, stopsBefore); assert.equal(f.maintenance.filter(value => value === 'start').length, startsBefore);
       assert.equal(await page.locator('#login').isVisible(), false); assert.equal(await page.locator('#users').isVisible(), true);
       assert.equal(await page.locator('[name="homebridge-password"]').count(), 0);
       // Isolated recovery dialog: successful auth plus blocked review must show

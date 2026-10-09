@@ -9,7 +9,7 @@ import { WebAdminCollector } from './web-admin-collector.js';
 import { createWebAdminServer } from './web-admin-server.js';
 import { loadWebAdminAssets } from './web-admin-assets.js';
 import { WebHomebridgeMaintenance, WebHomebridgeMaintenanceStore } from './web-admin-homebridge-maintenance.js';
-import { WebHomebridgeHost } from './web-admin-homebridge-host.js';
+import { WebHomebridgeApiHost as WebHomebridgeHost } from './web-admin-homebridge-api.js';
 import { StandaloneConfig, configFingerprint, verifyRegistration } from './standalone-config.js';
 import { requireWeb, exact } from './web-admin-common.js';
 

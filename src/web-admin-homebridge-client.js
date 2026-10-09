@@ -103,6 +103,7 @@ export class WebHomebridgeClient {
     requireWeb(this.#token && this.clock() < this.#expires, 'homebridge_login_required');
     const reads = ['/api/config-editor', '/api/status/homebridge/child-bridges'];
     const writes = ['stop', 'start', 'restart'].map(action => '/api/server/' + action + '/' + this.bridge.toLowerCase());
+    writes.push('/api/platform-tools/hb-service/log/truncate');
     requireWeb(method === 'GET' ? reads.includes(route) : method === 'PUT' && writes.includes(route), 'homebridge_ui_request_invalid');
     let result;
     try { result = await this.exchange({ origin: this.origin, route, method, ...(method === 'PUT' ? { body: {} } : {}), authorization: this.#token }); }
@@ -120,6 +121,11 @@ export class WebHomebridgeClient {
       (row.pid == null || integer(row.pid, 1, Number.MAX_SAFE_INTEGER)), 'homebridge_ui_response_invalid');
     // The upstream metadata includes pairing codes; never return those.
     return { bridge: this.bridge, plugin: row.plugin, status: row.status, pid: row.pid ?? null, manuallyStopped: row.manuallyStopped };
+  }
+  async clearLogs() {
+    const result = await this.#request('/api/platform-tools/hb-service/log/truncate', 'PUT');
+    requireWeb(object(result) && result.status === 0, 'homebridge_log_clear_unverified');
+    return { cleared: true };
   }
   async command(action, transactionId, confirmed) {
     requireWeb(['stop', 'start', 'restart'].includes(action) && typeof transactionId === 'string' && /^[0-9a-f]{32}$/.test(transactionId), 'homebridge_restart_request_invalid');

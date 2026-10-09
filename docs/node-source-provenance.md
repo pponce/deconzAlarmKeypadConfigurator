@@ -31,3 +31,7 @@ Controller engine/restart fixes, controller routes and settings panels, garage s
 ## Source-based compatibility through 0.4.36
 
 Ported from `4ca803a096dd26eb79b661b94b8d03cacfa304b9`: package versions are recorded as reviewed-version provenance rather than an equality gate. Package identities and every listed source fingerprint remain required. Saved-data validation and interruption recovery are unchanged. Matching newer-version synthetic packages pass; changed or missing source and wrong package names still fail. The private Homebridge backup does not provide automatic rollback of the gateway PIN.
+
+## Official Homebridge PIN API
+
+Ported from `9d21ffe637d241fc8799b62fd5477848d621714e` (0.4.37): use the installed ui command for discovery and the official Configuration API for PIN updates. New updates do not restart Homebridge, edit accessory files or require source fingerprints. The owner accepts upstream PIN logging and deferred persistence. The review checkbox optionally clears the entire current Homebridge log only after full transaction success; failure remains separate. Legacy pending operations retain the offline recovery adapter. Standalone private storage remains separate; no controller runtime was added.
