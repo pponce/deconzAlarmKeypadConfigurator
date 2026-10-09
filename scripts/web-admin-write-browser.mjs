@@ -76,13 +76,12 @@ try {
       let failedSubmissions = 0;
       await page.route('**/api/users/rotate-pin', async route => {
         failedSubmissions++;
-        await route.fulfill({ status: 409, contentType: 'application/json', body: JSON.stringify({ error: 'synthetic_setup_rejected' }) });
+        await route.fulfill({ status: 409, contentType: 'application/json', body: JSON.stringify({ error: 'maintenance_preflight_failed:homebridge_cli_discovery_failed:coded_error' }) });
       });
       await restart.click();
-      await page.getByText('The Homebridge update could not be confirmed', { exact: true }).waitFor();
-      assert.match(await page.locator('#hb-flow-content').textContent(), /synthetic_setup_rejected/);
-      await page.getByRole('button', { name: 'Refresh status', exact: true }).click();
-      assert.match(await page.locator('#hb-flow-content').textContent(), /synthetic_setup_rejected/);
+      await page.getByText('Update did not start. No PIN was changed.', { exact: true }).waitFor();
+      assert.match(await page.locator('#hb-flow-content').textContent(), /homebridge_cli_discovery_failed/);
+      assert.match(await page.locator('#hb-flow-content').textContent(), /no new pending update/);
       assert.equal(failedSubmissions, 1); assert.equal(f.writes.length, beforeFailure);
       assert.equal(f.maintenance.includes('stop'), false);
       await page.locator('#hb-flow-close').click(); await ready();
@@ -141,6 +140,16 @@ try {
       assert.equal(await page.locator('#hb-use').count(), 0);
       assert.match(await page.locator('#pin-guidance').textContent(), /Leave both fields blank to keep the current PIN/);
       assert.equal(await page.locator('#hb-configuration').isVisible(), true);
+      await page.locator('#pin').fill('7890'); await page.locator('#pin-repeat').fill('7890');
+      await page.locator('#editor button.primary').click();
+      await page.getByRole('button', { name: 'Continue', exact: true }).click();
+      assert.equal(await page.locator('[name="homebridge-username"]').count(), 0);
+      await page.locator('[name="homebridge-restart-confirmed"]').check();
+      await page.getByRole('button', { name: 'Update PIN', exact: true }).click();
+      await page.getByText('Homebridge access updated', { exact: true }).waitFor();
+      await page.getByRole('button', { name: 'Done', exact: true }).click();
+      assert.equal(f.writes.filter(([, route]) => route === '/alarmsystems/users/' + 'a'.repeat(32)).length, pinWritesBefore + 2);
+
       // Isolated recovery dialog: successful auth plus blocked review must show
       // the reason, remove password fields, and never replay a PIN or restart.
       const recoveryPage = await page.context().newPage();
