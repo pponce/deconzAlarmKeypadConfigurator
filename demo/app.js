@@ -300,7 +300,7 @@
       ${!adding?'<p id="pin-guidance" class="gp-sub gp-form-note" aria-live="polite"></p>':''}
       <label class="gp-field">${attaching?'Current PIN (verify alarm uniqueness)':adding?'PIN':'PIN'}<input id="pin" type="password" inputmode="numeric" autocomplete="new-password" pattern="[0-9]{4,16}" maxlength="16" ${adding?'required':''} ></label>
       ${!adding&&(overview.pin_rotation_available||overview.homebridge_sync===false)?'<label class="gp-field">Repeat PIN<input id="pin-repeat" type="password" inputmode="numeric" autocomplete="new-password" pattern="[0-9]{4,16}" maxlength="16"></label>':''}
-      ${!adding&&!homebridgeUser&&(overview.homebridge_available||overview.homebridge_status)?`<div class="gp-homebridge-selection">
+      ${!adding&&(overview.homebridge_available||overview.homebridge_status)?`<div class="gp-homebridge-selection">
         <p id="hb-choice-note" class="gp-sub gp-form-note">${!hbReady?esc(window.ConfiguratorHomebridgeReadiness(overview.homebridge_status?.error,overview.homebridge_status?.file_check)):homebridgeUser?'This user is currently selected for Homebridge.':!hbEligible?`If you changed this user’s access below, leave both PIN fields blank and click Save changes before selecting this option. This user needs enabled API arm/disarm access, unlimited uses and no schedule or expiry on ${boundAlarms.length?'every alarm already linked to Homebridge':'at least one alarm'}.`:'Select this option to use this user’s PIN for Homebridge.'}</p>
         <div id="hb-configuration" ${homebridgeUser?'':'hidden'}>
           <h3>Alarms to use with Homebridge</h3>

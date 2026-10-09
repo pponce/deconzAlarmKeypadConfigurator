@@ -24,7 +24,7 @@ Run Homebridge on the same Linux host, with homebridge-deconz in its own child b
 
 ## Sequence and recovery
 
-1. Review the user and alarms, optionally select log clearing, then confirm the PIN update and authenticate to Homebridge UI.
+1. Review the user and alarms, optionally select log clearing, then confirm the PIN update. Authenticate to Homebridge UI only if log clearing is selected.
 2. Verify the child bridge, gateway, alarm mapping, existing API PIN fields and user grants. Pause applicable controller integrations.
 3. Save a small private recovery record containing the selected alarm PINs and intended new PIN. Update deCONZ once and verify its outcome.
 4. Set each Homebridge alarm PIN through the official API, recording intent before each request. Verify the live value; resolve lost responses by readback without automatically repeating the write.
@@ -32,6 +32,6 @@ Run Homebridge on the same Linux host, with homebridge-deconz in its own child b
 
 The private `web-homebridge-api-update.json` record is overwritten by the next prepared update; no sequence of full-file backups is created. It remains separate from the credential-free policy snapshots and cannot be replaced while an update is pending. It is not a backup of deCONZ's old PIN and does not provide automatic cross-system rollback.
 
-If interrupted before any gateway PIN write, the saved operation can be cancelled without restarting Homebridge. Otherwise, continue the saved update with fresh authorization. Uncertain gateway writes still need independent evidence; unknown Homebridge writes are checked through live readback. Identity/mapping changes or values that cannot be verified remain held for review. Recovery does not automatically replay an uncertain write.
+If interrupted before any gateway PIN write, the saved operation can be cancelled without restarting Homebridge. Otherwise, continue the saved update as a web administrator. Homebridge login is only requested for pending log clearing or legacy offline recovery. Uncertain gateway writes still need independent evidence; unknown Homebridge writes are checked through live readback. Identity/mapping changes or values that cannot be verified remain held for review. Recovery does not automatically replay an uncertain write.
 
 Already-pending updates created by the old offline method keep their original recovery adapter, reviewed source fingerprints and private snapshot requirements. Only those old leases may need the previously confirmed stop/start sequence. The single legacy full accessory-file backup, if present, is retained; new API updates do not add more such backups.

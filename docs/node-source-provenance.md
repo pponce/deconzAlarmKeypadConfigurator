@@ -1,6 +1,6 @@
 ## PIN authorization and user form follow-up
 
-Ported from combined release 0.4.38, source commit `1c75a1481f0fb98f3a4a4c5f9cec1353addd3e59`: optional Homebridge login only for log clearing, safe preflight reasons, and implicit selection for the existing Homebridge user. Standalone runtime and host storage adaptations remain independent.
+Ported from combined release 0.4.38, source commit `99be89244667537f968d13599b4fd7fc46102c53`: optional Homebridge login only for log clearing, safe preflight reasons, and implicit selection for the existing Homebridge user. Standalone runtime and host storage adaptations remain independent.
 
 # Node source extraction
 

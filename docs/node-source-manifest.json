@@ -443,13 +443,13 @@
     },
     {
       "path": "web-admin/public/app.js",
-      "source_blob": "e827794dc9c9e1f6c69d417d74c0bcc8e8402516",
-      "source_bytes": 100620,
-      "sha256": "c06331a1fdb6526e202a76ad37b99ffbfb5f5690cb231a77d5691237b2ea8b11",
+      "source_blob": "43029e913f3f64096c041cfb8f5248505ad0c9ed",
+      "source_bytes": 100603,
+      "sha256": "d3c3b662e148593ecd0953e4132b358675425ea405a2e4718c6a57857e9648f4",
       "adapted": true,
-      "source_commit": "1c75a1481f0fb98f3a4a4c5f9cec1353addd3e59",
+      "source_commit": "99be89244667537f968d13599b4fd7fc46102c53",
       "source_version": "0.4.38",
-      "source_sha256": "15c264e1f40051a8043051466d605186f1e7518734666bfb35a2d00cb86704b0"
+      "source_sha256": "5bf12537fe7d810d56fba8f684db096cfb67999431da580139ed0694d43707c4"
     },
     {
       "path": "web-admin/public/apple-touch-icon.png",
