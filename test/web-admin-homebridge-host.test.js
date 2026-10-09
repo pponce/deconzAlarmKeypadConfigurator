@@ -1,10 +1,11 @@
 import test from 'node:test';
+import { createHash } from 'node:crypto';
 import { WebAdminError } from '../src/web-admin-auth.js';
 import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, writeFile, readFile, rm, stat, symlink, chmod } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { WebHomebridgeHost, homebridgeAlarmContext, editedHomebridgeCache, replaceHomebridgeCache, readHomebridgeFile } from '../src/web-admin-homebridge-host.js';
+import { WebHomebridgeHost, homebridgeAlarmContext, editedHomebridgeCache, replaceHomebridgeCache, readHomebridgeFile, verifyHomebridgeSourcePackage } from '../src/web-admin-homebridge-host.js';
 
 const identity = '0011223344556677', uid = '1'.repeat(32), bridge = 'AA:BB:CC:DD:EE:FF';
 const SECURITY = '0000007E-0000-1000-8000-0026BB765291';
@@ -231,4 +232,28 @@ test('readiness polling stops when the child process changes', async t => {
   f.host.sleep = async () => { f.host.client.status = async () => ({ pid: 9999, status: 'ok', manuallyStopped: false }); };
   await assert.rejects(f.host.verifyRunning(f.lease, f.tx), /homebridge_process_changed/);
   assert.equal(reads, 1); assert.deepEqual(f.calls, ['stop', 'start']);
+});
+
+
+test('package version changes are accepted only with the reviewed source fingerprints and package identity', async t => {
+  const root = await mkdtemp(path.join(tmpdir(), 'homebridge-source-compatibility-'));
+  t.after(() => rm(root, { recursive: true, force: true }));
+  for (const [kind, name, reviewedVersion] of [['plugin', 'homebridge-deconz', '1.3.5'], ['library', 'homebridge-lib', '8.1.5']]) {
+    const folder = path.join(root, kind); await mkdir(folder, { mode: 0o700 });
+    const source = '// synthetic reviewed source fixture\n';
+    const expected = { package: name, reviewed_version: reviewedVersion, source_sha256: { 'source.js': createHash('sha256').update(source).digest('hex') } };
+    const metadata = (version, packageName = name) => writeFile(path.join(folder, 'package.json'), JSON.stringify({ name: packageName, version }), { mode: 0o644 });
+    await writeFile(path.join(folder, 'source.js'), source, { mode: 0o644 });
+    for (const version of [reviewedVersion, '99.0.0']) {
+      await metadata(version); await verifyHomebridgeSourcePackage(folder, expected, kind);
+    }
+    await metadata('99.0.0', 'different-package');
+    await assert.rejects(verifyHomebridgeSourcePackage(folder, expected, kind), /homebridge_source_changed_review_required/);
+    await metadata(reviewedVersion); await writeFile(path.join(folder, 'source.js'), source + '// modified\n');
+    await assert.rejects(verifyHomebridgeSourcePackage(folder, expected, kind), /homebridge_source_changed_review_required/);
+    await metadata('99.0.0');
+    await assert.rejects(verifyHomebridgeSourcePackage(folder, expected, kind), /homebridge_source_changed_review_required/);
+    await rm(path.join(folder, 'source.js'));
+    await assert.rejects(verifyHomebridgeSourcePackage(folder, expected, kind), /homebridge_file_unavailable/);
+  }
 });

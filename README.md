@@ -73,7 +73,7 @@ npm start -- --data-dir /absolute/private/path
 
 **Homebridge is not required.** If you already use Homebridge with `homebridge-deconz`, the optional integration lets you select the deCONZ user and PIN used by its alarm accessories.
 
-The current integration requires Homebridge on the same Linux host, `homebridge-deconz` in its own child bridge, and a Homebridge UI accepting local HTTP connections. Run this server as the same operating-system account as Homebridge so it can access the necessary files. Compatibility checks currently cover `homebridge-deconz 1.3.5` and `homebridge-lib 8.1.5`; other versions require review.
+The current integration requires Homebridge on the same Linux host, `homebridge-deconz` in its own child bridge, and a Homebridge UI accepting local HTTP connections. Run this server as the same operating-system account as Homebridge so it can access the necessary files. Compatibility depends on package identities, reviewed source fingerprints and saved accessory-data validation. Different package version numbers are accepted when the checked files still match; changed source files require review.
 
 With this admin server stopped, run:
 
@@ -87,7 +87,7 @@ A synchronized PIN update asks for your confirmation and a Homebridge administra
 
 In the user editor, **Use for homebridge** appears below **Enabled on this gateway**. The guidance above the PIN fields changes with that selection. Leave both PIN fields blank to keep the current PIN when saving other user edits.
 
-If an update is interrupted, reopen **Continue Homebridge update**. When the saved record confirms that no PIN write was attempted, **Cancel PIN change and restore service** restores the child bridge and closes the pending operation after verification. Otherwise, continue the saved checks without repeating the PIN change. The screen identifies failed checks, and the server allows time for the child bridge's device API to become reachable after restarting. Homebridge authorization may be requested again; passwords are not saved.
+If an update is interrupted, reopen **Continue Homebridge update**. When the saved record confirms that no PIN write was attempted, **Cancel PIN change and restore service** restores the child bridge and closes the pending operation after verification. Otherwise, continue the saved checks without repeating the PIN change. The screen identifies failed checks, and the server allows time for the child bridge's device API to become reachable after restarting. Homebridge authorization may be requested again; passwords are not saved. The private backup keeps one before/after copy of Homebridge accessory data, replaced by the next prepared PIN update. It does not back up the deCONZ gateway’s old PIN or provide automatic rollback of both systems.
 
 
 ## Testing and contributions

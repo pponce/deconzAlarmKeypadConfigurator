@@ -62,6 +62,15 @@ async function readPrerequisite(file, limit, scope, label, resolve = false) {
     throw cause;
   }
 }
+// Package versions are provenance only. Compatibility follows package identity
+// and the exact reviewed source files; saved-data checks run separately.
+export async function verifyHomebridgeSourcePackage(root, expected, kind) {
+  const packageJson = json(await readPrerequisite(path.join(root, 'package.json'), 1048576, kind, 'package.json'));
+  requireWeb(packageJson.name === expected.package, 'homebridge_source_changed_review_required');
+  for (const [relative, digest] of Object.entries(expected.source_sha256)) {
+    requireWeb(hash(await readPrerequisite(path.join(root, relative), 1048576, kind, relative)) === digest, 'homebridge_source_changed_review_required');
+  }
+}
 function publicFileCheck(value) {
   const files = value?.scope === 'configuration' ? ['config.json'] : ['package.json', ...Object.keys(reviewed[value?.scope]?.source_sha256 ?? {})];
   const reasons = ['missing', 'unreadable', 'linked_path', 'not_regular', 'hard_link', 'writable_by_others', 'unexpected_owner', 'too_large', 'read_failed'];
@@ -151,11 +160,7 @@ export class WebHomebridgeHost {
     const plugin = await realpath(await this.pluginRoot()), localRequire = createRequire(path.join(plugin, 'package.json'));
     const library = path.dirname(await realpath(localRequire.resolve('homebridge-lib')));
     for (const [kind, root] of [['plugin', plugin], ['library', library]]) {
-      const expected = reviewed[kind], packageJson = json(await readPrerequisite(path.join(root, 'package.json'), 1048576, kind, 'package.json'));
-      requireWeb(packageJson.name === expected.package && packageJson.version === expected.version, 'homebridge_source_changed_review_required');
-      for (const [relative, digest] of Object.entries(expected.source_sha256)) {
-        requireWeb(hash(await readPrerequisite(path.join(root, relative), 1048576, kind, relative)) === digest, 'homebridge_source_changed_review_required');
-      }
+      await verifyHomebridgeSourcePackage(root, reviewed[kind], kind);
     }
   }
   async readiness() {

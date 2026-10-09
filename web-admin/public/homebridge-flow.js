@@ -18,7 +18,7 @@ window.ConfiguratorHomebridgeReadiness = (code, check) => {
   homebridge_child_identity_invalid: 'Run homebridge-deconz in its own child bridge.',
   homebridge_plugin_disabled: 'The homebridge-deconz plugin is disabled in this Homebridge instance.',
   homebridge_local_http_ui_required: 'This integration currently needs Homebridge UI to accept local HTTP connections. An HTTPS-only UI needs additional certificate support.',
-  homebridge_source_changed_review_required: 'The installed deCONZ plugin or library differs from the reviewed versions (homebridge-deconz 1.3.5 and homebridge-lib 8.1.5). Compatibility must be checked before PIN synchronization can run.',
+  homebridge_source_changed_review_required: 'The installed deCONZ plugin or library does not match the reviewed package identity or source fingerprints. Changed source files require a compatibility review before PIN synchronization can run.',
   homebridge_sources_unavailable: 'The installed homebridge-deconz plugin or its library could not be located at the configured package path.',
   homebridge_file_unavailable: 'A required Homebridge configuration or plugin file could not be read with the expected file permissions.',
   homebridge_configuration_unavailable: 'The local Homebridge configuration could not be inspected.',

@@ -1,6 +1,14 @@
 # Standalone Node port status
 
-Current development version: `0.1.0-dev.2`.
+## 2026-10-09 — Source-based Homebridge PIN compatibility
+
+Remove exact installed package-version equality as requested. Package names and every previously reviewed source fingerprint still must match. The manifest labels the originating releases as reviewed_version, informational provenance only. All cache schema/identity/mapping/PIN checks, stopped-process checks, backup, compare-and-replace and restart/recovery checks remain. New regression coverage accepts version-only changes while rejecting wrong package identity, modified source under either version, and missing source.
+
+The private backup retains before/after Homebridge accessory-file data in one overwritten file. It is not a deCONZ credential backup or an automatic cross-system rollback. Recovery verifies or completes the saved operation without replaying the gateway PIN write.
+
+Focused host tests pass locally; full CI is required before installation. No live host changes are part of this source update.
+
+Current development version: `0.1.0-dev.3`.
 
 Implemented: independent HTTPS process, interactive local account/gateway/network setup, private config and process ownership, gateway identity verification, existing web account roles, users/PINs/access/schedules, alarm and lockout administration, history, durable writes/recovery, direct virtual keypad, and optional local Homebridge child-bridge PIN workflow. The latest combined-plugin user/mobile/password UI is retained. No garage/bolt code or Homebridge plugin runtime is included.
 
@@ -39,6 +47,6 @@ No live deCONZ gateway, Homebridge child bridge, garage door or bolt was contact
 
 - A fresh-host installation and physical alarm acceptance remain owner testing tasks; synthetic CI does not establish hardware acceptance.
 - Initial setup is terminal-based. There is no browser installer, automatic API-key enrollment, packaged service installer, automatic update mechanism or Python data importer yet.
-- Homebridge PIN maintenance is local Linux only, with the existing reviewed homebridge-deconz 1.3.5/homebridge-lib 8.1.5 source checks, one child bridge, local HTTP UI and matching OS ownership. Broader versions/remote/HTTPS UI support need separate work.
+- Homebridge PIN maintenance is local Linux only, with the existing reviewed homebridge-deconz 1.3.5/homebridge-lib 8.1.5 source checks, one child bridge, local HTTP UI and matching OS ownership. Changed source fingerprints and remote/HTTPS UI support need separate review.
 - Uncertain credential writes remain held when reliable evidence is unavailable. Policy backups do not contain gateway PINs. There is no unsafe bypass or automatic retry.
 - Future controller support is an extension seam, not a functioning add-on. Shared code is extracted source rather than a published common package.

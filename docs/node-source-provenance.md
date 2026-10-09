@@ -27,3 +27,7 @@ Imported the user-editor checkbox and conditional PIN guidance, simplified Conti
 Standalone adaptations retain separate administration and Homebridge storage roots, the explicitly configured installed-package path, direct deCONZ keypad routing and optional extension participants. Confirmation text does not refer to a garage door or bolt. Diagnostic source locations list only modules included here. Host regression fixtures exercise separate data roots.
 
 Controller engine/restart fixes, controller routes and settings panels, garage selector styling, combined-plugin installation/release scripts, static demo publishing and Homebridge plugin registration are excluded. No changes to npm publication or either live installation are part of this port.
+
+## Source-based compatibility through 0.4.36
+
+Ported from `4ca803a096dd26eb79b661b94b8d03cacfa304b9`: package versions are recorded as reviewed-version provenance rather than an equality gate. Package identities and every listed source fingerprint remain required. Saved-data validation and interruption recovery are unchanged. Matching newer-version synthetic packages pass; changed or missing source and wrong package names still fail. The private Homebridge backup does not provide automatic rollback of the gateway PIN.
