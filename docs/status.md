@@ -6,7 +6,7 @@ Remove exact installed package-version equality as requested. Package names and 
 
 The private backup retains before/after Homebridge accessory-file data in one overwritten file. It is not a deCONZ credential backup or an automatic cross-system rollback. Recovery verifies or completes the saved operation without replaying the gateway PIN write.
 
-Focused host tests pass locally; full CI is required before installation. No live host changes are part of this source update.
+All 144 standalone tests pass locally and on Node 22/24 with normal npm dependencies. Chromium desktop and WebKit mobile read/write/recovery workflows pass in [CI run 37884257521](https://github.com/pponce/deconzAlarmKeypadConfigurator/actions/runs/37884257521) for `cbf227bfce5ef0077d5705a2a75ef11116b1f321`. No live host changes are part of this source update.
 
 Current development version: `0.1.0-dev.3`.
 
