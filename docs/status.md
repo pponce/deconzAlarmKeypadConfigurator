@@ -6,7 +6,7 @@ New updates use the maintainer's Configuration API and installed ui discovery co
 
 The review window offers an unchecked option to clear the entire current Homebridge log after all transaction participants complete. Use the administrator log/truncate API with a JSON body; record deletion intent once and keep failures separate from PIN completion. Never automatically repeat deletion or uncertain PIN writes. Archived/downloaded/externally collected logs are unaffected.
 
-Focused synthetic checks cover multiple alarm updates, no service requests/cache files/library fingerprints, lost replies, pre-write cancellation, mapping mismatch, recovery and optional cleanup failure. Full CI and browser results will be recorded before owner installation. No npm publication, host installation or hardware acceptance is claimed.
+All 152 standalone tests pass locally and on Node 22/24 with normal npm dependencies. [CI run 37886367448](https://github.com/pponce/deconzAlarmKeypadConfigurator/actions/runs/37886367448) passes on `207f6a6b74c37fbdb6d0ba5b6ec387f81e7ec917`, including Chromium desktop and WebKit mobile production read/write/recovery flows, unchecked log opt-in and cleanup failure after a successful update. Tests verify no service stop/start, one gateway write and no repeated Homebridge write during recovery. The initial browser pass caught a combined-controller name in the standalone readiness message; it was corrected before this passing run. No npm publication, host installation or hardware acceptance is claimed.
 
 
 ## 2026-10-09 — Source-based Homebridge PIN compatibility
