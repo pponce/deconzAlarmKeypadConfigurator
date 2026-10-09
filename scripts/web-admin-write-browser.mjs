@@ -55,22 +55,114 @@ try {
       // substituting only the host service port. No service or hardware exists.
       f.state.homebridgeAvailable = true; await navigate('users');
       await page.locator('#user-list [data-id="' + 'a'.repeat(32) + '"]').click();
+      assert.equal(await page.locator('#pin-guidance').textContent(), 'For user edits, leave both fields blank to keep the current PIN.');
+      assert.equal(await page.locator('#hb-use').evaluate(el => el.closest('.gp-identity-options').querySelector('label:first-child input').id), 'enabled');
+      assert.equal(await page.locator('#pin-guidance').evaluate(el => Boolean(el.compareDocumentPosition(document.querySelector('#pin')) & Node.DOCUMENT_POSITION_FOLLOWING)), true);
+      await page.getByLabel('Use for homebridge', { exact: true }).check();
+      assert.match(await page.locator('#pin-guidance').textContent(), /^Enter in pin to use for homebridge and this user\./);
+      await page.locator('#hb-use').uncheck();
+      assert.equal(await page.locator('#pin-guidance').textContent(), 'For user edits, leave both fields blank to keep the current PIN.');
       await page.locator('#hb-use').check(); await page.locator('[data-hb-alarm="1"]').check();
       await page.locator('#pin').fill('6789'); await page.locator('#pin-repeat').fill('6789'); await page.locator('#editor button.primary').click();
-      await page.getByRole('button', { name: 'Continue to preparation', exact: true }).click();
+      await page.getByRole('button', { name: 'Continue', exact: true }).click();
       const restart = page.getByRole('button', { name: 'Save PIN and restart Homebridge deCONZ', exact: true });
       assert.equal(await restart.isEnabled(), false); assert.equal(f.maintenance.includes('stop'), false);
       assert.match(await page.locator('#hb-flow-content').textContent(), /same page/);
       await page.locator('[name="homebridge-username"]').fill('BridgeAdmin');
       await page.locator('[name="homebridge-password"]').fill('synthetic-bridge-password');
       await page.locator('[name="homebridge-restart-confirmed"]').check();
+      // A failed submission must not adopt the older completed policy transaction.
+      const beforeFailure = f.writes.length;
+      let failedSubmissions = 0;
+      await page.route('**/api/users/rotate-pin', async route => {
+        failedSubmissions++;
+        await route.fulfill({ status: 409, contentType: 'application/json', body: JSON.stringify({ error: 'synthetic_setup_rejected' }) });
+      });
+      await restart.click();
+      await page.getByText('The Homebridge update could not be confirmed', { exact: true }).waitFor();
+      assert.match(await page.locator('#hb-flow-content').textContent(), /synthetic_setup_rejected/);
+      await page.getByRole('button', { name: 'Refresh status', exact: true }).click();
+      assert.match(await page.locator('#hb-flow-content').textContent(), /synthetic_setup_rejected/);
+      assert.equal(failedSubmissions, 1); assert.equal(f.writes.length, beforeFailure);
+      assert.equal(f.maintenance.includes('stop'), false);
+      await page.locator('#hb-flow-close').click(); await ready();
+      await page.unroute('**/api/users/rotate-pin');
+      await page.locator('#hb-use').check(); await page.locator('[data-hb-alarm="1"]').check();
+      await page.locator('#pin').fill('6789'); await page.locator('#pin-repeat').fill('6789');
+      await page.locator('#editor button.primary').click();
+      await page.getByRole('button', { name: 'Continue', exact: true }).click();
+      await page.locator('[name="homebridge-username"]').fill('BridgeAdmin');
+      await page.locator('[name="homebridge-password"]').fill('synthetic-bridge-password');
+      await page.locator('[name="homebridge-restart-confirmed"]').check();
+      // A stopped bridge with no confirmed backup must have a usable cancel path.
+      f.state.failBackupOnce = true;
+      const writesBeforeCancel = f.writes.length;
+      await restart.click();
+      await page.getByText('Cancel the unfinished PIN change', { exact: true }).waitFor();
+      await page.locator('#hb-flow-close').click();
+      await page.getByRole('button', { name: 'Continue Homebridge update', exact: true }).click();
+      await page.locator('[name="homebridge-username"]').fill('BridgeAdmin');
+      await page.locator('[name="homebridge-password"]').fill('synthetic-bridge-password');
+      await page.getByRole('button', { name: 'Cancel PIN change and restore service', exact: true }).click();
+      await page.getByText('Update finished without applying the change', { exact: true }).waitFor();
+      await page.getByRole('button', { name: 'Done', exact: true }).click();
+      assert.equal(f.writes.length, writesBeforeCancel);
+      assert.equal(f.state.bridgeStopped, false);
+      await page.locator('#interrupted-change').waitFor({ state: 'hidden' });
+      // A fresh update is allowed after cancellation; no manual state reset.
+      await page.locator('#hb-use').check(); await page.locator('[data-hb-alarm="1"]').check();
+      await page.locator('#pin').fill('6789'); await page.locator('#pin-repeat').fill('6789');
+      await page.locator('#editor button.primary').click();
+      await page.getByRole('button', { name: 'Continue', exact: true }).click();
+      await page.locator('[name="homebridge-username"]').fill('BridgeAdmin');
+      await page.locator('[name="homebridge-password"]').fill('synthetic-bridge-password');
+      await page.locator('[name="homebridge-restart-confirmed"]').check();
+      const stopsBefore = f.maintenance.filter(value => value === 'stop').length;
+      const startsBefore = f.maintenance.filter(value => value === 'start').length;
       const pinWritesBefore = f.writes.filter(([, route]) => route === '/alarmsystems/users/' + 'a'.repeat(32)).length;
-      await restart.click(); await page.getByRole('button', { name: 'Done', exact: true }).click();
+      f.state.failRunningOnce = true;
+      await restart.click();
+      await page.getByText('Continue the saved Homebridge update', { exact: true }).waitFor();
+      assert.match(await page.locator('#hb-flow-content').textContent(), /Failed step: Homebridge deCONZ — Restore service and device readiness/);
+      assert.match(await page.locator('#hb-flow-content').textContent(), /maintenance_step_failed \(Internal type error\)/);
+      assert.equal((await page.locator('#hb-flow-content').textContent()).includes('synthetic private error'), false);
+      await page.locator('[name="homebridge-username"]').fill('BridgeAdmin');
+      await page.locator('[name="homebridge-password"]').fill('synthetic-bridge-password');
+      await page.getByRole('button', { name: 'Continue', exact: true }).click();
+      await page.getByRole('button', { name: 'Done', exact: true }).click();
       await page.getByText('Homebridge access updated.', { exact: true }).waitFor();
       assert.equal(f.writes.filter(([, route]) => route === '/alarmsystems/users/' + 'a'.repeat(32)).length, pinWritesBefore + 1);
-      assert.equal(f.maintenance.filter(value => value === 'stop').length, 1); assert.equal(f.maintenance.filter(value => value === 'start').length, 1);
+      assert.equal(f.maintenance.filter(value => value === 'stop').length, stopsBefore + 1); assert.equal(f.maintenance.filter(value => value === 'start').length, startsBefore + 1);
       assert.equal(await page.locator('#login').isVisible(), false); assert.equal(await page.locator('#users').isVisible(), true);
       assert.equal(await page.locator('[name="homebridge-password"]').count(), 0);
+      // Isolated recovery dialog: successful auth plus blocked review must show
+      // the reason, remove password fields, and never replay a PIN or restart.
+      const recoveryPage = await page.context().newPage();
+      await recoveryPage.setContent('<div id="configurator-preview"></div>');
+      await recoveryPage.addScriptTag({ content: await readFile(new URL('../web-admin/public/homebridge-flow.js', import.meta.url), 'utf8') });
+      await recoveryPage.evaluate(() => {
+        window.recoveryCalls = [];
+        const tx = { id: 'test-operation', stage: 'recovery_required', homebridge: true, alarm: 1, verified: false, write_attempted: false };
+        window.recoveryFlow = window.ConfiguratorHomebridgeFlow({
+          extensions: () => [], nativeHomebridge: () => true,
+          api: async route => { window.recoveryCalls.push(route);
+            if (route === 'transaction') return tx;
+            if (route === 'homebridge/authorize-recovery') return { authorized: true };
+            if (route === 'recovery/review') return { transaction_id: tx.id, ready: false, diagnostics: [{ check: 'private_backup', reason: 'homebridge_snapshot_unverified' }] };
+            throw Error('Unexpected mutation');
+          }, save: () => { throw Error('PIN replay forbidden'); }
+        });
+        void window.recoveryFlow.open({ context: { gateway: 'test', alarm: 1 }, transaction: tx });
+      });
+      await recoveryPage.locator('[name="homebridge-username"]').fill('BridgeAdmin');
+      await recoveryPage.locator('[name="homebridge-password"]').fill('synthetic-password');
+      await recoveryPage.getByRole('button', { name: 'Cancel PIN change and restore service', exact: true }).click();
+      await recoveryPage.getByText('A recovery check needs attention', { exact: true }).waitFor();
+      assert.match(await recoveryPage.locator('#hb-flow-content').textContent(), /homebridge_snapshot_unverified/);
+      assert.equal(await recoveryPage.locator('input[type="password"]').count(), 0);
+      assert.equal(await recoveryPage.locator('#hb-flow-actions button').count(), 0);
+      assert.deepEqual(await recoveryPage.evaluate(() => window.recoveryCalls), ['transaction', 'homebridge/authorize-recovery', 'recovery/review']);
+      await recoveryPage.locator('#hb-flow-close').click(); await recoveryPage.close();
       await page.locator('#logout').click(); await page.locator('#username').fill('Guest'); await page.locator('#password').fill('synthetic-guest-password'); await page.locator('#login button').click();
       await page.locator('#users').waitFor({ state: 'visible' }); await ready();
       assert.equal(await page.locator('#user-list [data-id="' + 'a'.repeat(32) + '"]').count(), 0);

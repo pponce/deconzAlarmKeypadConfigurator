@@ -1,12 +1,20 @@
 # Standalone Node port status
 
-First runnable development port, version `0.1.0-dev.1`.
+Current development version: `0.1.0-dev.2`.
 
 Implemented: independent HTTPS process, interactive local account/gateway/network setup, private config and process ownership, gateway identity verification, existing web account roles, users/PINs/access/schedules, alarm and lockout administration, history, durable writes/recovery, direct virtual keypad, and optional local Homebridge child-bridge PIN workflow. The latest combined-plugin user/mobile/password UI is retained. No garage/bolt code or Homebridge plugin runtime is included.
 
 The preserved Python branch and source repositories are unchanged. A programmatic extension seam is available; no controller add-on or dynamic plugin system ships.
 
-## Validation
+## Admin fixes ported through combined-plugin 0.4.35
+
+Ported the applicable 0.4.26–0.4.35 changes from source commit `370f6236a304572e862ec67137448c80d6f72a7e`: user/PIN guidance, Homebridge prerequisite diagnostics, JSON service-control requests, interrupted-update cancellation before any PIN write, accurate saved-operation tracking, recovery failure attribution, completion ordering and read-only device-API startup checks. The source manifest records exact provenance and adaptations. Controller changes and deployment scripts were excluded.
+
+Local Node 24: **143 tests passed**, including separate standalone/Homebridge storage, no-write cancellation, recovery without replay, bounded inventory readiness and diagnostic privacy. Local tests use the existing compiled official Temporal 0.5.1 source dependency; CI verifies published npm dependencies. Browser regression coverage now exercises checkbox placement/guidance, cancellation and a subsequent new update, stale completed-operation rejection, failed restart verification, and a blocked recovery without repeated login prompts. Updated-commit Node 22/24 and Chromium/WebKit CI results will be recorded after completion.
+
+The owner confirmed the combined plugin's 0.4.35 Homebridge update flow worked. This is evidence for the source fix, **not standalone hardware acceptance**. This port has not been installed on a live host.
+
+## Initial port validation
 
 [GitHub Actions run 37826329754](https://github.com/pponce/deconzAlarmKeypadConfigurator/actions/runs/37826329754) passed for implementation commit `499f892badc4b69c62e9085ff079fe5d23600374`:
 

@@ -81,6 +81,11 @@ Provide the Homebridge storage directory, its `config.json` path and the install
 
 A synchronized PIN update asks for your confirmation and a Homebridge administrator login. It temporarily stops and restarts the deCONZ child bridge while this standalone web interface remains available.
 
+In the user editor, **Use for homebridge** appears below **Enabled on this gateway**. The guidance above the PIN fields changes with that selection. Leave both PIN fields blank to keep the current PIN when saving other user edits.
+
+If an update is interrupted, reopen **Continue Homebridge update**. When the saved record confirms that no PIN write was attempted, **Cancel PIN change and restore service** restores the child bridge and closes the pending operation after verification. Otherwise, continue the saved checks without repeating the PIN change. The screen identifies failed checks, and the server allows time for the child bridge's device API to become reachable after restarting. Homebridge authorization may be requested again; passwords are not saved.
+
+
 ## Testing and contributions
 
 Testing on real installations, bug reports and contributions are welcome—particularly setup feedback and support for other keypads. Please include relevant software versions and keypad models when reporting issues, and remove API keys, passwords and PINs from anything you share.

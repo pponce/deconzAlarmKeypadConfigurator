@@ -126,3 +126,38 @@ test('transaction persistence survives restart, uses private modes, and rejects 
 test('policy digest matches Python compact ASCII JSON for Unicode data', () => {
   assert.equal(webDigest({ name: 'Jos\u00e9 \ud83d\ude00', rows: [true, null, 7] }), 'bd6f1231eaa6e8f4a361cf197bfe861cec6521cafada757e21818e6805a003f6');
 });
+
+test('failure diagnostics distinguish participant and phase and persist after service restart', async () => {
+  for (const phase of ['pause', 'verify', 'resume', 'complete']) {
+    const f = fixture(); f.participant[phase] = async () => { throw Error('door_read_failed'); };
+    await assert.rejects(f.transactions.execute(f.input), /transaction_recovery_required/);
+    const restarted = new WebAdminTransactions({ store: f.store, participants: f.transactions.participants });
+    const status = await restarted.status('test');
+    assert.equal(status.failure.participant, 'controller'); assert.equal(status.failure.step, phase);
+    assert.equal(status.failure.reason, 'door_read_failed'); assert.equal(status.failure.kind, 'coded_error');
+    assert.equal(f.writes(), phase === 'pause' ? 0 : 1);
+  }
+});
+
+test('unexpected errors expose only a safe category and source location, never raw messages or paths', async () => {
+  const f = fixture(), error = new TypeError('private PIN 6789, password secret, /home/private/path');
+  const root = new URL('../src/', import.meta.url).href;
+  error.stack = error.message + '\n    at check (' + root + 'web-admin-homebridge-host.js:237:18)\n at /home/private/path:1:1';
+  f.participant.resume = async () => { throw error; };
+  await assert.rejects(f.transactions.execute(f.input), /transaction_recovery_required/);
+  const status = await f.transactions.status('test');
+  assert.deepEqual(status.failure, { participant: 'controller', step: 'resume', reason: 'maintenance_step_failed', kind: 'type_error', location: { file: 'web-admin-homebridge-host.js', line: 237, column: 18 } });
+  const saved = JSON.stringify(f.snapshots);
+  for (const secret of ['6789', 'secret', '/home/private', root]) assert.equal(saved.includes(secret), false);
+  assert.equal(status.verified, true);
+});
+
+test('filesystem failures retain fixed categories and unknown participant names are not disclosed', async () => {
+  const f = fixture(); f.transactions.participants = new Map([['private-fixture', f.participant]]);
+  f.participant.pause = async () => {};
+  f.participant.resume = async () => { const error = Error('private file'); error.code = 'EACCES'; throw error; };
+  await assert.rejects(f.transactions.execute(f.input), /transaction_recovery_required/);
+  const status = await f.transactions.status('test');
+  assert.equal(status.failure.participant, 'integration'); assert.equal(status.failure.kind, 'permission_denied');
+  assert.equal(JSON.stringify(status.failure).includes('private'), false);
+});

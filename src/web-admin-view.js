@@ -121,7 +121,7 @@ export class WebAdminView {
     const hb = await this.homebridgeStatus();
     return { identities: Object.values(snapshot.identities), alarms, users: current.users, keypads: current.keypads, managed: current.managed,
       schedules: caps.schedules === true && caps.schedule_version === 1, homebridge_sync: false, homebridge_available: hb !== null && hb.configured !== false,
-      ...(hb === null ? {} : { homebridge_status: { configured: hb.configured !== false, error: hb.error ?? null } }),
+      ...(hb === null ? {} : { homebridge_status: { configured: hb.configured !== false, error: hb.error ?? null, ...(hb.file_check ? { file_check: hb.file_check } : {}) } }),
       homebridge_binding: hb?.bindings?.find(b => b.gateway === this.gatewayId) ?? null, transaction: await this.transactionStatus(this.gatewayId) };
   }
 }

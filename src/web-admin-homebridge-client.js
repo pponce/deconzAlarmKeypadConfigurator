@@ -105,7 +105,7 @@ export class WebHomebridgeClient {
     const writes = ['stop', 'start', 'restart'].map(action => '/api/server/' + action + '/' + this.bridge.toLowerCase());
     requireWeb(method === 'GET' ? reads.includes(route) : method === 'PUT' && writes.includes(route), 'homebridge_ui_request_invalid');
     let result;
-    try { result = await this.exchange({ origin: this.origin, route, method, authorization: this.#token }); }
+    try { result = await this.exchange({ origin: this.origin, route, method, ...(method === 'PUT' ? { body: {} } : {}), authorization: this.#token }); }
     catch { throw new WebAdminError('homebridge_ui_result_unknown'); }
     if ([401, 403].includes(result.status)) { this.close(); throw new WebAdminError('homebridge_login_required'); }
     requireWeb(result.status === 200, 'homebridge_ui_result_unknown'); return result.value;

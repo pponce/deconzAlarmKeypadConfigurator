@@ -86,3 +86,23 @@ test('real transport refuses redirects, bounds the reply and redacts transport e
   mode = 'large'; await assert.rejects(homebridgeUiExchange(input), /homebridge_ui_response_invalid/);
   mode = 'lost'; await assert.rejects(homebridgeUiExchange(input), error => error.message === 'homebridge_ui_result_unknown');
 });
+
+test('real service-control requests send valid JSON instead of an empty JSON body', async t => {
+  const controls = [];
+  const server = http.createServer(async (req, res) => {
+    let body = ''; for await (const chunk of req) body += chunk;
+    res.setHeader('Content-Type', 'application/json');
+    if (req.url === '/api/auth/login') { res.end(JSON.stringify({ access_token: 'synthetic-token' })); return; }
+    if (req.url === '/api/config-editor') { res.end(JSON.stringify({ platforms: [{ platform: 'deCONZ', _bridge: { username: bridge } }] })); return; }
+    if (req.url === '/api/status/homebridge/child-bridges') { res.end(JSON.stringify([{ username: bridge, plugin: 'homebridge-deconz', status: 'ok', manuallyStopped: false, pid: 123 }])); return; }
+    // Match Fastify's JSON parser: empty application/json is a 400, not an ACK.
+    if (!body && req.headers['content-type'] === 'application/json') { res.statusCode = 400; res.end('{"code":"FST_ERR_CTP_EMPTY_JSON_BODY"}'); return; }
+    controls.push({ method: req.method, body: JSON.parse(body) }); res.end('{"ok":true}');
+  });
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  t.after(() => { server.closeAllConnections(); server.close(); });
+  const client = new WebHomebridgeClient({ origin: 'http://127.0.0.1:' + server.address().port, bridge });
+  await client.login({ username: 'Owner', password: 'synthetic-password' });
+  await client.command('stop', tx, true); await client.command('start', tx, true);
+  assert.deepEqual(controls, [{ method: 'PUT', body: {} }, { method: 'PUT', body: {} }]);
+});

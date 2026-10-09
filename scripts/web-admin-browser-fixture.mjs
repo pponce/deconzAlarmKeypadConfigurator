@@ -75,11 +75,13 @@ export async function webBrowserFixture() {
     async prepare(binding) { assert.deepEqual(binding.alarms, [1]); return { bridge: 'AA:BB:CC:DD:EE:FF', pid: 1234 }; },
     async stop() { state.bridgeStopped = true; maintenance.push('stop'); },
     async assertStopped() { assert.equal(state.bridgeStopped, true); },
-    async snapshotStopped(lease, pin) { assert.match(pin, /^[0-9]{4,16}$/); maintenance.push('backup'); },
+    async snapshotStopped(lease, pin) { if (state.failBackupOnce) { state.failBackupOnce = false; throw Error('web_private_storage_write_failed'); } assert.match(pin, /^[0-9]{4,16}$/); maintenance.push('backup'); },
     async verifyGateway() {}, async verifySnapshot() {},
+    async noWriteState(lease, tx) { assert.equal(tx.write_attempted, false); return state.bridgeStopped ? 'stopped' : 'running'; },
+    async verifyNoWriteRunning(lease, tx) { assert.equal(tx.write_attempted, false); assert.equal(state.bridgeStopped, false); },
     async commitStopped(lease, { applied }) { assert.equal(state.bridgeStopped, true); assert.equal(applied, true); maintenance.push('pin saved'); },
     async start() { state.bridgeStopped = false; maintenance.push('start'); },
-    async verifyRunning() { assert.equal(state.bridgeStopped, false); maintenance.push('verified'); },
+    async verifyRunning() { if (state.failRunningOnce) { state.failRunningOnce = false; throw new TypeError('synthetic private error'); } assert.equal(state.bridgeStopped, false); maintenance.push('verified'); },
   };
   let service;
   const reserve = http.createServer(); await new Promise(resolve => reserve.listen(0, '127.0.0.1', resolve));

@@ -64,6 +64,10 @@ export class WebHomebridgeMaintenance {
   async viewStatus() { return this.status(); }
   async hiddenUsers(gateway) { return (await this.state()).bindings.filter(row => row.gateway === gateway).map(row => row.user); }
   async authorizeRecovery(transaction, credentials) {
+    if (!transaction.paused.includes('homebridge')) {
+      try { await this.host.authenticate(credentials); return { authorized: true, transaction_id: transaction.id }; }
+      finally { if (object(credentials)) { credentials.password = ''; if (Object.hasOwn(credentials, 'otp')) credentials.otp = ''; } }
+    }
     const row = await this.current(transaction);
     requireWeb(row.lease.stage !== 'complete', 'no_matching_transaction');
     try { await this.host.authenticate(credentials); return { authorized: true, transaction_id: transaction.id }; }
@@ -140,8 +144,15 @@ export class WebHomebridgeMaintenance {
     requireWeb(lease && lease.id === tx.id && lease.gateway === tx.gateway && lease.binding.identity === tx.identity, 'homebridge_transaction_changed');
     return row;
   }
+  noWriteRestore(tx, lease) {
+    return tx.write_attempted === false && (lease.stage === 'stop_requested' || lease.host.restoreWithoutPin === true);
+  }
   async verify(tx) {
     const row = await this.current(tx), lease = row.lease;
+    if (this.noWriteRestore(tx, lease)) {
+      await this.host.noWriteState(structuredClone(lease), structuredClone(tx));
+      lease.host.restoreWithoutPin = true; await this.save(row); return;
+    }
     await this.host.verifyGateway(structuredClone(lease), structuredClone(tx));
     if (['start_requested', 'running', 'complete'].includes(lease.stage)) {
       await this.host.verifyRunning(structuredClone(lease), structuredClone(tx)); return;
@@ -157,6 +168,20 @@ export class WebHomebridgeMaintenance {
   }
   async resume(tx) {
     const row = await this.current(tx), lease = row.lease;
+    if (lease.host.restoreWithoutPin === true) {
+      requireWeb(tx.write_attempted === false, 'homebridge_gateway_write_unverified');
+      const state = await this.host.noWriteState(structuredClone(lease), structuredClone(tx));
+      if (state === 'stopped') {
+        // One explicit recovery attempt, after fresh stopped-state evidence.
+        // A subsequent user-authorized recovery may retry only if still stopped.
+        lease.stage = 'start_requested'; await this.save(row);
+        try { await this.host.start(structuredClone(lease)); }
+        catch { /* Resolve a lost ACK through readback; never resend here. */ }
+      }
+      await this.host.verifyNoWriteRunning(structuredClone(lease), structuredClone(tx));
+      if (lease.stage !== 'complete') { lease.stage = 'running'; await this.save(row); }
+      return;
+    }
     if (lease.stage === 'pin_saved') {
       lease.stage = 'start_requested'; await this.save(row);
       await this.host.start(structuredClone(lease));
@@ -175,17 +200,31 @@ export class WebHomebridgeMaintenance {
     if (expected) row.bindings.push(structuredClone(expected));
     lease.stage = 'complete'; await this.save(row);
   }
-  async recovery_ready(tx) {
+  async recovery_ready(tx, diagnostics = []) {
+    let check = 'saved_operation';
     try {
       const row = await this.current(tx), lease = row.lease;
+      if (this.noWriteRestore(tx, lease)) {
+        check = 'restore_service';
+        await this.host.noWriteState(structuredClone(lease), structuredClone(tx)); return true;
+      }
+      check = 'gateway_state';
       await this.host.verifyGateway(structuredClone(lease), structuredClone(tx));
+      check = 'child_bridge_state';
       if (['start_requested', 'running', 'complete'].includes(lease.stage)) await this.host.verifyRunning(structuredClone(lease), structuredClone(tx));
       else {
+        check = 'private_backup';
         requireWeb(lease.stage !== 'stop_requested', 'homebridge_snapshot_unverified');
+        check = 'child_bridge_stopped';
         await this.host.assertStopped(structuredClone(lease));
+        check = 'private_backup';
         await this.host.verifySnapshot(structuredClone(lease));
       }
       return true;
-    } catch { return false; }
+    } catch (error) {
+      const allowed = new Set(['homebridge_snapshot_unverified', 'homebridge_backup_changed', 'homebridge_cache_changed', 'homebridge_gateway_revision_changed', 'homebridge_gateway_identity_changed', 'homebridge_user_must_remain_unrestricted', 'homebridge_configuration_changed', 'homebridge_login_required', 'homebridge_transaction_changed', 'homebridge_storage_review_required', 'homebridge_file_unavailable', 'homebridge_saved_pin_unverified', 'homebridge_process_changed', 'homebridge_process_unverified', 'homebridge_alarm_mapping_changed']);
+      diagnostics.push({ participant: 'homebridge', check, reason: allowed.has(error.message) ? error.message : 'verification_failed' });
+      return false;
+    }
   }
 }

@@ -17,6 +17,8 @@ function fixture() {
     snapshotStopped: async (lease, pin) => { assert.equal(stopped, true); assert.equal(pin, 'fixture-pin'.replace('fixture-pin', '2468')); events.push('private backup'); },
     verifyGateway: async () => { events.push('check gateway'); },
     verifySnapshot: async () => {},
+    noWriteState: async (lease, tx) => { assert.equal(tx.write_attempted, false); await host.verifyGateway(lease, tx); return stopped ? 'stopped' : 'running'; },
+    verifyNoWriteRunning: async (lease, tx) => { assert.equal(tx.write_attempted, false); await host.verifyGateway(lease, tx); assert.equal(running, true); },
     commitStopped: async (lease, { applied }) => { assert.equal(stopped, true); events.push(applied ? 'save pin' : 'keep previous pin'); },
     start: async () => { assert.equal(state.lease.stage, 'start_requested'); events.push('start'); stopped = false; running = true; },
     verifyRunning: async () => { assert.equal(running, true); events.push('readback'); },
@@ -82,7 +84,7 @@ test('a stop acknowledgement without stopped-state evidence cannot reach the gat
   const f = fixture(); f.host.assertStopped = async () => { throw Error('still running'); };
   await assert.rejects(f.run(), /transaction_recovery_required/);
   assert.equal(f.writes(), 0); assert.equal(f.state().lease.stage, 'stop_requested');
-  assert.equal(await f.integration.recovery_ready(f.record()), false);
+  assert.equal(await f.integration.recovery_ready(f.record()), true);
 });
 test('changing a Homebridge binding requires unrestricted grants and cannot silently remove an alarm', async () => {
   const f = fixture();
@@ -94,4 +96,85 @@ test('changing a Homebridge binding requires unrestricted grants and cannot sile
   await assert.rejects(f.integration.selectionPlan('test', uid, { expected_user_id: null, alarms: [1] }, snapshot), /homebridge_binding_changed/);
   await assert.rejects(f.integration.protect('test', 1, { operation: 'delete_user', uid, deleting: true }, {}, snapshot), /homebridge_user_must_remain_unrestricted/);
   await assert.rejects(f.integration.protect('test', 1, { operation: 'save_user', uid }, { ...user, enabled: false }, snapshot), /homebridge_user_must_remain_unrestricted/);
+});
+
+test('missing backup before any PIN write can be cancelled without inventing a backup or replaying a write', async () => {
+  const f = fixture(); f.host.snapshotStopped = async () => { throw Error('private payload must not escape'); };
+  await assert.rejects(f.run(), /transaction_recovery_required/);
+  const review = await f.tx.review('test', gid, async () => true);
+  assert.equal(review.ready, true); assert.deepEqual(review.diagnostics, []);
+  await f.tx.recover('test', gid, { transaction_id: review.transaction_id, token: review.token, reviewed: true }, async () => true);
+  assert.equal(f.writes(), 0); assert.equal(f.events.includes('save pin'), false);
+  assert.equal(f.events.includes('private backup'), false);
+  assert.equal(f.events.filter(x => x === 'start').length, 1);
+  assert.deepEqual(f.state().bindings, []); assert.equal(f.state().lease.stage, 'complete');
+  assert.equal(f.record().stage, 'complete'); assert.equal((await f.tx.status('test')).outcome, 'not_sent');
+});
+
+test('unknown diagnostic errors cannot expose credentials or paths', async () => {
+  const f = fixture(); f.host.snapshotStopped = async () => { throw Error('backup interrupted'); };
+  await assert.rejects(f.run(), /transaction_recovery_required/);
+  f.host.verifyGateway = async () => { throw Error('/private/path secret=2468'); };
+  const review = await f.tx.review('test', gid, async () => true);
+  assert.deepEqual(review.diagnostics, [{ participant: 'homebridge', check: 'restore_service', reason: 'verification_failed' }]);
+  assert.equal(JSON.stringify(review).includes('2468'), false);
+});
+
+test('stop rejected before delivery cancels without stopping or starting an already running bridge', async () => {
+  const f = fixture(); f.host.stop = async () => { throw Error('homebridge_ui_result_unknown'); };
+  await assert.rejects(f.run(), /transaction_recovery_required/);
+  assert.equal((await f.tx.status('test')).failure_reason, 'homebridge_ui_result_unknown');
+  const review = await f.tx.review('test', gid, async () => true);
+  await f.tx.recover('test', gid, { transaction_id: review.transaction_id, token: review.token, reviewed: true }, async () => true);
+  assert.equal(f.writes(), 0); assert.equal(f.events.includes('stop'), false); assert.equal(f.events.includes('start'), false);
+  assert.equal(f.record().stage, 'complete');
+});
+
+test('lost start response during cancellation resolves through readback without another service request', async () => {
+  const f = fixture(); f.host.snapshotStopped = async () => { throw Error('interrupted'); };
+  await assert.rejects(f.run(), /transaction_recovery_required/);
+  const start = f.host.start; f.host.start = async lease => { await start(lease); throw Error('lost ack'); };
+  const review = await f.tx.review('test', gid, async () => true);
+  await f.tx.recover('test', gid, { transaction_id: review.transaction_id, token: review.token, reviewed: true }, async () => true);
+  assert.equal(f.events.filter(x => x === 'start').length, 1); assert.equal(f.writes(), 0);
+  assert.equal(f.record().stage, 'complete');
+});
+
+test('an uncertain gateway PIN write can never take the no-write cancellation path', async () => {
+  const f = fixture(), write = f.input.write;
+  f.input.write = async () => { await write(); throw Error('lost gateway response'); };
+  await assert.rejects(f.run(), /transaction_recovery_required/);
+  const state = f.state(); state.lease.stage = 'stop_requested'; await f.store.write(state);
+  f.host.noWriteState = async () => { assert.fail('no-write branch must not run'); };
+  const review = await f.tx.review('test', gid, async () => true);
+  assert.equal(review.ready, false); assert.equal(f.writes(), 1);
+  assert.equal(f.events.includes('start'), false); assert.equal(f.record().stage, 'recovery_required');
+});
+
+test('participant completion failure keeps transaction pending and can finish on explicit recovery', async () => {
+  const f = fixture(), complete = f.integration.complete.bind(f.integration); let fail = true;
+  f.integration.complete = async tx => { if (fail) { fail = false; throw Error('completion interrupted'); } return complete(tx); };
+  await assert.rejects(f.run(), /transaction_recovery_required/);
+  assert.equal(f.record().stage, 'recovery_required');
+  const review = await f.tx.review('test', gid, async () => true);
+  await f.tx.recover('test', gid, { transaction_id: review.transaction_id, token: review.token, reviewed: true }, async () => true);
+  assert.equal(f.writes(), 1); assert.equal(f.events.filter(x => x === 'start').length, 1);
+  assert.equal(f.record().stage, 'complete'); assert.deepEqual(f.state().bindings, [binding]);
+});
+
+test('a failed service restoration remains recoverable after restart and a new explicit authorization', async () => {
+  const f = fixture(); f.host.snapshotStopped = async () => { throw Error('interrupted backup'); };
+  await assert.rejects(f.run(), /transaction_recovery_required/);
+  const start = f.host.start; f.host.start = async () => { throw Error('unavailable'); };
+  let review = await f.tx.review('test', gid, async () => true);
+  await assert.rejects(f.tx.recover('test', gid, { transaction_id: review.transaction_id, token: review.token, reviewed: true }, async () => true), /transaction_recovery_required/);
+  assert.equal(f.state().lease.stage, 'start_requested');
+  assert.equal(f.record().stage, 'recovery_required'); assert.equal(f.writes(), 0);
+  const recovered = new WebHomebridgeMaintenance({ store: f.store, registrations: [{ id: 'test', identity: gid }], host: f.host });
+  f.tx.participants.set('homebridge', recovered); f.host.start = start;
+  await recovered.authorizeRecovery(f.record(), { username: 'Owner', password: 'synthetic' });
+  review = await f.tx.review('test', gid, async () => true);
+  await f.tx.recover('test', gid, { transaction_id: review.transaction_id, token: review.token, reviewed: true }, async () => true);
+  assert.equal(f.record().stage, 'complete'); assert.equal(f.writes(), 0);
+  assert.equal(f.events.filter(x => x === 'start').length, 1); assert.deepEqual(f.state().bindings, []);
 });

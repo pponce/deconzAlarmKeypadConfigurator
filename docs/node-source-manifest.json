@@ -8,15 +8,18 @@
       "path": "package.json",
       "source_blob": "4cd7f59de6d084003d70b8afd06b2b4d0ea948d6",
       "source_bytes": 1269,
-      "sha256": "92dfd00b74e1583af9a1a4ca4047f4bc1b70c054e29ae8e1dbdbffe24a9dce1c",
+      "sha256": "2083494b01616aab4720c052f9add69b512f96af89bb75d4344a917ace39b39c",
       "adapted": true
     },
     {
       "path": "scripts/web-admin-browser-fixture.mjs",
-      "source_blob": "241fa560ec5842d6228dfb95e48afca50a8a607d",
-      "source_bytes": 7376,
-      "sha256": "cea4fd054013f01f76f57d368e3c5e32fad7675dbd3e7d5804d71630ae8c8d93",
-      "adapted": true
+      "source_blob": "69654f7c0fa3b942ed6345cf5ddf3d7b888a8576",
+      "source_bytes": 7857,
+      "sha256": "c5dbf9acff33263e3f8f52a14ceaf78c9e9983a18b52b71a68595c29ca408a32",
+      "adapted": true,
+      "source_commit": "370f6236a304572e862ec67137448c80d6f72a7e",
+      "source_version": "0.4.35",
+      "source_sha256": "50d4b832dd3193b969981fef97c9f6fa77d3ec798c3d302f4f716076b93af322"
     },
     {
       "path": "scripts/web-admin-browser.mjs",
@@ -27,10 +30,13 @@
     },
     {
       "path": "scripts/web-admin-write-browser.mjs",
-      "source_blob": "4ddca680e17d4dfe7264469aca4a8c8f45482d5b",
-      "source_bytes": 11097,
-      "sha256": "1a8168a636ce18f783378776b990bb45f34ce8636311ba24f592b610cbd3d554",
-      "adapted": true
+      "source_blob": "ba21a7d3502fe073b51172eb6ac65251e62d1d7b",
+      "source_bytes": 18672,
+      "sha256": "5c4d43a952c5ab7955ba908f97994afdfd95e9c0de7c25fdda3f2d00689d2aed",
+      "adapted": true,
+      "source_commit": "370f6236a304572e862ec67137448c80d6f72a7e",
+      "source_version": "0.4.35",
+      "source_sha256": "46c894d954740346d681e16d4a16bf70a81364dad17930ebd88f5aa2bf0e6f29"
     },
     {
       "path": "src/web-admin-activity.js",
@@ -132,24 +138,33 @@
     },
     {
       "path": "src/web-admin-homebridge-client.js",
-      "source_blob": "709f63139e847b8c97d078883de96532c843d50a",
-      "source_bytes": 9510,
-      "sha256": "c80bc2ef150cf88d3185bd21deeecd352cfd824c8454de8615534057eb626a19",
-      "adapted": false
+      "source_blob": "1a3f2447f608abd7f36d185a10cf7663b8c6e1c8",
+      "source_bytes": 9553,
+      "sha256": "ad6bd319da7a8073b716503d0db1f8c7196d40bcc9e37ba084af0355b7c3f53d",
+      "adapted": false,
+      "source_commit": "370f6236a304572e862ec67137448c80d6f72a7e",
+      "source_version": "0.4.35",
+      "source_sha256": "ad6bd319da7a8073b716503d0db1f8c7196d40bcc9e37ba084af0355b7c3f53d"
     },
     {
       "path": "src/web-admin-homebridge-host.js",
-      "source_blob": "a24893520f26e51262c2b4700dd10e101144146c",
-      "source_bytes": 17291,
-      "sha256": "4ff6fe02128c22a3b988b752f07a73ae76801f4cb68d2158f7bfa06ede2c1fdc",
-      "adapted": true
+      "source_blob": "ee2290287fa5134e0b7fe40376776429dfd218b5",
+      "source_bytes": 23489,
+      "sha256": "00595bbb0645c7bf1f63c94e80dd261c3851d854480b4f2ced3dd5daab1af204",
+      "adapted": true,
+      "source_commit": "370f6236a304572e862ec67137448c80d6f72a7e",
+      "source_version": "0.4.35",
+      "source_sha256": "c65591018c40ec65ecef6be12980fc438e83e0d0f29247dd15dce1ddb7b799a8"
     },
     {
       "path": "src/web-admin-homebridge-maintenance.js",
-      "source_blob": "e7584760c5f743c067e6ad20e57b2aa6832f4ae6",
-      "source_bytes": 12231,
-      "sha256": "b6cae39c30984bfb73ff06fa32ffca0f152a00db13b3efb26779508f6b10ad29",
-      "adapted": false
+      "source_blob": "b7a8108a0ca1a5b5b4a1146b2c5b349efa58052b",
+      "source_bytes": 14851,
+      "sha256": "305f5227911c9f6eb3114ce93bf6af54a885ccae144515e188bc0e0f40292ed9",
+      "adapted": false,
+      "source_commit": "370f6236a304572e862ec67137448c80d6f72a7e",
+      "source_version": "0.4.35",
+      "source_sha256": "305f5227911c9f6eb3114ce93bf6af54a885ccae144515e188bc0e0f40292ed9"
     },
     {
       "path": "src/web-admin-homebridge-sources.json",
@@ -223,17 +238,23 @@
     },
     {
       "path": "src/web-admin-transactions.js",
-      "source_blob": "9db65158a5033d9162628e59e5ac64cb2b752561",
-      "source_bytes": 11490,
-      "sha256": "b9e873aa5667708090efbb7c5cbdd8cbc4489715f68d18e0414d5ea5103db8f2",
-      "adapted": false
+      "source_blob": "2a11a8be07e82cba668bfdcdc97edb9fffedca43",
+      "source_bytes": 16881,
+      "sha256": "df0d77f637e45340d3d53b21ad38ac3084bed4a59e8ccd82aa365e49ba33eb79",
+      "adapted": true,
+      "source_commit": "370f6236a304572e862ec67137448c80d6f72a7e",
+      "source_version": "0.4.35",
+      "source_sha256": "e2f446b583b46d58fde098007efe06d8c287be17de614f1f5535c2dffddacb75"
     },
     {
       "path": "src/web-admin-view.js",
-      "source_blob": "916fa850e7e56d8c55c8e7802ab384982a559f54",
-      "source_bytes": 10087,
-      "sha256": "810d810b2a3b4fbf99f48d36ee8a816c590a5aca91a33ca0a578cc31d9d6052e",
-      "adapted": false
+      "source_blob": "8e8d8506a13b99cafc2e271f13e50445b04babe8",
+      "source_bytes": 10144,
+      "sha256": "0c9f8067c91b8efa662c06f792754011f07a97ee553718a6a13a693873071fb7",
+      "adapted": false,
+      "source_commit": "370f6236a304572e862ec67137448c80d6f72a7e",
+      "source_version": "0.4.35",
+      "source_sha256": "0c9f8067c91b8efa662c06f792754011f07a97ee553718a6a13a693873071fb7"
     },
     {
       "path": "test/fixtures/web-admin-read-parity.json",
@@ -314,24 +335,33 @@
     },
     {
       "path": "test/web-admin-homebridge-client.test.js",
-      "source_blob": "83547890ef8b1c279353407a5d90cead3390af53",
-      "source_bytes": 6236,
-      "sha256": "f63bd3d97e1c0f734aa7fa97d417959c00841540087467b2842ff7fa97f721c2",
-      "adapted": false
+      "source_blob": "78f14f8b54226550bcc5576bb29ffd3c7612cc4e",
+      "source_bytes": 7829,
+      "sha256": "4fc7a71111653bd22add33dd5363c941e7e0ca7a222bc35f038a148b8ce44117",
+      "adapted": false,
+      "source_commit": "370f6236a304572e862ec67137448c80d6f72a7e",
+      "source_version": "0.4.35",
+      "source_sha256": "4fc7a71111653bd22add33dd5363c941e7e0ca7a222bc35f038a148b8ce44117"
     },
     {
       "path": "test/web-admin-homebridge-host.test.js",
-      "source_blob": "8b839f55218f23933b77158e7f2964b41ed41c0f",
-      "source_bytes": 7647,
-      "sha256": "ccb3ef97f89f5da0f378402b01733a82694e165643ae6705c7386754b5da1de7",
-      "adapted": true
+      "source_blob": "ba87a0ff2576b2f591df476ee64525ff45829b9d",
+      "source_bytes": 16202,
+      "sha256": "5239568d7330bc97e8614d371a3c8bfd0a92b75565b6f3b885f858a26d9499a1",
+      "adapted": true,
+      "source_commit": "370f6236a304572e862ec67137448c80d6f72a7e",
+      "source_version": "0.4.35",
+      "source_sha256": "c365c404d21e0c4ec1f1856bb067f1dafc1ae40e7d3664f674f35403bccab06c"
     },
     {
       "path": "test/web-admin-homebridge-maintenance.test.js",
-      "source_blob": "180b617626fdf84784a4294669a63e3149aa067a",
-      "source_bytes": 8217,
-      "sha256": "b99be94b97336a57901903bdd8a33f5c94c29441844365854c0662569280d50d",
-      "adapted": false
+      "source_blob": "13db1af4a42aed2c1f7b7c5f3b5c5812ac464c53",
+      "source_bytes": 14628,
+      "sha256": "e05b4d3391f969082d0fd0a834d4b3bb67e2de67aada32a78482e3a2805a1efc",
+      "adapted": false,
+      "source_commit": "370f6236a304572e862ec67137448c80d6f72a7e",
+      "source_version": "0.4.35",
+      "source_sha256": "e05b4d3391f969082d0fd0a834d4b3bb67e2de67aada32a78482e3a2805a1efc"
     },
     {
       "path": "test/web-admin-keypad.test.js",
@@ -356,10 +386,13 @@
     },
     {
       "path": "test/web-admin-transactions.test.js",
-      "source_blob": "55328c263ca8d05e3a1c3fdaf6ddba9c040a5d28",
-      "source_bytes": 10838,
-      "sha256": "25fd704256e3d41de63730d11a5c3fab59b31c781b46dd300c8b18226ce79dc9",
-      "adapted": true
+      "source_blob": "982a761010da5252864ffe1ee4068337fa8f3664",
+      "source_bytes": 13371,
+      "sha256": "7a658a781cde9ceb7591f8388c664d32cb440bf597b53c744e25427634f121e8",
+      "adapted": true,
+      "source_commit": "370f6236a304572e862ec67137448c80d6f72a7e",
+      "source_version": "0.4.35",
+      "source_sha256": "d3af3c2b26eecd67ade008444a690c0ef960f5f336e7b76494e2c8b2591b2d73"
     },
     {
       "path": "test/web-admin-view.test.js",
@@ -398,10 +431,13 @@
     },
     {
       "path": "web-admin/public/app.js",
-      "source_blob": "dc14c7d0590c1c75edae10c95dafc37b08e1543f",
-      "source_bytes": 99841,
-      "sha256": "3b79ebf1f5a113c48a47d45765593cc5b05935245a3707148a735dd35e27a6e5",
-      "adapted": true
+      "source_blob": "93a98a453142dbf66b03151ac4b40fc6b785afef",
+      "source_bytes": 100395,
+      "sha256": "ca3d3c612549bf4ad6d9901658db252147042003a4dc21da59978810b0fc949f",
+      "adapted": true,
+      "source_commit": "370f6236a304572e862ec67137448c80d6f72a7e",
+      "source_version": "0.4.35",
+      "source_sha256": "defe91e6fb15b36ae277533db295a0d4b0d66d229a725c6acd1f3b4619e6a774"
     },
     {
       "path": "web-admin/public/apple-touch-icon.png",
@@ -419,10 +455,13 @@
     },
     {
       "path": "web-admin/public/homebridge-flow.js",
-      "source_blob": "7d26965ca92bdadd6e2dd839cab3b42d30d09ce6",
-      "source_bytes": 15726,
-      "sha256": "d3e9432647971b47bfa63c3b7d76238781c14ff8cae3716d6bd9f269e8a64db0",
-      "adapted": true
+      "source_blob": "b2f7d3657e9b8586e72dc5ac7aef72dd14261145",
+      "source_bytes": 20892,
+      "sha256": "de7e3284995dd163abf6fed0591b4ec71ac301a962f7a83e1ebe7f12a174e0eb",
+      "adapted": true,
+      "source_commit": "370f6236a304572e862ec67137448c80d6f72a7e",
+      "source_version": "0.4.35",
+      "source_sha256": "3467cac27da23d17500c48e8943cceefa0dfc2106c4b92823aae124e39a8eec2"
     },
     {
       "path": "web-admin/public/index.html",
@@ -461,10 +500,13 @@
     },
     {
       "path": "web-admin/public/style.css",
-      "source_blob": "0f8d126c18ab96021da91a7fea9ed030d20e82c0",
-      "source_bytes": 42338,
-      "sha256": "67496241e79348abefb7c0240eb666995cf2e7d6742e4bc2090f59ef3279d663",
-      "adapted": false
+      "source_blob": "65505b0e2954e6c9b9e05e28ce26a8932ff88270",
+      "source_bytes": 42523,
+      "sha256": "a875af6c170a1c777c31a3053d10188cfcc76dd96340a401a8d8adde0723c3b1",
+      "adapted": true,
+      "source_commit": "370f6236a304572e862ec67137448c80d6f72a7e",
+      "source_version": "0.4.35",
+      "source_sha256": "2e86000e9701d30c4965c6c05ce2065f66f7290a8f9ec5a4471b01fb8762a109"
     },
     {
       "path": "src/ownership.js",
@@ -503,5 +545,28 @@
     "src/web-admin-coordinator.js",
     "web-admin/public/controller.js",
     "Homebridge runtime, commissioning, accessory and garage/bolt modules"
+  ],
+  "reviewed_updates": [
+    {
+      "commit": "370f6236a304572e862ec67137448c80d6f72a7e",
+      "version": "0.4.35",
+      "files": [
+        "scripts/web-admin-browser-fixture.mjs",
+        "scripts/web-admin-write-browser.mjs",
+        "src/web-admin-homebridge-client.js",
+        "src/web-admin-homebridge-host.js",
+        "src/web-admin-homebridge-maintenance.js",
+        "src/web-admin-transactions.js",
+        "src/web-admin-view.js",
+        "test/web-admin-homebridge-client.test.js",
+        "test/web-admin-homebridge-host.test.js",
+        "test/web-admin-homebridge-maintenance.test.js",
+        "test/web-admin-transactions.test.js",
+        "web-admin/public/app.js",
+        "web-admin/public/homebridge-flow.js",
+        "web-admin/public/style.css"
+      ],
+      "notes": "Admin UI, optional Homebridge PIN maintenance and durable recovery only. Preserve standalone storage, setup and extension boundaries; exclude controller routes, state and UI."
+    }
   ]
 }

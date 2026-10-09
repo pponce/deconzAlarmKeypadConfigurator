@@ -63,8 +63,8 @@
 
 #configurator-preview .gp-identity-row{display:flex;align-items:center;gap:16px;margin-bottom:16px}
 #configurator-preview .gp-identity-row>.gp-field{flex:1;min-width:0;margin:0}
-#configurator-preview .gp-identity-row>.gp-check{flex:0 0 auto;max-width:45%}
-#configurator-preview .gp-identity-row>.gp-check input{margin-left:0}
+#configurator-preview .gp-identity-options{display:flex;flex-direction:column;gap:8px;flex:0 0 auto;max-width:45%}
+#configurator-preview .gp-identity-options .gp-check input{margin-left:0}
 
 /* Gateway identity status; alarm grants remain visible on Access grants. */
 #configurator-preview .gp-grant-user{padding:16px;border-radius:10px;border:1px solid var(--gp-line)}
