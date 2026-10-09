@@ -469,8 +469,8 @@
       "path": "web-admin/public/homebridge-flow.js",
       "source_blob": "8a987c99f6d5c37743582ccb670d3dfc22739a80",
       "source_bytes": 22162,
-      "sha256": "a91f8213335e7c3eda384c016fa89eb2e14a509eeff9b332bfca00c88899e1ce",
-      "adapted": false,
+      "sha256": "af9b5041ec20a3f1821b554662a92dd14c59a8ea7a7baa5143247fffa20b2f79",
+      "adapted": true,
       "source_commit": "9d21ffe637d241fc8799b62fd5477848d621714e",
       "source_version": "0.4.37",
       "source_sha256": "a91f8213335e7c3eda384c016fa89eb2e14a509eeff9b332bfca00c88899e1ce"

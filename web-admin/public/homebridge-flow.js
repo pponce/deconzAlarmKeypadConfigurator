@@ -14,7 +14,7 @@ window.ConfiguratorHomebridgeReadiness = (code, check) => {
   return ({
   homebridge_local_linux_required: 'Alarm PIN synchronization currently requires Homebridge on Linux.',
   one_homebridge_child_bridge_required: 'Configure one local deCONZ platform and one Homebridge UI in this Homebridge instance.',
-  homebridge_child_identity_invalid: 'Run homebridge-deconz in its own child bridge, separate from Garage Door Admin Controller.',
+  homebridge_child_identity_invalid: 'Run homebridge-deconz in its own child bridge.',
   homebridge_plugin_disabled: 'The homebridge-deconz plugin is disabled in this Homebridge instance.',
   homebridge_local_http_ui_required: 'This integration currently needs Homebridge UI to accept local HTTP connections. An HTTPS-only UI needs additional certificate support.',
   homebridge_source_changed_review_required: 'The installed deCONZ plugin or library does not match the reviewed package identity or source fingerprints. Changed source files require a compatibility review before PIN synchronization can run.',
