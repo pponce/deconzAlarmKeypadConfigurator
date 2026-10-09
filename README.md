@@ -1,5 +1,9 @@
 # deCONZ Alarm / Keypad Configurator
 
+**[Try the interactive demo](https://pponce.github.io/deconzAlarmKeypadConfigurator/)** · [Demo source and Pages setup](demo/README.md)
+
+The demo runs entirely in your browser with fictional data. No deCONZ gateway, Homebridge or sign-in is needed. The hosted link becomes available once GitHub Pages is enabled.
+
 A standalone Node.js web interface for managing deCONZ alarm users, PINs, keypad access and schedules. It is intended for people who want these administration features **without running Homebridge**.
 
 ## Project status
@@ -8,7 +12,7 @@ I actively use [homebridge-gdoor-admin-controller](https://github.com/pponce/hom
 
 **I am not currently running or actively testing this standalone version on my own setup.** I wanted to share it for anyone who would like to test it, extend it or help develop it further. It has automated tests, but should be treated as development software that needs testing on real installations.
 
-The runnable Node.js application is currently on the [standalone-node branch](https://github.com/pponce/deconzAlarmKeypadConfigurator/tree/standalone-node).
+The `main` branch contains the runnable Node.js application.
 
 ## What it does
 
@@ -45,7 +49,7 @@ The access-policy functionality uses deCONZ's alarm and IAS ACE interfaces, so i
 After the deCONZ requirements are in place:
 
 ```sh
-git clone --branch standalone-node https://github.com/pponce/deconzAlarmKeypadConfigurator.git
+git clone https://github.com/pponce/deconzAlarmKeypadConfigurator.git
 cd deconzAlarmKeypadConfigurator
 npm install --ignore-scripts
 npm run setup

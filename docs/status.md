@@ -6,6 +6,14 @@ Implemented: independent HTTPS process, interactive local account/gateway/networ
 
 The preserved Python branch and source repositories are unchanged. A programmatic extension seam is available; no controller add-on or dynamic plugin system ships.
 
+## Static public demo
+
+Added `demo/`, generated from the current standalone UI at `7f45cf48347b3663dde823a42f85e4500b25117b`. `scripts/build-demo.mjs` records the exact adaptations: fixed demo mode, synthetic session/setup, removed live API and extension transports, hidden installation/account controls, relative assets, separate browser-storage keys and a restrictive content security policy. The application source and runtime behavior are unchanged.
+
+The README links the intended Pages URL. `.github/workflows/demo-pages.yml` checks generated assets, runs desktop/mobile browser exercises and uploads only `demo/`. Deployment waits until the owner makes the repository public and selects GitHub Actions in Pages settings. Local generation/consistency and JavaScript syntax checks passed; the new browser workflow will verify the published directory in CI. No live services or hardware are involved.
+
+[Publication review](publication-review.md) records the sensitivity sanity check across all reachable Node/Python history and its limits.
+
 ## Admin fixes ported through combined-plugin 0.4.35
 
 Ported the applicable 0.4.26–0.4.35 changes from source commit `370f6236a304572e862ec67137448c80d6f72a7e`: user/PIN guidance, Homebridge prerequisite diagnostics, JSON service-control requests, interrupted-update cancellation before any PIN write, accurate saved-operation tracking, recovery failure attribution, completion ordering and read-only device-API startup checks. The source manifest records exact provenance and adaptations. Controller changes and deployment scripts were excluded.

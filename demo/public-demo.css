@@ -1,0 +1,3 @@
+/* The published demo never offers a live mode or asks for a web login. */
+#login, #logout, #settings-gear, .gp-nav-demo label, [data-page="debug"] { display:none !important; }
+.gp-demo a { color:inherit; text-underline-offset:3px; }

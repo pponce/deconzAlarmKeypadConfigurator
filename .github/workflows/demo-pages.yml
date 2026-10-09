@@ -1,0 +1,90 @@
+name: Demo and GitHub Pages
+on:
+  push:
+    branches: [main]
+    paths: ['demo/**', 'web-admin/public/**', 'scripts/build-demo.mjs', 'scripts/demo-browser.mjs', '.github/workflows/demo-pages.yml']
+  pull_request:
+    paths: ['demo/**', 'web-admin/public/**', 'scripts/build-demo.mjs', 'scripts/demo-browser.mjs', '.github/workflows/demo-pages.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: demo-pages-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: read
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.2-noble
+      options: --init --ipc=host
+    outputs:
+      pages_ready: ${{ steps.pages.outputs.ready }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check generated demo and transport isolation
+        run: node scripts/build-demo.mjs --check
+      - name: Install browser tooling
+        run: npm install --prefix "$RUNNER_TEMP/browser" --no-save --package-lock=false --ignore-scripts playwright@1.58.2
+      - name: Test the published directory on desktop and mobile
+        id: browser
+        env:
+          PLAYWRIGHT_MODULE: ${{ runner.temp }}/browser/node_modules/playwright
+          PREVIEW_OUTPUT: ${{ runner.temp }}/demo-screenshots
+        run: node scripts/demo-browser.mjs
+      - name: "Browser result: ${{ steps.browser.outputs.result || steps.browser.outcome }}"
+        if: always()
+        run: echo "Demo diagnostics are recorded in this step name."
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: demo-browser-screenshots
+          path: ${{ runner.temp }}/demo-screenshots
+      - name: Upload only the static demo
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: demo
+      - name: Check Pages readiness
+        id: pages
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.setOutput('ready', 'false');
+            if (context.payload.repository.private) {
+              core.notice('Demo verified. Publication waits until the owner makes the repository public and enables Settings > Pages > GitHub Actions.');
+              return;
+            }
+            try {
+              const { data } = await github.request('GET /repos/{owner}/{repo}/pages', context.repo);
+              if (data.build_type !== 'workflow') {
+                core.notice('Select GitHub Actions in Settings > Pages, then rerun this workflow.');
+                return;
+              }
+              core.setOutput('ready', 'true');
+            } catch (error) {
+              if (error.status !== 404) throw error;
+              core.notice('Enable Settings > Pages > GitHub Actions, then rerun this workflow.');
+            }
+  deploy:
+    if: needs.build.outputs.pages_ready == 'true'
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - name: Deploy static demo
+        id: deployment
+        uses: actions/deploy-pages@v4
