@@ -1,6 +1,6 @@
 # deCONZ Alarm / Keypad Configurator
 
-**[Try the interactive demo](https://pponce.github.io/deconzAlarmKeypadConfigurator/)** · [Demo source and Pages setup](demo/README.md)
+**[Try the interactive demo](https://pponce.github.io/deconzAlarmKeypadConfigurator/)**
 
 The demo runs entirely in your browser with fictional data. No deCONZ gateway, Homebridge or sign-in is needed.
 

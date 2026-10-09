@@ -33,6 +33,8 @@ The preserved Python branch and source repositories are unchanged. A programmati
 
 ## Static public demo
 
+The public README now links directly to the hosted demo. Removed the separate demo setup README at the owner’s request. Documentation-only change; reviewed the links and confirmed the generator does not require that file. Generated demo assets and application behavior are unchanged.
+
 On 2026-10-09, the owner made the repository public and enabled GitHub Actions as the Pages source. Updated the hosting instructions and deployed the current demo successfully in [Actions run 37890391580](https://github.com/pponce/deconzAlarmKeypadConfigurator/actions/runs/37890391580), source `e28ee09b5bca9ff67b0b9abe6beac17914f831c4`. Generated-asset checks, Chromium desktop, WebKit mobile and the Pages deployment all passed. The published URL is https://pponce.github.io/deconzAlarmKeypadConfigurator/. Independent retrieval of the hosted URL was unavailable from this environment; publication is confirmed by GitHub’s successful deployment result.
 
 Added `demo/`, generated from the current standalone UI at `7f45cf48347b3663dde823a42f85e4500b25117b`. `scripts/build-demo.mjs` records the exact adaptations: fixed demo mode, synthetic session/setup, removed live API and extension transports, hidden installation/account controls, relative assets, separate browser-storage keys and a restrictive content security policy. The application source and runtime behavior are unchanged.
