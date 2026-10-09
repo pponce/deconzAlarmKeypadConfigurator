@@ -1,6 +1,6 @@
 ## PIN update button confirmation
 
-Removed the redundant PIN confirmation checkbox at the owner's request. Clicking Update PIN authorizes submission; other integration preparation checks still apply. Version 0.1.0-dev.6. The owner confirmed 0.4.38 worked on the live host. Browser validation pending.
+Removed the redundant PIN confirmation checkbox at the owner's request. Clicking Update PIN authorizes submission; other integration preparation checks still apply. Version 0.1.0-dev.6. The owner confirmed 0.4.38 worked on the live host. CI 37889401052 passed desktop Chromium and mobile WebKit PIN update/recovery checks on source `ddeef48010a2bb9dd48f95f7246da50b7e078eea`. Node 22/24 checks passed; combined Homebridge 2.0/2.4 checks passed. Source publication does not mean npm publication or host installation.
 
 ## Homebridge PIN authorization and user form
 
