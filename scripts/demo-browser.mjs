@@ -54,7 +54,7 @@ try {
     await page.locator('#name').fill('Demo owner edited');
     await page.locator('#editor button.primary').click();
     await page.getByText('Saved in demo data only.', {exact:true}).waitFor(); await ready();
-    await page.reload(); await page.locator('#user-list [data-id]').first().waitFor(); await ready();
+    await page.reload(); await page.locator('#user-list [data-id]').first().waitFor({state:'attached'}); await ready();
     if(!await page.locator('#name').isVisible())await page.locator('#user-list [data-id]').first().click();
     assert.equal(await page.locator('#name').inputValue(), 'Demo owner edited');
     await page.locator('#pin').fill('85927461'); await page.locator('#pin-repeat').fill('85927461');
