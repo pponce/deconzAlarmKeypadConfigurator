@@ -20,6 +20,10 @@ Open `http://localhost:8080`. Python is only one way to serve these static files
 
 ## Publish with GitHub Pages
 
+This repository is public and uses **GitHub Actions** for Pages. Push changes to `demo/` on `main` to run the checks and publish, or manually run **Demo and GitHub Pages** from Actions.
+
+For a fork or a fresh repository, complete this one-time setup:
+
 1. Make the repository public when ready.
 2. In **Settings → Pages → Build and deployment**, select **GitHub Actions** as the source.
 3. In **Actions → Demo and GitHub Pages**, choose **Run workflow** on `main`.

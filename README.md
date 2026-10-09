@@ -2,7 +2,7 @@
 
 **[Try the interactive demo](https://pponce.github.io/deconzAlarmKeypadConfigurator/)** · [Demo source and Pages setup](demo/README.md)
 
-The demo runs entirely in your browser with fictional data. No deCONZ gateway, Homebridge or sign-in is needed. The hosted link becomes available once GitHub Pages is enabled.
+The demo runs entirely in your browser with fictional data. No deCONZ gateway, Homebridge or sign-in is needed.
 
 A standalone Node.js web interface for managing deCONZ alarm users, PINs, keypad access and schedules. It is intended for people who want these administration features **without running Homebridge**.
 

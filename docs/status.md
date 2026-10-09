@@ -33,6 +33,8 @@ The preserved Python branch and source repositories are unchanged. A programmati
 
 ## Static public demo
 
+On 2026-10-09, the owner made the repository public and enabled GitHub Actions as the Pages source. Updated the hosting instructions and triggered a fresh deployment; verification of the hosted site follows the workflow result.
+
 Added `demo/`, generated from the current standalone UI at `7f45cf48347b3663dde823a42f85e4500b25117b`. `scripts/build-demo.mjs` records the exact adaptations: fixed demo mode, synthetic session/setup, removed live API and extension transports, hidden installation/account controls, relative assets, separate browser-storage keys and a restrictive content security policy. The application source and runtime behavior are unchanged.
 
 The README links the intended Pages URL. `.github/workflows/demo-pages.yml` checks generated assets, runs desktop/mobile browser exercises and uploads only `demo/`. Deployment waits until the owner makes the repository public and selects GitHub Actions in Pages settings. Local generation/consistency, JavaScript syntax, asset resolution and demo-engine checks passed. [Demo CI run 37883279146](https://github.com/pponce/deconzAlarmKeypadConfigurator/actions/runs/37883279146) passed on implementation commit `617d52e212230e7b23936f57c5983ad55207bbf2`: Chromium desktop and WebKit mobile navigation, user edits across reload, PIN non-persistence, protection/alarm changes, simulated keypad acceptance, gateway switching, reset, mobile layout and no API/external requests. Tests serve the actual `demo/` folder under the project-site URL prefix. Only the static folder was uploaded; deployment was correctly skipped while the repository remained private. No live services or hardware were involved.
